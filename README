@@ -4,3 +4,18 @@ jMathPaper
 A simple and easy to use calculation application, which works similar to taking
 notes on a sheet of paper.
 
+
+License
+-------
+
+jMathPaper is licensed under GPLv3.
+
+
+Dependencies
+------------
+
+Please see the attached license files for details.
+
+ * [exp4j](http://projects.congrace.de/exp4j/), Apache 2.0
+ * [SWT](https://www.eclipse.org/swt/), Eclipse Public License 1.0
+
