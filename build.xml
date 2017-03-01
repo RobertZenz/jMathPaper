@@ -7,6 +7,8 @@
 	<property name="dist" value="dist/" />
 	<property name="libs" value="libs/" />
 	<property name="src" value="src/" />
+	
+	<property name="swt.version" value="4.6.2" />
 
 	<target name="clean" description="Removes the build directories.">
 		<delete dir="${build}" />
@@ -24,18 +26,26 @@
 				<fileset dir="${libs}" includes="**/*.jar" />
 			</classpath>
 		</javac>
-		
+
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.jmathpaper.Main" />
 		</manifest>
 	</target>
 
 	<target name="dist" depends="compile" description="Creates the jar and tar archive.">
-		<jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${ant.project.name}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/exp4j/exp4j-0.4.8.jar" excludes="META-INF/**/*" />
-			<zipfileset src="${libs}/swt/swt-4.6.2.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		
+		<jar jarfile="${dist}/${ant.project.name}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
+			<zipfileset src="${libs}/exp4j/exp4j-0.4.8.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+		</jar>
+		<jar jarfile="${dist}/${ant.project.name}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
+			<zipfileset src="${libs}/exp4j/exp4j-0.4.8.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+		</jar>
+
 		<tar destfile="${dist}/${ant.project.name}.tar" basedir=".">
 			<include name="${libs}/**/*" />
 			<include name="${src}/**/*" />
