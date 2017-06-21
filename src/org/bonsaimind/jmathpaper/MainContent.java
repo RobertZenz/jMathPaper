@@ -119,7 +119,7 @@ public class MainContent extends Composite {
 				expressionsTable.setSelection(-1);
 				updateCurrentExpression();
 			} else {
-				inputText.setText("");
+				resetInput();
 			}
 		}
 	}
@@ -162,6 +162,8 @@ public class MainContent extends Composite {
 		inputText.setText("");
 		
 		expressionsTable.setSelection(-1);
+		
+		StretchedColumnHelper.stretchColumn(expressionsTable, 1);
 	}
 	
 	private void updateCurrentExpression() {
