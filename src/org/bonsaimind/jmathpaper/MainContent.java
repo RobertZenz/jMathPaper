@@ -17,6 +17,7 @@
 
 package org.bonsaimind.jmathpaper;
 
+import org.bonsaimind.jmathpaper.swt.StretchedColumnHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -89,6 +90,8 @@ public class MainContent extends Composite {
 		} else {
 			item.setText(2, "Invalid");
 		}
+		
+		StretchedColumnHelper.stretchColumn(expressionsTable, 1);
 	}
 	
 	private void onExpressionsTableSelectionChanged(Event event) {
