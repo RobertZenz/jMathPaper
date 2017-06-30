@@ -17,17 +17,19 @@
 
 package org.bonsaimind.jmathpaper;
 
+import java.math.BigDecimal;
+
 public class EvaluatedExpression {
 	private String errorMessage = null;
 	private String expression = null;
 	private String id = null;
-	private double result = 0.0d;
+	private BigDecimal result = BigDecimal.ZERO;
 	private boolean valid = true;
 	
 	public EvaluatedExpression(
 			String id,
 			String expression,
-			double result,
+			BigDecimal result,
 			boolean valid,
 			String errorMessage) {
 		super();
@@ -51,7 +53,7 @@ public class EvaluatedExpression {
 		return id;
 	}
 	
-	public double getResult() {
+	public BigDecimal getResult() {
 		return result;
 	}
 	

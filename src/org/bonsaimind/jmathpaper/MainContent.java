@@ -17,8 +17,6 @@
 
 package org.bonsaimind.jmathpaper;
 
-import java.math.BigDecimal;
-
 import org.bonsaimind.jmathpaper.swt.StretchedColumnHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -88,8 +86,7 @@ public class MainContent extends Composite {
 		item.setText(1, evaluatedExpression.getExpression());
 		
 		if (evaluatedExpression.isValid()) {
-			// TODO Using BigDecimal here is not a valid fix.
-			item.setText(2, new BigDecimal(evaluatedExpression.getResult()).toString());
+			item.setText(2, evaluatedExpression.getResult().toPlainString());
 		} else {
 			item.setText(2, "Invalid");
 		}
