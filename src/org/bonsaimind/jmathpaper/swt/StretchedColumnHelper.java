@@ -17,7 +17,9 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 /**
  * The {@link StretchedColumnHelper} is a simple helper class which allows to
@@ -50,56 +52,46 @@ public final class StretchedColumnHelper {
 			throw new IllegalArgumentException("columnIndexToStretch must be greater than 0 and less than the total column count, was: " + columnIndexToStretch);
 		}
 		
-		int[] originalOrder = table.getColumnOrder();
+		GC gc = new GC(table);
 		
-		// Move the to be stretched column to the end of the table, so that it
-		// is the last (which will be stretched automatically.
-		int[] stretchOrder = new int[originalOrder.length];
+		int[] columnSizes = new int[table.getColumnCount()];
 		
-		System.arraycopy(originalOrder, 0, stretchOrder, 0, originalOrder.length);
-		
-		for (int index = columnIndexToStretch; index < stretchOrder.length - 1; index++) {
-			int swap = stretchOrder[index];
-			
-			stretchOrder[index] = stretchOrder[index + 1];
-			stretchOrder[index + 1] = swap;
-		}
-		
-		// Set the new order.
-		table.setColumnOrder(stretchOrder);
-		
-		// Now measure the size of every column, except the last, which is the
-		// one which will be stretched.
-		int[] sizes = new int[table.getColumnCount()];
-		int offset = 0;
-		
-		for (int index = 0; index < table.getColumnCount() - 1; index++) {
-			if (index == columnIndexToStretch) {
-				offset = 1;
+		for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
+			if (columnIndex != columnIndexToStretch) {
+				String text = "  " + table.getColumn(columnIndex).getText() + "  ";
+				int textSize = gc.textExtent(text).x;
+				
+				columnSizes[columnIndex] = Math.max(columnSizes[columnIndex], textSize);
 			}
+		}
+		
+		for (int itemIndex = 0; itemIndex < table.getItemCount(); itemIndex++) {
+			TableItem item = table.getItem(itemIndex);
 			
-			table.getColumn(index).pack();
-			sizes[index + offset] = table.getColumn(index).getWidth();
+			for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
+				if (columnIndex != columnIndexToStretch) {
+					String text = "  " + item.getText(columnIndex) + "  ";
+					int textSize = gc.textExtent(text).x;
+					
+					columnSizes[columnIndex] = Math.max(columnSizes[columnIndex], textSize);
+				}
+			}
 		}
 		
-		// Restore the original order.
-		table.setColumnOrder(originalOrder);
+		int notStretchedWidth = 0;
 		
-		// Calculate the total width of all columns.
-		// Don't worry, the to be stretched column size is 0, so no special case
-		// needed here.
-		int totalWidth = 0;
-		
-		for (int index = 0; index < sizes.length; index++) {
-			totalWidth = totalWidth + sizes[index];
+		for (int index = 0; index < columnSizes.length; index++) {
+			if (index != columnIndexToStretch) {
+				notStretchedWidth = notStretchedWidth + columnSizes[index];
+			}
 		}
 		
-		// Now calculate the size of the stretched column.
-		sizes[columnIndexToStretch] = table.getSize().x - table.getBorderWidth() * 2 - totalWidth;
+		int stretchedSize = table.getSize().x - table.getBorderWidth() * 2 - notStretchedWidth;
 		
-		// And finally apply the new sizes.
+		columnSizes[columnIndexToStretch] = Math.max(columnSizes[columnIndexToStretch], stretchedSize);
+		
 		for (int index = 0; index < table.getColumnCount(); index++) {
-			table.getColumn(index).setWidth(sizes[index]);
+			table.getColumn(index).setWidth(columnSizes[index]);
 		}
 	}
 }
