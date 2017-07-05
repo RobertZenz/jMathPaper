@@ -17,6 +17,8 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -25,58 +27,71 @@ import org.eclipse.swt.widgets.TableItem;
  * The {@link StretchedColumnHelper} is a simple helper class which allows to
  * stretch a single column inside a {@link Table} which is not the last.
  */
-public final class StretchedColumnHelper {
+public class StretchedColumnHelper {
+	/** The calculated and cached column sizes. */
+	int[] columnSizes = null;
+	
+	/** The index of the column to stretch. */
+	private int columnIndexToStretch = 0;
+	
+	/** The {@link GC} which is used for measuring strings. */
+	private GC gc = null;
+	
+	/** The last seen item index. */
+	private int lastSeenItemIndex = -1;
+	
+	/** The parent {@link Table} that this is attached to. */
+	private Table parentTable = null;
 	
 	/**
-	 * No instancing, static utility.
+	 * Creates a new instance of {@link StretchedColumnHelper}.
+	 * 
+	 * @param parentTable The parent {@link Table}.
+	 * @param columnIndexToStretch The index of the column to stretch.
 	 */
-	private StretchedColumnHelper() {
+	public StretchedColumnHelper(Table parentTable, int columnIndexToStretch) {
 		super();
+		
+		if (parentTable == null) {
+			throw new IllegalArgumentException("parentTable cannot be null.");
+		}
+		
+		if (parentTable.getColumnCount() == 0) {
+			throw new IllegalArgumentException("The parentTable must have added columns.");
+		}
+		
+		if (columnIndexToStretch < 0 || columnIndexToStretch >= parentTable.getColumnCount()) {
+			throw new IllegalArgumentException("columnIndexToStretch is outside of allowed range: "
+					+ columnIndexToStretch
+					+ ", must be between 0 and "
+					+ (parentTable.getColumnCount() - 1)
+					+ ".");
+		}
+		
+		this.parentTable = parentTable;
+		this.columnIndexToStretch = columnIndexToStretch;
+		
+		columnSizes = new int[parentTable.getColumnCount()];
+		gc = new GC(parentTable);
+		
+		parentTable.addControlListener(new ControlListener() {
+			@Override
+			public void controlMoved(ControlEvent e) {
+				// Nothing to do.
+			}
+			
+			@Override
+			public void controlResized(ControlEvent e) {
+				pack();
+			}
+		});
 	}
 	
 	/**
-	 * Stretches the column at the given index.
-	 * 
-	 * @param table The {@link Table} that contains the column.
-	 * @param columnIndexToStretch The index of the column to stretch.
-	 * @throws IllegalArgumentException If the given {@link Table} is
-	 *         {@code null}, the given index is negative or greater or equal the
-	 *         total column count in the given {@link Table}.
+	 * Packs/resizes all columns.
 	 */
-	public static final void stretchColumn(Table table, int columnIndexToStretch) {
-		if (table == null) {
-			throw new IllegalArgumentException("table must not be null.");
-		}
-		
-		if (columnIndexToStretch < 0 || columnIndexToStretch >= table.getColumnCount()) {
-			throw new IllegalArgumentException("columnIndexToStretch must be greater than 0 and less than the total column count, was: " + columnIndexToStretch);
-		}
-		
-		GC gc = new GC(table);
-		
-		int[] columnSizes = new int[table.getColumnCount()];
-		
-		for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
-			if (columnIndex != columnIndexToStretch) {
-				String text = "  " + table.getColumn(columnIndex).getText() + "  ";
-				int textSize = gc.textExtent(text).x;
-				
-				columnSizes[columnIndex] = Math.max(columnSizes[columnIndex], textSize);
-			}
-		}
-		
-		for (int itemIndex = 0; itemIndex < table.getItemCount(); itemIndex++) {
-			TableItem item = table.getItem(itemIndex);
-			
-			for (int columnIndex = 0; columnIndex < table.getColumnCount(); columnIndex++) {
-				if (columnIndex != columnIndexToStretch) {
-					String text = "  " + item.getText(columnIndex) + "  ";
-					int textSize = gc.textExtent(text).x;
-					
-					columnSizes[columnIndex] = Math.max(columnSizes[columnIndex], textSize);
-				}
-			}
-		}
+	public void pack() {
+		updateColumnSizes();
 		
 		int notStretchedWidth = 0;
 		
@@ -86,12 +101,101 @@ public final class StretchedColumnHelper {
 			}
 		}
 		
-		int stretchedSize = table.getSize().x - table.getBorderWidth() * 2 - notStretchedWidth;
+		int stretchedSize = parentTable.getSize().x - parentTable.getBorderWidth() * 2 - notStretchedWidth;
 		
-		columnSizes[columnIndexToStretch] = Math.max(columnSizes[columnIndexToStretch], stretchedSize);
+		columnSizes[columnIndexToStretch] = Math.max(0, stretchedSize);
 		
-		for (int index = 0; index < table.getColumnCount(); index++) {
-			table.getColumn(index).setWidth(columnSizes[index]);
+		for (int columnIndex = 0; columnIndex < parentTable.getColumnCount(); columnIndex++) {
+			parentTable.getColumn(columnIndex).setWidth(columnSizes[columnIndex]);
+		}
+	}
+	
+	/**
+	 * Recalculates the size of all columns.
+	 */
+	public void recalculateSizes() {
+		lastSeenItemIndex = -1;
+		
+		for (int index = 0; index < columnSizes.length; index++) {
+			columnSizes[index] = 0;
+		}
+		
+		updateColumnSizes();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(getClass().getName());
+		builder.append("@");
+		builder.append(Integer.toHexString(System.identityHashCode(this)));
+		
+		builder.append("[");
+		builder.append(lastSeenItemIndex);
+		builder.append("]");
+		
+		builder.append("[");
+		for (int index = 0; index < columnSizes.length; index++) {
+			if (index == columnIndexToStretch) {
+				builder.append("*");
+			}
+			builder.append(columnSizes[index]);
+			builder.append(",");
+		}
+		builder.delete(builder.length() - 1, builder.length());
+		builder.append("]");
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Measures the given text, for that it adds two spaces at the end and at
+	 * the start.
+	 * 
+	 * @param text The text to measure.
+	 * @return The size of the text.
+	 */
+	protected int measureText(String text) {
+		return gc.textExtent("  " + text + "  ").x;
+	}
+	
+	/**
+	 * Updates the column sizes (if nedded).
+	 */
+	protected void updateColumnSizes() {
+		if (lastSeenItemIndex == -1) {
+			updateWithCaptionSizes();
+		}
+		
+		if (lastSeenItemIndex <= parentTable.getItemCount() - 1) {
+			while (lastSeenItemIndex < parentTable.getItemCount() - 1) {
+				lastSeenItemIndex++;
+				
+				TableItem item = parentTable.getItem(lastSeenItemIndex);
+				
+				for (int columnIndex = 0; columnIndex < parentTable.getColumnCount(); columnIndex++) {
+					columnSizes[columnIndex] = Math.max(
+							columnSizes[columnIndex],
+							measureText(item.getText(columnIndex)));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Updates the column sizes with the size of the captions.
+	 */
+	protected void updateWithCaptionSizes() {
+		for (int columnIndex = 0; columnIndex < parentTable.getColumnCount(); columnIndex++) {
+			if (columnIndex != columnIndexToStretch) {
+				columnSizes[columnIndex] = Math.max(
+						columnSizes[columnIndex],
+						measureText(parentTable.getColumn(columnIndex).getText()));
+			}
 		}
 	}
 }

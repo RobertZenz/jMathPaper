@@ -35,6 +35,7 @@ public class MainContent extends Composite {
 	private Evaluator evaluator = new Evaluator();
 	private Table expressionsTable = null;
 	private Text inputText = null;
+	private StretchedColumnHelper stretchedColumnHelper = null;
 	
 	public MainContent(Composite parent, int style) {
 		super(parent, style);
@@ -48,15 +49,15 @@ public class MainContent extends Composite {
 		
 		TableColumn idColumn = new TableColumn(expressionsTable, SWT.RIGHT);
 		idColumn.setText("ID");
-		idColumn.setWidth(48);
 		
 		TableColumn expressionColumn = new TableColumn(expressionsTable, SWT.RIGHT);
 		expressionColumn.setText("Expression");
-		expressionColumn.setWidth(424);
 		
 		TableColumn resultColumn = new TableColumn(expressionsTable, SWT.RIGHT);
 		resultColumn.setText("Result");
-		resultColumn.setWidth(64);
+		
+		stretchedColumnHelper = new StretchedColumnHelper(expressionsTable, 1);
+		stretchedColumnHelper.pack();
 		
 		errorLabel = new Label(this, SWT.RIGHT);
 		errorLabel.setText("");
@@ -91,7 +92,7 @@ public class MainContent extends Composite {
 			item.setText(2, "Invalid");
 		}
 		
-		StretchedColumnHelper.stretchColumn(expressionsTable, 1);
+		stretchedColumnHelper.pack();
 	}
 	
 	private void onExpressionsTableSelectionChanged(Event event) {
@@ -163,7 +164,7 @@ public class MainContent extends Composite {
 		
 		expressionsTable.setSelection(-1);
 		
-		StretchedColumnHelper.stretchColumn(expressionsTable, 1);
+		stretchedColumnHelper.pack();
 	}
 	
 	private void updateCurrentExpression() {
