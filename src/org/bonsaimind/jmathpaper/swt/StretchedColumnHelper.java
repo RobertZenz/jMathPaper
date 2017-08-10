@@ -101,7 +101,13 @@ public class StretchedColumnHelper {
 			}
 		}
 		
-		int stretchedSize = parentTable.getSize().x - parentTable.getBorderWidth() * 2 - notStretchedWidth;
+		int tableWidth = parentTable.getSize().x;
+		
+		if (parentTable.getVerticalBar().isVisible()) {
+			tableWidth = tableWidth - parentTable.getVerticalBar().getSize().x;
+		}
+		
+		int stretchedSize = tableWidth - parentTable.getBorderWidth() * 2 - notStretchedWidth;
 		
 		columnSizes[columnIndexToStretch] = Math.max(0, stretchedSize);
 		
