@@ -111,6 +111,8 @@ public class MainContent extends Composite {
 					updateCurrentExpression();
 				}
 			}
+			
+			event.doit = false;
 		}
 	}
 	
@@ -154,6 +156,8 @@ public class MainContent extends Composite {
 					updateCurrentExpression();
 				}
 			}
+			
+			event.doit = false;
 		}
 	}
 	
