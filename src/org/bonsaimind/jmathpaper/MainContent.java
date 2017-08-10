@@ -167,6 +167,9 @@ public class MainContent extends Composite {
 		inputText.setText("");
 		
 		expressionsTable.setSelection(-1);
+		// -2 seems to be required because the top index can not be the last
+		// item.
+		expressionsTable.setTopIndex(expressionsTable.getItemCount() - 2);
 		
 		stretchedColumnHelper.pack();
 	}
@@ -182,6 +185,8 @@ public class MainContent extends Composite {
 			
 			inputText.setText(selectedExpression.getExpression());
 		} else {
+			expressionsTable.setTopIndex(expressionsTable.getItemCount() - 1);
+			
 			if (bufferedInput != null) {
 				inputText.setText(bufferedInput);
 				bufferedInput = null;
