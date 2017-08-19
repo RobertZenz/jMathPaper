@@ -15,8 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper;
+package org.bonsaimind.jmathpaper.components;
 
+import org.bonsaimind.jmathpaper.EvaluatedExpression;
+import org.bonsaimind.jmathpaper.Evaluator;
 import org.bonsaimind.jmathpaper.swt.StretchedColumnHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -32,7 +34,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-public class MainContent extends Composite {
+public class MainComposite extends Composite {
 	private String bufferedInput = null;
 	private Label errorLabel = null;
 	private Evaluator evaluator = new Evaluator();
@@ -44,7 +46,7 @@ public class MainContent extends Composite {
 	private Text notesText = null;
 	private StretchedColumnHelper stretchedColumnHelper = null;
 	
-	public MainContent(Composite parent, int style) {
+	public MainComposite(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
 		

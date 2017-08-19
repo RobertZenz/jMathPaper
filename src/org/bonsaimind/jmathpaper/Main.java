@@ -17,6 +17,7 @@
 
 package org.bonsaimind.jmathpaper;
 
+import org.bonsaimind.jmathpaper.components.MainComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -38,7 +39,7 @@ public final class Main {
 		mainWindow.setSize(720, 480);
 		mainWindow.setText("jMathPaper");
 		
-		MainContent mainContent = new MainContent(mainWindow, SWT.NONE);
+		MainComposite mainContent = new MainComposite(mainWindow, SWT.NONE);
 		mainContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		mainContent.setVisible(true);
 		
