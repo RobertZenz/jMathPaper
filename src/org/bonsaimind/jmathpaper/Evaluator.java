@@ -18,9 +18,7 @@
 package org.bonsaimind.jmathpaper;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -34,17 +32,17 @@ public class Evaluator {
 	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
 	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>.*)$");
 	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
-	private List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
+	private int expressionCounter = 0;
 	private Map<String, BigDecimal> variables = new HashMap<>();
 	
 	public Evaluator() {
 		super();
 		
-		addVariable("pi", new BigDecimal(Math.PI));
-		addVariable("PI", new BigDecimal(Math.PI));
+		variables.put("pi", new BigDecimal(Math.PI));
+		variables.put("PI", new BigDecimal(Math.PI));
 		
-		addVariable("e", new BigDecimal(Math.E));
-		addVariable("E", new BigDecimal(Math.E));
+		variables.put("e", new BigDecimal(Math.E));
+		variables.put("E", new BigDecimal(Math.E));
 	}
 	
 	private static final String convertFromBinary(String value) {
@@ -59,10 +57,6 @@ public class Evaluator {
 		return Long.toString(Long.parseLong(value, 8));
 	}
 	
-	public void addVariable(String name, BigDecimal value) {
-		variables.put(name, value);
-	}
-	
 	public EvaluatedExpression evaluate(String expression) {
 		EvaluatedExpression evaluatedExpression = null;
 		String id = null;
@@ -73,11 +67,13 @@ public class Evaluator {
 		if (idFinderMatcher.matches()) {
 			id = idFinderMatcher.group("ID");
 			processedExpression = idFinderMatcher.group("EXPRESSION");
-		} else {
-			id = getNextId();
 		}
 		
 		try {
+			if (id == null) {
+				id = getNextId();
+			}
+			
 			evaluatedExpression = new EvaluatedExpression(
 					id,
 					expression,
@@ -85,10 +81,10 @@ public class Evaluator {
 					true,
 					null);
 			
-			evaluatedExpressions.add(evaluatedExpression);
+			variables.put(id, evaluatedExpression.getResult());
 		} catch (Throwable th) {
 			evaluatedExpression = new EvaluatedExpression(
-					id,
+					"",
 					expression,
 					BigDecimal.ZERO,
 					false,
@@ -97,10 +93,6 @@ public class Evaluator {
 		
 		return evaluatedExpression;
 		
-	}
-	
-	public void removeVariable(String name) {
-		variables.remove(name);
 	}
 	
 	private String applyPattern(String expression, Pattern pattern, Function<String, String> replacer) {
@@ -126,18 +118,15 @@ public class Evaluator {
 		Expression mathExpression = new Expression(processedExpression);
 		
 		for (Entry<String, BigDecimal> variable : variables.entrySet()) {
-			mathExpression.with(variable.getKey(), variable.getValue());
-		}
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			mathExpression.with(
-					evaluatedExpression.getId().replace('#', 'R'),
-					evaluatedExpression.getResult());
+			mathExpression.with(variable.getKey().replace('#', 'R'), variable.getValue());
 		}
 		
 		return mathExpression.eval();
 	}
 	
 	private String getNextId() {
-		return "#" + Integer.toString(evaluatedExpressions.size() + 1);
+		expressionCounter = expressionCounter + 1;
+		
+		return "#" + Integer.toString(expressionCounter);
 	}
 }
