@@ -32,13 +32,89 @@ public class EvaluatedExpression {
 			BigDecimal result,
 			boolean valid,
 			String errorMessage) {
-		super();
+		this();
 		
 		this.id = id;
 		this.expression = expression;
 		this.result = result;
 		this.valid = valid;
 		this.errorMessage = errorMessage;
+	}
+	
+	private EvaluatedExpression() {
+		super();
+	}
+	
+	public static EvaluatedExpression fromString(String string) {
+		if (string == null) {
+			return null;
+		}
+		
+		String[] splitted = string.split("[\t ]+");
+		
+		if (splitted.length < 3) {
+			return null;
+		}
+		
+		EvaluatedExpression evaluatedExpression = new EvaluatedExpression();
+		evaluatedExpression.id = splitted[0];
+		evaluatedExpression.expression = splitted[1];
+		
+		try {
+			evaluatedExpression.result = new BigDecimal(splitted[2]);
+			evaluatedExpression.valid = true;
+		} catch (NumberFormatException e) {
+			evaluatedExpression.errorMessage = splitted[2];
+			evaluatedExpression.valid = false;
+		}
+		
+		return evaluatedExpression;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		EvaluatedExpression other = (EvaluatedExpression)obj;
+		if (errorMessage == null) {
+			if (other.errorMessage != null) {
+				return false;
+			}
+		} else if (!errorMessage.equals(other.errorMessage)) {
+			return false;
+		}
+		if (expression == null) {
+			if (other.expression != null) {
+				return false;
+			}
+		} else if (!expression.equals(other.expression)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (result == null) {
+			if (other.result != null) {
+				return false;
+			}
+		} else if (!result.equals(other.result)) {
+			return false;
+		}
+		if (valid != other.valid) {
+			return false;
+		}
+		return true;
 	}
 	
 	public String getErrorMessage() {
@@ -57,7 +133,32 @@ public class EvaluatedExpression {
 		return result;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((errorMessage == null) ? 0 : errorMessage.hashCode());
+		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
+		result = prime * result + (valid ? 1231 : 1237);
+		return result;
+	}
+	
 	public boolean isValid() {
 		return valid;
+	}
+	
+	@Override
+	public String toString() {
+		if (valid) {
+			return id + "\t"
+					+ expression + "\t"
+					+ result.toPlainString();
+		} else {
+			return id + "\t"
+					+ expression + "\t"
+					+ errorMessage;
+		}
 	}
 }
