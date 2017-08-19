@@ -25,6 +25,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -34,8 +36,11 @@ public class MainContent extends Composite {
 	private String bufferedInput = null;
 	private Label errorLabel = null;
 	private Evaluator evaluator = new Evaluator();
+	private Composite expressionsComposite = null;
 	private Table expressionsTable = null;
 	private Text inputText = null;
+	private SashForm mainSashForm = null;
+	private Composite notesComposite = null;
 	private Text notesText = null;
 	private StretchedColumnHelper stretchedColumnHelper = null;
 	
@@ -43,10 +48,26 @@ public class MainContent extends Composite {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
 		
-		SashForm mainContainer = new SashForm(this, SWT.HORIZONTAL);
-		mainContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		Menu menu = new Menu(getShell(), SWT.BAR);
+		getShell().setMenuBar(menu);
 		
-		Composite expressionsComposite = new Composite(mainContainer, SWT.NONE);
+		MenuItem viewMenuItem = new MenuItem(menu, SWT.CASCADE);
+		viewMenuItem.setText("&View");
+		
+		Menu viewMenu = new Menu(getShell(), SWT.DROP_DOWN);
+		viewMenuItem.setMenu(viewMenu);
+		
+		MenuItem notesMenuItem = new MenuItem(viewMenu, SWT.CHECK);
+		notesMenuItem.setAccelerator(SWT.F4);
+		notesMenuItem.setSelection(true);
+		notesMenuItem.setText("&Notes\tF4");
+		notesMenuItem.setToolTipText("Toggles the visibility of the notes area.");
+		notesMenuItem.addListener(SWT.Selection, this::onShowHideNotes);
+		
+		mainSashForm = new SashForm(this, SWT.HORIZONTAL);
+		mainSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		expressionsComposite = new Composite(mainSashForm, SWT.NONE);
 		expressionsComposite.setLayout(new GridLayout(1, false));
 		
 		expressionsTable = new Table(expressionsComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE);
@@ -78,13 +99,13 @@ public class MainContent extends Composite {
 		inputText.addListener(SWT.Traverse, this::onInputTextReturnKey);
 		inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Composite notesComposite = new Composite(mainContainer, SWT.NONE);
+		notesComposite = new Composite(mainSashForm, SWT.NONE);
 		notesComposite.setLayout(new GridLayout(1, false));
 		
 		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		mainContainer.setWeights(new int[] { (int)(parent.getSize().x * 0.75), (int)(parent.getSize().x * 0.25) });
+		mainSashForm.setWeights(new int[] { (int)(parent.getSize().x * 0.75), (int)(parent.getSize().x * 0.25) });
 	}
 	
 	@Override
@@ -174,6 +195,18 @@ public class MainContent extends Composite {
 			}
 			
 			event.doit = false;
+		}
+	}
+	
+	private void onShowHideNotes(Event event) {
+		boolean isSelected = ((MenuItem)event.widget).getSelection();
+		
+		notesComposite.setVisible(isSelected);
+		
+		if (isSelected) {
+			mainSashForm.setMaximizedControl(null);
+		} else {
+			mainSashForm.setMaximizedControl(expressionsComposite);
 		}
 	}
 	
