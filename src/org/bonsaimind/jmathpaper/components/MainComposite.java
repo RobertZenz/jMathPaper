@@ -28,7 +28,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 public class MainComposite extends Composite {
-	private PaperComponent paperComponent = null;
+	private MenuItem closeAllMenuItem = null;
+	private MenuItem closeMenuItem = null;
+	private CTabFolder cTabFolder = null;
+	private MenuItem nextPaperMenuItem = null;
+	private int paperCounter = 0;
+	private MenuItem previousPaperMenuItem = null;
 	
 	public MainComposite(Composite parent, int style) {
 		super(parent, style);
@@ -43,6 +48,28 @@ public class MainComposite extends Composite {
 		Menu fileMenu = new Menu(getShell(), SWT.DROP_DOWN);
 		fileMenuItem.setMenu(fileMenu);
 		
+		MenuItem newMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		newMenuItem.setAccelerator(SWT.CTRL | 'N');
+		newMenuItem.setText("&New paper\tCtrl+N");
+		newMenuItem.setToolTipText("Adds a new paper.");
+		newMenuItem.addListener(SWT.Selection, this::onNewPushed);
+		
+		new MenuItem(fileMenu, SWT.SEPARATOR);
+		
+		closeMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		closeMenuItem.setAccelerator(SWT.CTRL | 'W');
+		closeMenuItem.setText("&Close\tCtrl+W");
+		closeMenuItem.setToolTipText("Closes the current paper.");
+		closeMenuItem.addListener(SWT.Selection, this::onClosePushed);
+		
+		closeAllMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		closeAllMenuItem.setAccelerator(SWT.CTRL | SWT.SHIFT | 'W');
+		closeAllMenuItem.setText("C&lose all\tShift+Ctrl+W");
+		closeAllMenuItem.setToolTipText("Closes all papers.");
+		closeAllMenuItem.addListener(SWT.Selection, this::onCloseAllPushed);
+		
+		new MenuItem(fileMenu, SWT.SEPARATOR);
+		
 		MenuItem quitMenuItem = new MenuItem(fileMenu, SWT.PUSH);
 		quitMenuItem.setAccelerator(SWT.CTRL | 'Q');
 		quitMenuItem.setText("&Quit\tCtrl+Q");
@@ -55,6 +82,20 @@ public class MainComposite extends Composite {
 		Menu viewMenu = new Menu(getShell(), SWT.DROP_DOWN);
 		viewMenuItem.setMenu(viewMenu);
 		
+		nextPaperMenuItem = new MenuItem(viewMenu, SWT.PUSH);
+		nextPaperMenuItem.setAccelerator(SWT.CTRL | SWT.TAB);
+		nextPaperMenuItem.setText("N&ext paper\tCtrl+Tab");
+		nextPaperMenuItem.setToolTipText("Navigates to the next paper.");
+		nextPaperMenuItem.addListener(SWT.Selection, this::onNextPaperPushed);
+		
+		previousPaperMenuItem = new MenuItem(viewMenu, SWT.PUSH);
+		previousPaperMenuItem.setAccelerator(SWT.CTRL | SWT.SHIFT | SWT.TAB);
+		previousPaperMenuItem.setText("P&revious paper\tShift+Ctrl+Tab");
+		previousPaperMenuItem.setToolTipText("Navigates to the previous paper.");
+		previousPaperMenuItem.addListener(SWT.Selection, this::onPreviousPaperPushed);
+		
+		new MenuItem(viewMenu, SWT.SEPARATOR);
+		
 		MenuItem notesMenuItem = new MenuItem(viewMenu, SWT.CHECK);
 		notesMenuItem.setAccelerator(SWT.F4);
 		notesMenuItem.setSelection(true);
@@ -62,23 +103,77 @@ public class MainComposite extends Composite {
 		notesMenuItem.setToolTipText("Toggles the visibility of the notes area.");
 		notesMenuItem.addListener(SWT.Selection, this::onShowHideNotesSelected);
 		
-		CTabFolder cTabFolder = new CTabFolder(this, SWT.BORDER);
+		cTabFolder = new CTabFolder(this, SWT.BORDER);
 		cTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
-		CTabItem cTabItem = new CTabItem(cTabFolder, SWT.NONE);
-		cTabItem.setText("Paper #1");
-		
-		paperComponent = new PaperComponent(cTabFolder, SWT.NONE);
-		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		cTabItem.setControl(paperComponent);
+		getDisplay().addFilter(SWT.Traverse, this::onTraverse);
 	}
 	
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
+	public void init() {
+		if (cTabFolder.getItemCount() == 0) {
+			onNewPushed(null);
+		}
 		
-		if (visible) {
-			paperComponent.setFocus();
+		if (cTabFolder.getSelection() != null) {
+			cTabFolder.getSelection().getControl().setFocus();
+		}
+	}
+	
+	private void onCloseAllPushed(Event event) {
+		while (cTabFolder.getItemCount() > 0) {
+			cTabFolder.getItem(0).dispose();
+		}
+		
+		onCTabFolderChanged(null);
+	}
+	
+	private void onClosePushed(Event event) {
+		if (cTabFolder.getSelection() != null) {
+			cTabFolder.getSelection().dispose();
+			
+			onCTabFolderChanged(null);
+		}
+	}
+	
+	private void onCTabFolderChanged(Event event) {
+		boolean hasItems = cTabFolder.getItemCount() > 0;
+		
+		closeMenuItem.setEnabled(hasItems);
+		closeAllMenuItem.setEnabled(hasItems);
+		
+		boolean hasManyItems = cTabFolder.getItemCount() > 1;
+		
+		nextPaperMenuItem.setEnabled(hasManyItems);
+		previousPaperMenuItem.setEnabled(hasManyItems);
+	}
+	
+	private void onNewPushed(Event event) {
+		paperCounter = paperCounter + 1;
+		
+		CTabItem cTabItem = new CTabItem(cTabFolder, SWT.CLOSE);
+		cTabItem.setText("Paper #" + Integer.toString(paperCounter));
+		cTabItem.addListener(SWT.Dispose, this::onCTabFolderChanged);
+		
+		PaperComponent paperComponent = new PaperComponent(cTabFolder, SWT.NONE);
+		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		cTabItem.setControl(paperComponent);
+		
+		cTabFolder.setSelection(cTabItem);
+		
+		onCTabFolderChanged(null);
+	}
+	
+	private void onNextPaperPushed(Event event) {
+		if (cTabFolder.getItemCount() > 1
+				&& cTabFolder.getSelectionIndex() < cTabFolder.getItemCount() - 1) {
+			cTabFolder.setSelection(cTabFolder.getSelectionIndex() + 1);
+		}
+	}
+	
+	private void onPreviousPaperPushed(Event event) {
+		if (cTabFolder.getItemCount() > 1
+				&& cTabFolder.getSelectionIndex() > 0) {
+			cTabFolder.setSelection(cTabFolder.getSelectionIndex() - 1);
 		}
 	}
 	
@@ -88,6 +183,21 @@ public class MainComposite extends Composite {
 	}
 	
 	private void onShowHideNotesSelected(Event event) {
-		paperComponent.setNotesVisible(((MenuItem)event.widget).getSelection());
+		for (CTabItem cTabItem : cTabFolder.getItems()) {
+			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			paperComponent.setNotesVisible(((MenuItem)event.widget).getSelection());
+		}
+	}
+	
+	private void onTraverse(Event event) {
+		if ((event.stateMask | SWT.CTRL) == SWT.CTRL
+				&& event.keyCode == SWT.TAB) {
+			onNextPaperPushed(null);
+			event.doit = false;
+		} else if ((event.stateMask | (SWT.CTRL | SWT.SHIFT)) == (SWT.CTRL | SWT.SHIFT)
+				&& event.keyCode == SWT.TAB) {
+			onPreviousPaperPushed(null);
+			event.doit = false;
+		}
 	}
 }

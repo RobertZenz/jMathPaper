@@ -45,6 +45,8 @@ public final class Main {
 		
 		mainWindow.open();
 		
+		mainContent.init();
+		
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
