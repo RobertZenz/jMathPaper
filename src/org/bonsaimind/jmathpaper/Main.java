@@ -35,7 +35,7 @@ public final class Main {
 		
 		Shell mainWindow = new Shell();
 		mainWindow.setLayout(mainLayout);
-		mainWindow.setSize(640, 480);
+		mainWindow.setSize(720, 480);
 		mainWindow.setText("jMathPaper");
 		
 		MainContent mainContent = new MainContent(mainWindow, SWT.NONE);

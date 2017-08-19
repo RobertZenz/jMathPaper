@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper;
 
 import org.bonsaimind.jmathpaper.swt.StretchedColumnHelper;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -35,13 +36,20 @@ public class MainContent extends Composite {
 	private Evaluator evaluator = new Evaluator();
 	private Table expressionsTable = null;
 	private Text inputText = null;
+	private Text notesText = null;
 	private StretchedColumnHelper stretchedColumnHelper = null;
 	
 	public MainContent(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
 		
-		expressionsTable = new Table(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE);
+		SashForm mainContainer = new SashForm(this, SWT.HORIZONTAL);
+		mainContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		Composite expressionsComposite = new Composite(mainContainer, SWT.NONE);
+		expressionsComposite.setLayout(new GridLayout(1, false));
+		
+		expressionsTable = new Table(expressionsComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE);
 		expressionsTable.addListener(SWT.Selection, this::onExpressionsTableSelectionChanged);
 		expressionsTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		expressionsTable.setHeaderVisible(true);
@@ -59,16 +67,24 @@ public class MainContent extends Composite {
 		stretchedColumnHelper = new StretchedColumnHelper(expressionsTable, 1);
 		stretchedColumnHelper.pack();
 		
-		errorLabel = new Label(this, SWT.RIGHT);
+		errorLabel = new Label(expressionsComposite, SWT.RIGHT);
 		errorLabel.setText("");
 		errorLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		inputText = new Text(this, SWT.BORDER | SWT.RIGHT);
+		inputText = new Text(expressionsComposite, SWT.BORDER | SWT.RIGHT);
 		inputText.addListener(SWT.KeyDown, this::onInputTextDownKey);
 		inputText.addListener(SWT.KeyDown, this::onInputTextEscapeKey);
 		inputText.addListener(SWT.KeyDown, this::onInputTextUpKey);
 		inputText.addListener(SWT.Traverse, this::onInputTextReturnKey);
 		inputText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Composite notesComposite = new Composite(mainContainer, SWT.NONE);
+		notesComposite.setLayout(new GridLayout(1, false));
+		
+		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI);
+		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		mainContainer.setWeights(new int[] { (int)(parent.getSize().x * 0.75), (int)(parent.getSize().x * 0.25) });
 	}
 	
 	@Override
