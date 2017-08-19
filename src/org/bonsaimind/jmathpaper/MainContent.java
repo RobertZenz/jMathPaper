@@ -216,15 +216,13 @@ public class MainContent extends Composite {
 	}
 	
 	private void onShowHideNotesSelected(Event event) {
-		boolean isSelected = ((MenuItem)event.widget).getSelection();
-		
-		notesComposite.setVisible(isSelected);
-		
-		if (isSelected) {
+		if (((MenuItem)event.widget).getSelection()) {
 			mainSashForm.setMaximizedControl(null);
 		} else {
 			mainSashForm.setMaximizedControl(expressionsComposite);
 		}
+		
+		inputText.setFocus();
 	}
 	
 	private void resetInput() {
