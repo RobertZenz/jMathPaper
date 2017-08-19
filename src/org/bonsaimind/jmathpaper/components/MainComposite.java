@@ -18,6 +18,8 @@
 package org.bonsaimind.jmathpaper.components;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -60,8 +62,15 @@ public class MainComposite extends Composite {
 		notesMenuItem.setToolTipText("Toggles the visibility of the notes area.");
 		notesMenuItem.addListener(SWT.Selection, this::onShowHideNotesSelected);
 		
-		paperComponent = new PaperComponent(this, SWT.NONE);
+		CTabFolder cTabFolder = new CTabFolder(this, SWT.BORDER);
+		cTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		CTabItem cTabItem = new CTabItem(cTabFolder, SWT.NONE);
+		cTabItem.setText("Paper #1");
+		
+		paperComponent = new PaperComponent(cTabFolder, SWT.NONE);
 		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		cTabItem.setControl(paperComponent);
 	}
 	
 	@Override

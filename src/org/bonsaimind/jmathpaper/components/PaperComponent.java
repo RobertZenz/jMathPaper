@@ -83,8 +83,6 @@ public class PaperComponent extends SashForm {
 		
 		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		setWeights(new int[] { (int)(parent.getSize().x * 0.75), (int)(parent.getSize().x * 0.25) });
 	}
 	
 	public boolean isNotesVisible() {
@@ -111,6 +109,8 @@ public class PaperComponent extends SashForm {
 		super.setVisible(visible);
 		
 		if (visible) {
+			setWeights(new int[] { (int)(getSize().x * 0.75), (int)(getSize().x * 0.25) });
+			
 			inputText.setFocus();
 		}
 	}
