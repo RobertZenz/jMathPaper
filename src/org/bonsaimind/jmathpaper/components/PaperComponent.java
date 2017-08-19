@@ -143,7 +143,7 @@ public class PaperComponent extends SashForm {
 				line = reader.readLine();
 			}
 			
-			notesText.setText(notes.toString());
+			notesText.setText(notes.toString().trim());
 			
 			evaluator.setExpressionCounter(expressionsTable.getItemCount());
 		}
