@@ -206,6 +206,11 @@ public class MainComposite extends Composite {
 			File file = new File(filePath);
 			
 			if (file.exists()) {
+				if (cTabFolder.getItemCount() == 1
+						&& ((PaperComponent)cTabFolder.getSelection().getControl()).isEmpty()) {
+					onClosePushed(null);
+				}
+				
 				onNewPushed(null);
 				
 				CTabItem cTabItem = cTabFolder.getSelection();

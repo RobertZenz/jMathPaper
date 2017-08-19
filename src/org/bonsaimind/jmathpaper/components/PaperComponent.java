@@ -103,6 +103,10 @@ public class PaperComponent extends SashForm {
 		return file;
 	}
 	
+	public boolean isEmpty() {
+		return expressionsTable.getItemCount() == 0;
+	}
+	
 	public boolean isNotesVisible() {
 		return getMaximizedControl() == null;
 	}
