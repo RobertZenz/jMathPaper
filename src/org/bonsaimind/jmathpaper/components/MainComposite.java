@@ -17,6 +17,9 @@
 
 package org.bonsaimind.jmathpaper.components;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -24,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
@@ -32,8 +36,11 @@ public class MainComposite extends Composite {
 	private MenuItem closeMenuItem = null;
 	private CTabFolder cTabFolder = null;
 	private MenuItem nextPaperMenuItem = null;
+	private MenuItem openMenuItem = null;
 	private int paperCounter = 0;
 	private MenuItem previousPaperMenuItem = null;
+	private MenuItem saveAsMenuItem = null;
+	private MenuItem saveMenuItem = null;
 	
 	public MainComposite(Composite parent, int style) {
 		super(parent, style);
@@ -54,6 +61,12 @@ public class MainComposite extends Composite {
 		newMenuItem.setToolTipText("Adds a new paper.");
 		newMenuItem.addListener(SWT.Selection, this::onNewPushed);
 		
+		openMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		openMenuItem.setAccelerator(SWT.CTRL | 'O');
+		openMenuItem.setText("&Open\tCtrl+O");
+		openMenuItem.setToolTipText("Opens a previously saved paper.");
+		openMenuItem.addListener(SWT.Selection, this::onOpenPushed);
+		
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		
 		closeMenuItem = new MenuItem(fileMenu, SWT.PUSH);
@@ -67,6 +80,19 @@ public class MainComposite extends Composite {
 		closeAllMenuItem.setText("C&lose all\tShift+Ctrl+W");
 		closeAllMenuItem.setToolTipText("Closes all papers.");
 		closeAllMenuItem.addListener(SWT.Selection, this::onCloseAllPushed);
+		
+		new MenuItem(fileMenu, SWT.SEPARATOR);
+		
+		saveMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		saveMenuItem.setAccelerator(SWT.CTRL | 'S');
+		saveMenuItem.setText("&Save\tCtrl+S");
+		saveMenuItem.setToolTipText("Saves the current paper.");
+		saveMenuItem.addListener(SWT.Selection, this::onSavePushed);
+		
+		saveAsMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		saveAsMenuItem.setText("S&ave as");
+		saveAsMenuItem.setToolTipText("Saves the current paper under a new name.");
+		saveAsMenuItem.addListener(SWT.Selection, this::onSaveAsPushed);
 		
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		
@@ -154,7 +180,7 @@ public class MainComposite extends Composite {
 		cTabItem.setText("Paper #" + Integer.toString(paperCounter));
 		cTabItem.addListener(SWT.Dispose, this::onCTabFolderChanged);
 		
-		PaperComponent paperComponent = new PaperComponent(cTabFolder, SWT.NONE);
+		PaperComponent paperComponent = new PaperComponent(cTabFolder, cTabItem, SWT.NONE);
 		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		cTabItem.setControl(paperComponent);
 		
@@ -170,6 +196,34 @@ public class MainComposite extends Composite {
 		}
 	}
 	
+	private void onOpenPushed(Event event) {
+		FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+		fileDialog.setOverwrite(true);
+		
+		String filePath = fileDialog.open();
+		
+		if (filePath != null) {
+			File file = new File(filePath);
+			
+			if (file.exists()) {
+				onNewPushed(null);
+				
+				CTabItem cTabItem = cTabFolder.getSelection();
+				cTabItem.setText(file.getName());
+				
+				PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+				paperComponent.setFile(file);
+				
+				try {
+					paperComponent.load(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
 	private void onPreviousPaperPushed(Event event) {
 		if (cTabFolder.getItemCount() > 1
 				&& cTabFolder.getSelectionIndex() > 0) {
@@ -180,6 +234,54 @@ public class MainComposite extends Composite {
 	private void onQuitPushed(Event event) {
 		getShell().setVisible(false);
 		getShell().dispose();
+	}
+	
+	private void onSaveAsPushed(Event event) {
+		if (cTabFolder.getSelection() != null) {
+			CTabItem cTabItem = cTabFolder.getSelection();
+			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			
+			FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
+			
+			if (paperComponent.getFile() != null) {
+				File file = paperComponent.getFile();
+				
+				fileDialog.setFileName(file.getName());
+			} else {
+				fileDialog.setFileName("new-paper.jmathpaper");
+			}
+			
+			fileDialog.setOverwrite(true);
+			
+			String filePath = fileDialog.open();
+			
+			if (filePath != null) {
+				File file = new File(filePath);
+				
+				paperComponent.setFile(file);
+				cTabItem.setText(file.getName());
+				onSavePushed(null);
+			}
+		}
+	}
+	
+	private void onSavePushed(Event event) {
+		if (cTabFolder.getSelection() != null) {
+			CTabItem cTabItem = cTabFolder.getSelection();
+			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			
+			if (paperComponent.getFile() != null) {
+				try {
+					paperComponent.save(paperComponent.getFile());
+					cTabItem.setText(paperComponent.getFile().getName());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				onSaveAsPushed(null);
+			}
+		}
 	}
 	
 	private void onShowHideNotesSelected(Event event) {

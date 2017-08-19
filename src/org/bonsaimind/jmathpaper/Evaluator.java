@@ -57,6 +57,12 @@ public class Evaluator {
 		return Long.toString(Long.parseLong(value, 8));
 	}
 	
+	public void addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
+		if (evaluatedExpression.isValid()) {
+			variables.put(evaluatedExpression.getId(), evaluatedExpression.getResult());
+		}
+	}
+	
 	public EvaluatedExpression evaluate(String expression) {
 		EvaluatedExpression evaluatedExpression = null;
 		String id = null;
@@ -93,6 +99,10 @@ public class Evaluator {
 		
 		return evaluatedExpression;
 		
+	}
+	
+	public void setExpressionCounter(int counter) {
+		expressionCounter = counter;
 	}
 	
 	private String applyPattern(String expression, Pattern pattern, Function<String, String> replacer) {
