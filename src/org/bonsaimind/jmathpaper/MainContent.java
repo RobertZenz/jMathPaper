@@ -51,6 +51,18 @@ public class MainContent extends Composite {
 		Menu menu = new Menu(getShell(), SWT.BAR);
 		getShell().setMenuBar(menu);
 		
+		MenuItem fileMenuItem = new MenuItem(menu, SWT.CASCADE);
+		fileMenuItem.setText("&File");
+		
+		Menu fileMenu = new Menu(getShell(), SWT.DROP_DOWN);
+		fileMenuItem.setMenu(fileMenu);
+		
+		MenuItem quitMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		quitMenuItem.setAccelerator(SWT.CTRL | 'Q');
+		quitMenuItem.setText("&Quit\tCtrl+Q");
+		quitMenuItem.setToolTipText("Quit jMathPaper.");
+		quitMenuItem.addListener(SWT.Selection, this::onQuitPushed);
+		
 		MenuItem viewMenuItem = new MenuItem(menu, SWT.CASCADE);
 		viewMenuItem.setText("&View");
 		
@@ -62,7 +74,7 @@ public class MainContent extends Composite {
 		notesMenuItem.setSelection(true);
 		notesMenuItem.setText("&Notes\tF4");
 		notesMenuItem.setToolTipText("Toggles the visibility of the notes area.");
-		notesMenuItem.addListener(SWT.Selection, this::onShowHideNotes);
+		notesMenuItem.addListener(SWT.Selection, this::onShowHideNotesSelected);
 		
 		mainSashForm = new SashForm(this, SWT.HORIZONTAL);
 		mainSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -198,7 +210,12 @@ public class MainContent extends Composite {
 		}
 	}
 	
-	private void onShowHideNotes(Event event) {
+	private void onQuitPushed(Event event) {
+		getShell().setVisible(false);
+		getShell().dispose();
+	}
+	
+	private void onShowHideNotesSelected(Event event) {
 		boolean isSelected = ((MenuItem)event.widget).getSelection();
 		
 		notesComposite.setVisible(isSelected);
