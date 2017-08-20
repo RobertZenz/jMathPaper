@@ -249,6 +249,7 @@ public class MainComposite extends Composite {
 				
 				paperComponent.setFile(file);
 				cTabItem.setText(file.getName());
+				cTabItem.setToolTipText(file.getAbsolutePath());
 				onSavePushed(null);
 			}
 		}
@@ -263,6 +264,7 @@ public class MainComposite extends Composite {
 				try {
 					paperComponent.save(paperComponent.getFile());
 					cTabItem.setText(paperComponent.getFile().getName());
+					cTabItem.setToolTipText(paperComponent.getFile().getAbsolutePath());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -302,6 +304,7 @@ public class MainComposite extends Composite {
 		
 		CTabItem cTabItem = cTabFolder.getSelection();
 		cTabItem.setText(file.getName());
+		cTabItem.setToolTipText(file.getAbsolutePath());
 		
 		PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
 		paperComponent.setFile(file);
