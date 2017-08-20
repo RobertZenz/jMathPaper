@@ -7,7 +7,9 @@
 	<property name="dist" value="dist/" />
 	<property name="libs" value="libs/" />
 	<property name="src" value="src/" />
-	
+
+	<property name="jar" value="jmathpaper" />
+
 	<property name="evalex.version" value="1.10" />
 	<property name="swt.version" value="4.6.2" />
 
@@ -34,23 +36,23 @@
 	</target>
 
 	<target name="dist" depends="compile" description="Creates the jar and tar archive.">
-		<jar jarfile="${dist}/${ant.project.name}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		<jar jarfile="${dist}/${ant.project.name}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		<jar jarfile="${dist}/${ant.project.name}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
 
-		<tar destfile="${dist}/${ant.project.name}.tar" basedir=".">
+		<tar destfile="${dist}/${jar}.tar" basedir=".">
 			<include name="${libs}/**/*" />
 			<include name="${src}/**/*" />
-			<include name="${dist}/${ant.project.name}.jar" />
+			<include name="${dist}/${jar}.jar" />
 			<include name="build.xml" />
 			<include name="CHANGES" />
 			<include name="CONTRIBUTE" />
@@ -58,6 +60,8 @@
 			<include name="LICENSE" />
 			<include name="README" />
 		</tar>
-		<bzip2 src="${dist}/${ant.project.name}.tar" destfile="${dist}/${ant.project.name}.tar.bz2" />
+		<bzip2 src="${dist}/${jar}.tar" destfile="${dist}/${jar}.tar.bz2" />
 	</target>
+
+	<target name="all" depends="clean,dist" />
 </project>
