@@ -162,6 +162,10 @@ public class MainComposite extends Composite {
 	}
 	
 	private void onCTabFolderChanged(Event event) {
+		if (closeMenuItem.isDisposed()) {
+			return;
+		}
+		
 		boolean hasItems = cTabFolder.getItemCount() > 0;
 		
 		closeMenuItem.setEnabled(hasItems);
