@@ -177,6 +177,9 @@ public class MainComposite extends Composite {
 		closeMenuItem.setEnabled(hasItems);
 		closeAllMenuItem.setEnabled(hasItems);
 		
+		saveMenuItem.setEnabled(hasItems);
+		saveAsMenuItem.setEnabled(hasItems);
+		
 		boolean hasManyItems = cTabFolder.getItemCount() > 1;
 		
 		nextPaperMenuItem.setEnabled(hasManyItems);
