@@ -45,7 +45,7 @@ public final class Main {
 		
 		mainWindow.open();
 		
-		mainContent.init();
+		mainContent.init(arguments);
 		
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {

@@ -135,7 +135,13 @@ public class MainComposite extends Composite {
 		getDisplay().addFilter(SWT.Traverse, this::onTraverse);
 	}
 	
-	public void init() {
+	public void init(String[] fileNames) {
+		if (fileNames != null && fileNames.length > 0) {
+			for (String fileName : fileNames) {
+				open(fileName);
+			}
+		}
+		
 		if (cTabFolder.getItemCount() == 0) {
 			onNewPushed(null);
 		}
@@ -204,33 +210,7 @@ public class MainComposite extends Composite {
 		FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
 		fileDialog.setOverwrite(true);
 		
-		String filePath = fileDialog.open();
-		
-		if (filePath != null) {
-			File file = new File(filePath);
-			
-			if (file.exists()) {
-				if (cTabFolder.getItemCount() == 1
-						&& ((PaperComponent)cTabFolder.getSelection().getControl()).isEmpty()) {
-					onClosePushed(null);
-				}
-				
-				onNewPushed(null);
-				
-				CTabItem cTabItem = cTabFolder.getSelection();
-				cTabItem.setText(file.getName());
-				
-				PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
-				paperComponent.setFile(file);
-				
-				try {
-					paperComponent.load(file);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		open(fileDialog.open());
 	}
 	
 	private void onPreviousPaperPushed(Event event) {
@@ -309,6 +289,38 @@ public class MainComposite extends Composite {
 				&& event.keyCode == SWT.TAB) {
 			onPreviousPaperPushed(null);
 			event.doit = false;
+		}
+	}
+	
+	private void open(File file) {
+		if (cTabFolder.getItemCount() == 1
+				&& ((PaperComponent)cTabFolder.getSelection().getControl()).isEmpty()) {
+			onClosePushed(null);
+		}
+		
+		onNewPushed(null);
+		
+		CTabItem cTabItem = cTabFolder.getSelection();
+		cTabItem.setText(file.getName());
+		
+		PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+		paperComponent.setFile(file);
+		
+		try {
+			paperComponent.load(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void open(String filePath) {
+		if (filePath != null) {
+			File file = new File(filePath);
+			
+			if (file.exists()) {
+				open(file);
+			}
 		}
 	}
 }
