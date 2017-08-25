@@ -2,7 +2,9 @@
 	<description>
 		A simple calculation application.
 	</description>
-
+	
+	<property name="version" value="1.0" />
+	
 	<property name="build" value="build/" />
 	<property name="dist" value="dist/" />
 	<property name="libs" value="libs/" />
@@ -32,27 +34,30 @@
 
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.jmathpaper.Main" />
+			<attribute name="Implementation-Title" value="${ant.project.name}"/>
+			<attribute name="Implementation-Version" value="${version}"/> 
+			<attribute name="Implementation-Vendor" value="Robert 'Bobby' Zenz"/>
 		</manifest>
 	</target>
 
 	<target name="dist" depends="compile" description="Creates the jar and tar archive.">
-		<jar jarfile="${dist}/${jar}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-${version}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		<jar jarfile="${dist}/${jar}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-${version}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		<jar jarfile="${dist}/${jar}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
+		<jar jarfile="${dist}/${jar}-${version}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
 
-		<tar destfile="${dist}/${jar}.tar" basedir=".">
+		<tar destfile="${dist}/${jar}-${version}.tar" basedir=".">
 			<include name="${libs}/**/*" />
 			<include name="${src}/**/*" />
-			<include name="${dist}/${jar}.jar" />
+			<include name="${dist}/${jar}-${version}-*.jar" />
 			<include name="build.xml" />
 			<include name="CHANGES" />
 			<include name="CONTRIBUTE" />
@@ -60,7 +65,7 @@
 			<include name="LICENSE" />
 			<include name="README" />
 		</tar>
-		<bzip2 src="${dist}/${jar}.tar" destfile="${dist}/${jar}.tar.bz2" />
+		<bzip2 src="${dist}/${jar}-${version}.tar" destfile="${dist}/${jar}-${version}.tar.bz2" />
 	</target>
 
 	<target name="all" depends="clean,dist" />
