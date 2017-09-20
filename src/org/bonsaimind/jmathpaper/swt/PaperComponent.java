@@ -17,17 +17,11 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.Evaluator;
+import org.bonsaimind.jmathpaper.core.Paper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -45,13 +39,13 @@ public class PaperComponent extends SashForm {
 	private String bufferedInput = null;
 	private CTabItem cTabItem = null;
 	private Label errorLabel = null;
-	private Evaluator evaluator = new Evaluator();
 	private Composite expressionsComposite = null;
 	private Table expressionsTable = null;
 	private File file = null;
 	private Text inputText = null;
 	private Composite notesComposite = null;
 	private Text notesText = null;
+	private Paper paper = new Paper();
 	private StretchedColumnHelper stretchedColumnHelper = null;
 	
 	public PaperComponent(Composite parent, CTabItem cTabItem, int style) {
@@ -111,62 +105,20 @@ public class PaperComponent extends SashForm {
 	}
 	
 	public void load(File file) throws IOException {
-		if (!file.exists()) {
-			throw new FileNotFoundException(file.getAbsolutePath());
-		}
+		paper.loadFrom(file.toPath());
 		
 		expressionsTable.clearAll();
 		
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-			String line = reader.readLine();
-			StringBuilder notes = new StringBuilder();
-			boolean notesReached = false;
-			
-			while (line != null) {
-				if (!notesReached) {
-					if (!line.isEmpty()) {
-						EvaluatedExpression evaluatedExpression = EvaluatedExpression.fromString(line);
-						
-						if (evaluatedExpression != null) {
-							convertEvaluatedExpressionToTableItem(evaluatedExpression);
-							evaluator.addEvaluatedExpression(evaluatedExpression);
-						}
-					} else {
-						notesReached = true;
-					}
-				} else {
-					notes.append(line);
-					notes.append("\n");
-				}
-				
-				line = reader.readLine();
-			}
-			
-			notesText.setText(notes.toString().trim());
-			
-			evaluator.setExpressionCounter(expressionsTable.getItemCount());
+		for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+			convertEvaluatedExpressionToTableItem(evaluatedExpression);
 		}
+		
+		notesText.setText(paper.getNotes());
 	}
 	
 	public void save(File file) throws IOException {
-		if (!file.exists()) {
-			file.createNewFile();
-		}
-		
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, false), "UTF-8")) {
-			for (TableItem tableItem : expressionsTable.getItems()) {
-				EvaluatedExpression evaluatedExpression = (EvaluatedExpression)tableItem.getData();
-				
-				writer.write(evaluatedExpression.toString());
-				writer.write('\n');
-			}
-			
-			writer.write('\n');
-			
-			writer.write(notesText.getText());
-			
-			writer.write('\n');
-		}
+		paper.setNotes(notesText.getText());
+		paper.storeTo(file.toPath());
 	}
 	
 	public void setFile(File file) {
@@ -249,7 +201,7 @@ public class PaperComponent extends SashForm {
 	private void onInputTextReturnKey(Event event) {
 		if (event.detail == SWT.TRAVERSE_RETURN) {
 			if (inputText.getText().length() > 0) {
-				EvaluatedExpression evaluatedExpression = evaluator.evaluate(inputText.getText());
+				EvaluatedExpression evaluatedExpression = paper.evaluate(inputText.getText());
 				
 				if (evaluatedExpression.isValid()) {
 					convertEvaluatedExpressionToTableItem(evaluatedExpression);

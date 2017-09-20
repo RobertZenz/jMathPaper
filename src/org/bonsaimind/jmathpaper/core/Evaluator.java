@@ -38,11 +38,7 @@ public class Evaluator {
 	public Evaluator() {
 		super();
 		
-		variables.put("pi", new BigDecimal(Math.PI));
-		variables.put("PI", new BigDecimal(Math.PI));
-		
-		variables.put("e", new BigDecimal(Math.E));
-		variables.put("E", new BigDecimal(Math.E));
+		reset();
 	}
 	
 	private static final String convertFromBinary(String value) {
@@ -95,6 +91,17 @@ public class Evaluator {
 		
 		return evaluatedExpression;
 		
+	}
+	
+	public void reset() {
+		expressionCounter = 0;
+		variables.clear();
+		
+		variables.put("pi", new BigDecimal(Math.PI));
+		variables.put("PI", new BigDecimal(Math.PI));
+		
+		variables.put("e", new BigDecimal(Math.E));
+		variables.put("E", new BigDecimal(Math.E));
 	}
 	
 	public void setExpressionCounter(int counter) {
