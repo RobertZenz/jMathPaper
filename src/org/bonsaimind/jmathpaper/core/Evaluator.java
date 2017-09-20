@@ -83,17 +83,13 @@ public class Evaluator {
 			evaluatedExpression = new EvaluatedExpression(
 					id,
 					expression,
-					evaluateInternal(processedExpression),
-					true,
-					null);
+					evaluateInternal(processedExpression));
 			
 			variables.put(id, evaluatedExpression.getResult());
 		} catch (Throwable th) {
 			evaluatedExpression = new EvaluatedExpression(
 					"",
 					expression,
-					BigDecimal.ZERO,
-					false,
 					th.getMessage());
 		}
 		

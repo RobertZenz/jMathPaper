@@ -19,7 +19,6 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 
-import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,24 +30,24 @@ public class TestEvaluatedExpression {
 		Assert.assertNull(EvaluatedExpression.fromString("invalid"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), true, null),
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
 				EvaluatedExpression.fromString("1\t1+1\t2"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", BigDecimal.ZERO, false, "error"),
+				new EvaluatedExpression("1", "1+1", "error"),
 				EvaluatedExpression.fromString("1\t1+1\terror"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), true, null),
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
 				EvaluatedExpression.fromString("1   \t  \t  1+1 \t    2"));
 	}
 	
 	@Test
 	public void testToFromStringSanity() {
-		EvaluatedExpression validEvaluatedExpression = new EvaluatedExpression("1", "1+1", new BigDecimal("2"), true, null);
+		EvaluatedExpression validEvaluatedExpression = new EvaluatedExpression("1", "1+1", new BigDecimal("2"));
 		Assert.assertEquals(validEvaluatedExpression, EvaluatedExpression.fromString(validEvaluatedExpression.toString()));
 		
-		EvaluatedExpression invalidEvaluatedExpression = new EvaluatedExpression("1", "1+1", BigDecimal.ZERO, false, "error");
+		EvaluatedExpression invalidEvaluatedExpression = new EvaluatedExpression("1", "1+1", "error");
 		Assert.assertEquals(invalidEvaluatedExpression, EvaluatedExpression.fromString(invalidEvaluatedExpression.toString()));
 	}
 	
@@ -56,10 +55,10 @@ public class TestEvaluatedExpression {
 	public void testToString() {
 		Assert.assertEquals(
 				"1\t1+1\t2",
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), true, null).toString());
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2")).toString());
 		
 		Assert.assertEquals(
 				"1\t1+1\terror",
-				new EvaluatedExpression("1", "1+1", BigDecimal.ZERO, false, "error").toString());
+				new EvaluatedExpression("1", "1+1", "error").toString());
 	}
 }

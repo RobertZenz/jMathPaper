@@ -19,14 +19,60 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 
+/**
+ * The {@link EvaluatedExpression} is a simple immutable container for an
+ * expression which has been evaluated.
+ */
 public class EvaluatedExpression {
-	private String errorMessage = null;
-	private String expression = null;
-	private String id = null;
-	private BigDecimal result = BigDecimal.ZERO;
-	private boolean valid = true;
+	protected String errorMessage = null;
+	protected String expression = null;
+	protected String id = null;
+	protected BigDecimal result = BigDecimal.ZERO;
+	protected boolean valid = true;
 	
-	public EvaluatedExpression(
+	/**
+	 * Creates a new, valid, instance of {@link EvaluatedExpression}.
+	 *
+	 * @param id The ID.
+	 * @param expression The expression.
+	 * @param result The result
+	 */
+	public EvaluatedExpression(String id, String expression, BigDecimal result) {
+		this(id, expression, result, true, null);
+	}
+	
+	/**
+	 * Creates a new, invalid, instance of {@link EvaluatedExpression}.
+	 *
+	 * @param id The ID.
+	 * @param expression The expression.
+	 * @param errorMessage The error message.
+	 */
+	public EvaluatedExpression(String id, String expression, String errorMessage) {
+		this(id, expression, BigDecimal.ZERO, false, errorMessage);
+	}
+	
+	/**
+	 * Creates a new instance of {@link EvaluatedExpression}.
+	 * <p>
+	 * Required for the {@link #fromString(String)} method.
+	 */
+	protected EvaluatedExpression() {
+		super();
+	}
+	
+	/**
+	 * Creates a new instance of {@link EvaluatedExpression}.
+	 *
+	 * @param id The ID.
+	 * @param expression The expression.
+	 * @param result The result. Use {@link BigDecimal#ZERO} if the expression
+	 *        could not be validated.
+	 * @param valid If this expression is valid/could be evaluated.
+	 * @param errorMessage The error message, can be {@code null} if there is
+	 *        none.
+	 */
+	protected EvaluatedExpression(
 			String id,
 			String expression,
 			BigDecimal result,
@@ -41,10 +87,18 @@ public class EvaluatedExpression {
 		this.errorMessage = errorMessage;
 	}
 	
-	private EvaluatedExpression() {
-		super();
-	}
-	
+	/**
+	 * Creates a new {@link EvaluatedExpression} from the given string
+	 * representation.
+	 * <p>
+	 * If the given string representation can not be processed {@code null} is
+	 * returned.
+	 * 
+	 * @param string The string representation.
+	 * @return The created {@link EvaluatedExpression} created from the given
+	 *         string representation. {@code null} if the given string
+	 *         representation could not be processed.
+	 */
 	public static EvaluatedExpression fromString(String string) {
 		if (string == null) {
 			return null;
@@ -71,6 +125,9 @@ public class EvaluatedExpression {
 		return evaluatedExpression;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -117,22 +174,45 @@ public class EvaluatedExpression {
 		return true;
 	}
 	
+	/**
+	 * Gets the error message, {@code null} if there is none.
+	 * 
+	 * @return The error message, {@code null} if there is none.
+	 */
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 	
+	/**
+	 * Gets the expression.
+	 * 
+	 * @return The expression.
+	 */
 	public String getExpression() {
 		return expression;
 	}
 	
+	/**
+	 * The ID.
+	 * 
+	 * @return The ID.
+	 */
 	public String getId() {
 		return id;
 	}
 	
+	/**
+	 * The {@link BigDecimal result}.
+	 * 
+	 * @return The {@link BigDecimal result}.
+	 */
 	public BigDecimal getResult() {
 		return result;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -145,10 +225,23 @@ public class EvaluatedExpression {
 		return result;
 	}
 	
+	/**
+	 * Gets if this {@link EvaluatedExpression} is valid.
+	 * <p>
+	 * A valid expression could be evaluated and has a result.
+	 * 
+	 * @return {@code true} if this {@link EvaluatedExpression} is valid.
+	 */
 	public boolean isValid() {
 		return valid;
 	}
 	
+	/**
+	 * Creates a well defined string representation from this
+	 * {@link EvaluatedExpression}.
+	 * 
+	 * @return A well defined string representation.
+	 */
 	@Override
 	public String toString() {
 		if (valid) {
