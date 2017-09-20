@@ -2,9 +2,9 @@
 	<description>
 		A simple calculation application.
 	</description>
-	
+
 	<property name="version" value="1.0" />
-	
+
 	<property name="build" value="build/" />
 	<property name="dist" value="dist/" />
 	<property name="libs" value="libs/" />
@@ -35,13 +35,13 @@
 
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.jmathpaper.Main" />
-			<attribute name="Implementation-Title" value="${ant.project.name}"/>
-			<attribute name="Implementation-Version" value="${version}"/> 
-			<attribute name="Implementation-Vendor" value="Robert 'Bobby' Zenz"/>
+			<attribute name="Implementation-Title" value="${ant.project.name}" />
+			<attribute name="Implementation-Version" value="${version}" />
+			<attribute name="Implementation-Vendor" value="Robert 'Bobby' Zenz" />
 		</manifest>
 	</target>
 
-	<target name="dist" depends="compile" description="Creates the jar and tar archive.">
+	<target name="jar" depends="compile" description="Creates the jar.">
 		<jar jarfile="${dist}/${jar}-${version}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
@@ -57,7 +57,9 @@
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
+	</target>
 
+	<target name="dist" depends="jar" description="Creates the tar archive.">
 		<tar destfile="${dist}/${jar}-${version}.tar" basedir=".">
 			<include name="${libs}/**/*" />
 			<include name="${src}/**/*" />
