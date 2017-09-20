@@ -17,6 +17,7 @@ Dependencies
 Please see the attached license files for details.
 
  * [EvalEx](https://github.com/uklimaschewski/EvalEx/), BSD-like
+ * [Lanterna](https://github.com/mabe02/lanterna), LGPLv3
  * [picocli](https://github.com/remkop/picocli), Apache 2.0
  * [SWT](https://www.eclipse.org/swt/), Eclipse Public License 1.0
 

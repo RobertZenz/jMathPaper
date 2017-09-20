@@ -6,6 +6,7 @@
 	<classpathentry kind="lib" path="libs/swt/linux/swt-4.6.2-debug.jar" sourcepath="libs/swt/linux/swt-4.6.2-sources.zip"/>
 	<classpathentry kind="lib" path="libs/evalex/EvalEx-1.10.jar" sourcepath="libs/evalex/EvalEx-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="libs/picocli/picocli-1.0.1.jar" sourcepath="libs/picocli/picocli-1.0.1-sources.jar"/>
+	<classpathentry kind="lib" path="libs/lanterna/lanterna-3.0.0.jar" sourcepath="libs/lanterna/lanterna-3.0.0-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
