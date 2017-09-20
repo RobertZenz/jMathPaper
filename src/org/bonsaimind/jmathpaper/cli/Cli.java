@@ -12,15 +12,8 @@ public final class Cli {
 	}
 	
 	public final static void run(Arguments arguments) {
-		StringBuilder expression = new StringBuilder();
-		
-		for (String expressionPart : arguments.getExpressions()) {
-			expression.append(" ");
-			expression.append(expressionPart);
-		}
-		
 		Evaluator evaluator = new Evaluator();
-		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression.toString());
+		EvaluatedExpression evaluatedExpression = evaluator.evaluate(arguments.getExpression());
 		
 		if (evaluatedExpression.getErrorMessage() == null) {
 			System.out.print(evaluatedExpression.getId());

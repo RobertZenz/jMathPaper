@@ -29,10 +29,10 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 public class Arguments {
+	private String expression = null;
+	
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
-	
-	private List<String> readonlyExpressions = null;
 	
 	private List<Path> readonlyFiles = null;
 	
@@ -41,12 +41,12 @@ public class Arguments {
 	@Parameters(description = "The files to open, or if the provided parameter is not a file, it is treated as expression to evaluate. If only one expression was provided, no UI is started.", paramLabel = "FILES_OR_EXPRESSION")
 	private String[] unnamedParameters = null;
 	
-	public List<String> getExpressions() {
-		if (readonlyExpressions == null) {
+	public String getExpression() {
+		if (readonlyFiles == null) {
 			separateFilesAndExpressions();
 		}
 		
-		return readonlyExpressions;
+		return expression;
 	}
 	
 	public List<Path> getFiles() {
@@ -74,12 +74,11 @@ public class Arguments {
 	
 	private void separateFilesAndExpressions() {
 		if (unnamedParameters == null || unnamedParameters.length == 0) {
-			readonlyExpressions = Collections.emptyList();
 			readonlyFiles = Collections.emptyList();
 			return;
 		}
 		
-		List<String> expressions = new ArrayList<>();
+		StringBuilder expressionBuilder = new StringBuilder();
 		List<Path> files = new ArrayList<>();
 		
 		for (String parameter : unnamedParameters) {
@@ -88,11 +87,16 @@ public class Arguments {
 			if (Files.exists(path)) {
 				files.add(path);
 			} else {
-				expressions.add(parameter);
+				expressionBuilder.append(parameter);
+				expressionBuilder.append(" ");
 			}
 		}
 		
-		readonlyExpressions = Collections.unmodifiableList(expressions);
+		if (expressionBuilder.length() > 0) {
+			expressionBuilder.deleteCharAt(expressionBuilder.length() - 1);
+			expression = expressionBuilder.toString();
+		}
+		
 		readonlyFiles = Collections.unmodifiableList(files);
 	}
 }

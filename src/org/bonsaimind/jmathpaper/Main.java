@@ -35,7 +35,7 @@ public final class Main {
 			return;
 		}
 		
-		if (!arguments.getExpressions().isEmpty() && arguments.getFiles().isEmpty()) {
+		if (arguments.getExpression() != null && arguments.getFiles().isEmpty()) {
 			Cli.run(arguments);
 			return;
 		}
