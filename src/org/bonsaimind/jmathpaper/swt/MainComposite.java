@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.components;
+package org.bonsaimind.jmathpaper.swt;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.components;
+package org.bonsaimind.jmathpaper.swt;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter;
 
 import org.bonsaimind.jmathpaper.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.Evaluator;
-import org.bonsaimind.jmathpaper.swt.StretchedColumnHelper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;

@@ -17,7 +17,7 @@
 
 package org.bonsaimind.jmathpaper;
 
-import org.bonsaimind.jmathpaper.components.MainComposite;
+import org.bonsaimind.jmathpaper.swt.MainComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
