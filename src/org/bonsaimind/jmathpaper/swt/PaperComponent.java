@@ -88,7 +88,7 @@ public class PaperComponent extends SashForm {
 		notesComposite = new Composite(this, SWT.NONE);
 		notesComposite.setLayout(new GridLayout(1, false));
 		
-		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI);
+		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
