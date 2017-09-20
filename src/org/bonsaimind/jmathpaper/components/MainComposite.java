@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper.components;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -135,8 +136,8 @@ public class MainComposite extends Composite {
 		getDisplay().addFilter(SWT.Traverse, this::onTraverse);
 	}
 	
-	public void init(String[] fileNames) {
-		if (fileNames != null && fileNames.length > 0) {
+	public void init(List<String> fileNames) {
+		if (fileNames != null && !fileNames.isEmpty()) {
 			for (String fileName : fileNames) {
 				open(fileName);
 			}

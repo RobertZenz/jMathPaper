@@ -24,12 +24,21 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import picocli.CommandLine;
+
 public final class Main {
 	private Main() {
 		// No instancing required.
 	}
 	
-	public static final void main(String[] arguments) {
+	public static final void main(String[] args) {
+		Arguments arguments = CommandLine.populateCommand(new Arguments(), args);
+		
+		if (arguments.isHelpRequested()) {
+			CommandLine.usage(arguments, System.out);
+			return;
+		}
+		
 		Display display = new Display();
 		
 		GridLayout mainLayout = new GridLayout(1, true);
@@ -45,7 +54,7 @@ public final class Main {
 		
 		mainWindow.open();
 		
-		mainContent.init(arguments);
+		mainContent.init(arguments.getUnnamedParameters());
 		
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {
