@@ -28,13 +28,13 @@ Usage
 When you start jMathPaper you are greeted with a (currently empty) list of
 previous expressions and the input box to enter a new one. You can enter any
 expression you want to evaluate. Additionally, there is a larger input are to
-the right which allows you to take notes. 
+the right which allows you to take notes.
 
 You can save and load papers from the menu, they are stored in a very simple
 cleartext format, so it is easy to create and edit them without jMathPaper.
+Examples can be found in the examples directory.
 
-For example, let us start with something simple and enter a few simple
-expressions:
+Let us start with something simple and enter a few simple expressions:
 
     ID                        Expression    Result
     ----------------------------------------------

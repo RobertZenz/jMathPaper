@@ -1,0 +1,12 @@
+#1	1+1	2
+#2	#1+5	7
+length	length=5	5
+width	width=5	5
+depth	depth=5	5
+volume	volume=length*width*depth	125
+
+Referencing previous values is one of the main features of JMathPaper.
+
+Previous results can be referenced by their ID. A custom ID can be assigned by having a leading name followed by an equals sign before the expression.
+
+Previous results without a custom ID can be referenced by a number sign (#) followed bey their number.

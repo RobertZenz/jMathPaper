@@ -1,0 +1,6 @@
+#1	sin(45)	0.7071068
+#2	0xff - 0xcc	51
+#7	0b1010 - 0b11	7
+#8	0o777 - 0o666	73
+
+Some "advanced" functionality is the usage of pre-defined functions and using using numbers of a different base.
