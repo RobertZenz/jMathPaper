@@ -95,5 +95,4 @@ public class Arguments {
 		readonlyExpressions = Collections.unmodifiableList(expressions);
 		readonlyFiles = Collections.unmodifiableList(files);
 	}
-	
 }
