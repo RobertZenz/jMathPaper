@@ -15,10 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper;
+package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 
+import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.junit.Assert;
 import org.junit.Test;
 

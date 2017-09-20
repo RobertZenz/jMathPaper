@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import org.bonsaimind.jmathpaper.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.Evaluator;
+import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.Evaluator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
