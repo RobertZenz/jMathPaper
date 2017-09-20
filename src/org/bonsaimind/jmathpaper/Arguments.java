@@ -17,6 +17,10 @@
 
 package org.bonsaimind.jmathpaper;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +32,30 @@ public class Arguments {
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
 	
+	private List<String> readonlyExpressions = null;
+	
+	private List<Path> readonlyFiles = null;
+	
 	private List<String> readonlyUnnamedParameters = null;
 	
-	@Parameters(description = "The files to open.", paramLabel = "FILES")
+	@Parameters(description = "The files to open, or if the provided parameter is not a file, it is treated as expression to evaluate. If only one expression was provided, no UI is started.", paramLabel = "FILES_OR_EXPRESSION")
 	private String[] unnamedParameters = null;
+	
+	public List<String> getExpressions() {
+		if (readonlyExpressions == null) {
+			separateFilesAndExpressions();
+		}
+		
+		return readonlyExpressions;
+	}
+	
+	public List<Path> getFiles() {
+		if (readonlyFiles == null) {
+			separateFilesAndExpressions();
+		}
+		
+		return readonlyFiles;
+	}
 	
 	public List<String> getUnnamedParameters() {
 		if (readonlyUnnamedParameters == null) {
@@ -46,6 +70,30 @@ public class Arguments {
 	
 	public boolean isHelpRequested() {
 		return helpRequested;
+	}
+	
+	private void separateFilesAndExpressions() {
+		if (unnamedParameters == null || unnamedParameters.length == 0) {
+			readonlyExpressions = Collections.emptyList();
+			readonlyFiles = Collections.emptyList();
+			return;
+		}
+		
+		List<String> expressions = new ArrayList<>();
+		List<Path> files = new ArrayList<>();
+		
+		for (String parameter : unnamedParameters) {
+			Path path = Paths.get(parameter);
+			
+			if (Files.exists(path)) {
+				files.add(path);
+			} else {
+				expressions.add(parameter);
+			}
+		}
+		
+		readonlyExpressions = Collections.unmodifiableList(expressions);
+		readonlyFiles = Collections.unmodifiableList(files);
 	}
 	
 }

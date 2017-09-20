@@ -17,6 +17,7 @@
 
 package org.bonsaimind.jmathpaper;
 
+import org.bonsaimind.jmathpaper.cli.Cli;
 import org.bonsaimind.jmathpaper.swt.MainComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,6 +37,11 @@ public final class Main {
 		
 		if (arguments.isHelpRequested()) {
 			CommandLine.usage(arguments, System.out);
+			return;
+		}
+		
+		if (!arguments.getExpressions().isEmpty() && arguments.getFiles().isEmpty()) {
+			Cli.run(arguments);
 			return;
 		}
 		
