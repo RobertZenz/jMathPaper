@@ -31,13 +31,19 @@ public final class Cli {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(arguments.getExpression());
 		
 		if (evaluatedExpression.getErrorMessage() == null) {
-			System.out.print(evaluatedExpression.getId());
-			System.out.print("\t");
-			System.out.print(evaluatedExpression.getExpression());
-			System.out.print("\t");
-			System.out.print("= ");
+			if (!arguments.isPrintResultOnly()) {
+				System.out.print(evaluatedExpression.getId());
+				System.out.print("\t");
+				System.out.print(evaluatedExpression.getExpression());
+				System.out.print("\t");
+				System.out.print("= ");
+			}
+			
 			System.out.print(evaluatedExpression.getResult().toPlainString());
-			System.out.println();
+			
+			if (!arguments.isNoNewline()) {
+				System.out.println();
+			}
 		} else {
 			System.err.println(evaluatedExpression.getErrorMessage());
 		}

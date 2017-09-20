@@ -34,6 +34,12 @@ public class Arguments {
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
 	
+	@Option(names = { "-n", "--no-newline" }, description = "Omit a trailing new line when printing things.")
+	private boolean noNewline = false;
+	
+	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
+	private boolean printResultOnly = false;
+	
 	private List<Path> readonlyFiles = null;
 	
 	private List<String> readonlyUnnamedParameters = null;
@@ -70,6 +76,14 @@ public class Arguments {
 	
 	public boolean isHelpRequested() {
 		return helpRequested;
+	}
+	
+	public boolean isNoNewline() {
+		return noNewline;
+	}
+	
+	public boolean isPrintResultOnly() {
+		return printResultOnly;
 	}
 	
 	private void separateFilesAndExpressions() {
