@@ -118,6 +118,7 @@ public class EvaluatedExpression {
 			evaluatedExpression.result = new BigDecimal(splitted[2]).stripTrailingZeros();
 			evaluatedExpression.valid = true;
 		} catch (NumberFormatException e) {
+			evaluatedExpression.result = BigDecimal.ZERO;
 			evaluatedExpression.errorMessage = splitted[2];
 			evaluatedExpression.valid = false;
 		}
