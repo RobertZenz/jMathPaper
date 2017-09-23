@@ -47,14 +47,10 @@ public final class Cli {
 		
 		if (evaluatedExpression.getErrorMessage() == null) {
 			if (!arguments.isPrintResultOnly()) {
-				System.out.print(evaluatedExpression.getId());
-				System.out.print("\t");
-				System.out.print(evaluatedExpression.getExpression());
-				System.out.print("\t");
-				System.out.print("= ");
+				System.out.println(paper.toString());
+			} else {
+				System.out.print(evaluatedExpression.getResult().toPlainString());
 			}
-			
-			System.out.print(evaluatedExpression.getResult().toPlainString());
 			
 			if (!arguments.isNoNewline()) {
 				System.out.println();
