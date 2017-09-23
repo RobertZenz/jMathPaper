@@ -218,11 +218,11 @@ public class Paper {
 			builder.append('\n');
 		}
 		
-		builder.append('\n');
-		
-		builder.append(notes);
-		
-		builder.append('\n');
+		if (notes != null && notes.trim().length() > 0) {
+			builder.append('\n');
+			builder.append(notes);
+			builder.append('\n');
+		}
 		
 		return builder.toString();
 	}
