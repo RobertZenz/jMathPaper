@@ -91,13 +91,18 @@ public class PaperComponent extends SashForm {
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
+	public void clear() {
+		paper.clear();
+		expressionsTable.removeAll();
+		
+		resetInput();
+	}
+	
 	public void evaluate(String expression) {
 		EvaluatedExpression evaluatedExpression = paper.evaluate(expression);
 		
 		if (evaluatedExpression == null) {
-			expressionsTable.removeAll();
-			
-			resetInput();
+			clear();
 		} else if (evaluatedExpression.isValid()) {
 			convertEvaluatedExpressionToTableItem(evaluatedExpression);
 			

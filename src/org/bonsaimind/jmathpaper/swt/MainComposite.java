@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 public class MainComposite extends Composite {
+	private MenuItem clearMenuItem = null;
 	private MenuItem closeAllMenuItem = null;
 	private MenuItem closeMenuItem = null;
 	private CTabFolder cTabFolder = null;
@@ -100,6 +101,13 @@ public class MainComposite extends Composite {
 		
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		
+		saveAsMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		saveAsMenuItem.setText("Clea&r");
+		saveAsMenuItem.setToolTipText("Clears the current paper.");
+		saveAsMenuItem.addListener(SWT.Selection, this::onClearPushed);
+		
+		new MenuItem(fileMenu, SWT.SEPARATOR);
+		
 		MenuItem quitMenuItem = new MenuItem(fileMenu, SWT.PUSH);
 		quitMenuItem.setAccelerator(SWT.CTRL | 'Q');
 		quitMenuItem.setText("&Quit\tCtrl+Q");
@@ -161,6 +169,15 @@ public class MainComposite extends Composite {
 		if (arguments.getExpression() != null) {
 			PaperComponent paperComponent = (PaperComponent)cTabFolder.getSelection().getControl();
 			paperComponent.evaluate(arguments.getExpression());
+		}
+	}
+	
+	private void onClearPushed(Event event) {
+		if (cTabFolder.getSelection() != null) {
+			CTabItem cTabItem = cTabFolder.getSelection();
+			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			
+			paperComponent.clear();
 		}
 	}
 	
