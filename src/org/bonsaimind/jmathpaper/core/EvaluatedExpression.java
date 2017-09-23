@@ -104,26 +104,55 @@ public class EvaluatedExpression {
 			return null;
 		}
 		
-		String[] splitted = string.split("[\t ]+");
+		String trimmedString = string.trim();
 		
-		if (splitted.length < 3) {
+		int firstSeparatorIndex = trimmedString.indexOf(" ");
+		if (firstSeparatorIndex < 0) {
+			return null;
+		}
+		
+		int lastSeparatorIndex = trimmedString.lastIndexOf("=");
+		if (lastSeparatorIndex < 0) {
 			return null;
 		}
 		
 		EvaluatedExpression evaluatedExpression = new EvaluatedExpression();
-		evaluatedExpression.id = splitted[0];
-		evaluatedExpression.expression = splitted[1];
+		evaluatedExpression.id = trimmedString.substring(0, firstSeparatorIndex).trim();
+		evaluatedExpression.expression = trimmedString.substring(firstSeparatorIndex + 1, lastSeparatorIndex).trim();
+		
+		String result = trimmedString.substring(lastSeparatorIndex + 1).trim();
 		
 		try {
-			evaluatedExpression.result = new BigDecimal(splitted[2]).stripTrailingZeros();
+			evaluatedExpression.result = new BigDecimal(result).stripTrailingZeros();
 			evaluatedExpression.valid = true;
 		} catch (NumberFormatException e) {
 			evaluatedExpression.result = BigDecimal.ZERO;
-			evaluatedExpression.errorMessage = splitted[2];
+			evaluatedExpression.errorMessage = result;
 			evaluatedExpression.valid = false;
 		}
 		
 		return evaluatedExpression;
+	}
+	
+	/**
+	 * A small helper function to add a padded {@link String} to a
+	 * {@link StringBuilder} .
+	 * 
+	 * @param builder The {@link StringBuilder} to append to.
+	 * @param value The {@link String} to append.
+	 * @param padLeft The amount of padding on the left.
+	 * @param padRight The amount of padding on the right.
+	 */
+	private static final void appendPadded(StringBuilder builder, String value, int padLeft, int padRight) {
+		for (int counter = 0; counter < padLeft - value.length(); counter++) {
+			builder.append(" ");
+		}
+		
+		builder.append(value);
+		
+		for (int counter = 0; counter < padRight - value.length(); counter++) {
+			builder.append(" ");
+		}
 	}
 	
 	/**
@@ -245,14 +274,32 @@ public class EvaluatedExpression {
 	 */
 	@Override
 	public String toString() {
+		return toString(0, 0, 0);
+	}
+	
+	/**
+	 * Creates a well defined string representation from this
+	 * {@link EvaluatedExpression}.
+	 * 
+	 * @param idColumnWidth The width of the column for the ID.
+	 * @param expressionColumnWidth The width of the column for the expression.
+	 * @param resultColumnWidth The width of the column for the result.
+	 * @return A well defined string representation.
+	 */
+	public String toString(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth) {
+		StringBuilder builder = new StringBuilder();
+		
+		appendPadded(builder, id, 0, idColumnWidth);
+		builder.append(" ");
+		appendPadded(builder, expression, expressionColumnWidth, 0);
+		builder.append(" = ");
+		
 		if (valid) {
-			return id + "\t"
-					+ expression + "\t"
-					+ result.toPlainString();
+			appendPadded(builder, result.toPlainString(), resultColumnWidth, 0);
 		} else {
-			return id + "\t"
-					+ expression + "\t"
-					+ errorMessage;
+			builder.append(errorMessage);
 		}
+		
+		return builder.toString();
 	}
 }

@@ -31,15 +31,15 @@ public class TestEvaluatedExpression {
 		
 		Assert.assertEquals(
 				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
-				EvaluatedExpression.fromString("1\t1+1\t2"));
+				EvaluatedExpression.fromString("1 1+1 = 2"));
 		
 		Assert.assertEquals(
 				new EvaluatedExpression("1", "1+1", "error"),
-				EvaluatedExpression.fromString("1\t1+1\terror"));
+				EvaluatedExpression.fromString("1 1+1 = error"));
 		
 		Assert.assertEquals(
 				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
-				EvaluatedExpression.fromString("1   \t  \t  1+1 \t    2"));
+				EvaluatedExpression.fromString("1   \t  \t  1+1 \t =    2"));
 	}
 	
 	@Test
@@ -54,11 +54,11 @@ public class TestEvaluatedExpression {
 	@Test
 	public void testToString() {
 		Assert.assertEquals(
-				"1\t1+1\t2",
+				"1 1+1 = 2",
 				new EvaluatedExpression("1", "1+1", new BigDecimal("2")).toString());
 		
 		Assert.assertEquals(
-				"1\t1+1\terror",
+				"1 1+1 = error",
 				new EvaluatedExpression("1", "1+1", "error").toString());
 	}
 }

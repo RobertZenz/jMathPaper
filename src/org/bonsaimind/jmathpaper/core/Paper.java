@@ -193,10 +193,24 @@ public class Paper {
 	
 	@Override
 	public String toString() {
+		int idLength = 0;
+		int expressionLength = 0;
+		int resultLength = 0;
+		
+		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+			idLength = Math.max(idLength, evaluatedExpression.getId().length());
+			expressionLength = Math.max(expressionLength, evaluatedExpression.getExpression().length());
+			resultLength = Math.max(resultLength, evaluatedExpression.getResult().toPlainString().length());
+		}
+		
+		if ((idLength + expressionLength + resultLength + 4) < 60) {
+			expressionLength = 60 - 4 - idLength - resultLength;
+		}
+		
 		StringBuilder builder = new StringBuilder();
 		
 		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			builder.append(evaluatedExpression.toString());
+			builder.append(evaluatedExpression.toString(idLength, expressionLength, resultLength));
 			builder.append('\n');
 		}
 		
