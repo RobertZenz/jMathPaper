@@ -20,6 +20,7 @@ package org.bonsaimind.jmathpaper.cli;
 import java.io.IOException;
 
 import org.bonsaimind.jmathpaper.Arguments;
+import org.bonsaimind.jmathpaper.Configuration;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
 
@@ -31,29 +32,36 @@ public final class Cli {
 	public final static void run(Arguments arguments) {
 		Paper paper = new Paper();
 		
-		if (arguments.getContext() != null) {
-			try {
+		try {
+			if (arguments.getContext() != null) {
 				paper.loadFrom(arguments.getContext());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
+			} else {
+				paper.loadFrom(Configuration.getGlobalPaperFile());
 			}
-		} else {
-			// TODO Load the global paper.
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
 		}
 		
 		EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
 		
 		if (evaluatedExpression.getErrorMessage() == null) {
 			if (!arguments.isPrintResultOnly()) {
-				System.out.println(paper.toString());
+				System.out.print(paper.toString().trim());
 			} else {
 				System.out.print(evaluatedExpression.getResult().toPlainString());
 			}
 			
 			if (!arguments.isNoNewline()) {
 				System.out.println();
+			}
+			
+			try {
+				paper.store();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		} else {
 			System.err.println(evaluatedExpression.getErrorMessage());
