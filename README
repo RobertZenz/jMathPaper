@@ -90,6 +90,10 @@ Additionally, we can also enter numbers in hex, octal or binary:
     octal                             octal=0o77 =  63
     binary                           binary=0b11 =   3
 
+There are also a few commands which can be used:
+
+    clean/clear/reset  Clears the current paper.
+
 
 Technical information
 ---------------------
