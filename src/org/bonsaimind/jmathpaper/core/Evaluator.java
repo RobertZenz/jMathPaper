@@ -76,25 +76,21 @@ public class Evaluator {
 		EvaluatedExpression evaluatedExpression = null;
 		
 		try {
+			BigDecimal result = evaluateInternal(processedExpression);
+			
 			if (id == null) {
 				id = getNextId();
 			}
 			
-			evaluatedExpression = new EvaluatedExpression(
-					id,
-					expression,
-					evaluateInternal(processedExpression));
+			variables.put(id, result);
 			
-			variables.put(id, evaluatedExpression.getResult());
+			return new EvaluatedExpression(id, expression, result);
 		} catch (Throwable th) {
-			evaluatedExpression = new EvaluatedExpression(
+			return new EvaluatedExpression(
 					"",
 					expression,
 					th.getMessage());
 		}
-		
-		return evaluatedExpression;
-		
 	}
 	
 	public void reset() {
