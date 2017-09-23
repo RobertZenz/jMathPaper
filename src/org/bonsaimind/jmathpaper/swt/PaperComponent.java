@@ -94,7 +94,11 @@ public class PaperComponent extends SashForm {
 	public void evaluate(String expression) {
 		EvaluatedExpression evaluatedExpression = paper.evaluate(expression);
 		
-		if (evaluatedExpression.isValid()) {
+		if (evaluatedExpression == null) {
+			expressionsTable.removeAll();
+			
+			resetInput();
+		} else if (evaluatedExpression.isValid()) {
 			convertEvaluatedExpressionToTableItem(evaluatedExpression);
 			
 			resetInput();

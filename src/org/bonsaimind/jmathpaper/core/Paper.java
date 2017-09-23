@@ -30,6 +30,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class Paper {
+	public static final String CLEAN_COMMAND = "clean";
+	public static final String CLEAR_COMMAND = "clear";
+	public static final String RESET_COMMAND = "reset";
 	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
 	protected Path file = null;
@@ -38,6 +41,11 @@ public class Paper {
 	
 	public Paper() {
 		super();
+	}
+	
+	public void clear() {
+		evaluatedExpressions.clear();
+		evaluator.reset();
 	}
 	
 	@Override
@@ -78,6 +86,13 @@ public class Paper {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) {
+		if (expression.equalsIgnoreCase(CLEAN_COMMAND)
+				|| expression.equalsIgnoreCase(CLEAR_COMMAND)
+				|| expression.equalsIgnoreCase(RESET_COMMAND)) {
+			clear();
+			return null;
+		}
+		
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
 		if (evaluatedExpression.isValid()) {
@@ -89,8 +104,7 @@ public class Paper {
 	}
 	
 	public void fromString(List<String> string) {
-		evaluatedExpressions.clear();
-		evaluator.reset();
+		clear();
 		
 		StringBuilder notesBuilder = new StringBuilder();
 		boolean notesReached = false;

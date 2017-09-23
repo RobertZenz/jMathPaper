@@ -46,7 +46,16 @@ public final class Cli {
 		
 		EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
 		
-		if (evaluatedExpression.getErrorMessage() == null) {
+		try {
+			paper.store();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (evaluatedExpression == null) {
+			// Nothing to do here, everything is oh-kay.
+		} else if (evaluatedExpression.getErrorMessage() == null) {
 			if (!arguments.isPrintResultOnly()) {
 				System.out.print(paper.toString().trim());
 			} else {
@@ -55,13 +64,6 @@ public final class Cli {
 			
 			if (!arguments.isNoNewline()) {
 				System.out.println();
-			}
-			
-			try {
-				paper.store();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		} else {
 			System.err.println(evaluatedExpression.getErrorMessage());
