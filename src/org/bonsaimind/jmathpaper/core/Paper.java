@@ -33,6 +33,7 @@ public class Paper {
 	public static final String CLEAN_COMMAND = "clean";
 	public static final String CLEAR_COMMAND = "clear";
 	public static final String RESET_COMMAND = "reset";
+	private static final int DEFAULT_WIDTH = 50;
 	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
 	protected Path file = null;
@@ -221,8 +222,8 @@ public class Paper {
 			resultLength = Math.max(resultLength, evaluatedExpression.getResult().toPlainString().length());
 		}
 		
-		if ((idLength + expressionLength + resultLength + 4) < 60) {
-			expressionLength = 60 - 4 - idLength - resultLength;
+		if ((idLength + expressionLength + resultLength + 4) < DEFAULT_WIDTH) {
+			expressionLength = DEFAULT_WIDTH - 4 - idLength - resultLength;
 		}
 		
 		StringBuilder builder = new StringBuilder();
