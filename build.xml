@@ -22,7 +22,7 @@
 		<delete dir="${dist}" />
 	</target>
 
-	<target name="init" depends="clean" description="Sets up the build directories.">
+	<target name="init" description="Sets up the build directories.">
 		<mkdir dir="${build}" />
 		<mkdir dir="${dist}" />
 	</target>
