@@ -45,7 +45,7 @@ public final class Swt {
 		
 		mainWindow.open();
 		
-		mainContent.init(arguments.getUnnamedParameters());
+		mainContent.init(arguments);
 		
 		while (!mainWindow.isDisposed()) {
 			if (!display.readAndDispatch()) {

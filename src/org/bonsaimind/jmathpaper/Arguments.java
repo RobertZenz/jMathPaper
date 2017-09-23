@@ -17,19 +17,26 @@
 
 package org.bonsaimind.jmathpaper;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 public class Arguments {
+	@Option(names = { "-c", "--context" }, paramLabel = "FILE", arity = "1", description = "The paper to use as context for a given expression.")
+	private String context = null;
+	
+	private Path contextPath = null;
+	
 	private String expression = null;
+	
+	@Parameters(paramLabel = "EXPRESSION", description = "The expression to evaluate. By default the expression will be evaluated on the command line, no UI will be started.")
+	private List<String> expressionParts = null;
+	
+	@Option(names = { "-o", "--open" }, paramLabel = "FILE", description = "Opens the given paper. This starts the UI by default.")
+	private List<String> files = null;
 	
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
@@ -40,38 +47,40 @@ public class Arguments {
 	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
 	private boolean printResultOnly = false;
 	
-	private List<Path> readonlyFiles = null;
+	@Option(names = { "--version" }, description = "Prints the version information.")
+	private boolean versionRequested = false;
 	
-	private List<String> readonlyUnnamedParameters = null;
-	
-	@Parameters(description = "The files to open, or if the provided parameter is not a file, it is treated as expression to evaluate. If only one expression was provided, no UI is started.", paramLabel = "FILES_OR_EXPRESSION")
-	private String[] unnamedParameters = null;
+	public Path getContext() {
+		if (contextPath == null && context != null) {
+			contextPath = Paths.get(context);
+		}
+		
+		return contextPath;
+	}
 	
 	public String getExpression() {
-		if (readonlyFiles == null) {
-			separateFilesAndExpressions();
+		if (expression == null
+				&& expressionParts != null
+				&& !expressionParts.isEmpty()) {
+			StringBuilder expressionBuilder = new StringBuilder();
+			
+			for (String expressionPart : expressionParts) {
+				expressionBuilder.append(expressionPart);
+				expressionBuilder.append(" ");
+			}
+			
+			expression = expressionBuilder.toString().trim();
 		}
 		
 		return expression;
 	}
 	
-	public List<Path> getFiles() {
-		if (readonlyFiles == null) {
-			separateFilesAndExpressions();
-		}
-		
-		return readonlyFiles;
+	public List<String> getFiles() {
+		return files;
 	}
 	
-	public List<String> getUnnamedParameters() {
-		if (readonlyUnnamedParameters == null) {
-			if (unnamedParameters == null || unnamedParameters.length == 0) {
-			} else {
-				readonlyUnnamedParameters = Collections.unmodifiableList(Arrays.asList(unnamedParameters));
-			}
-		}
-		
-		return readonlyUnnamedParameters;
+	public boolean hasFiles() {
+		return files != null && !files.isEmpty();
 	}
 	
 	public boolean isHelpRequested() {
@@ -86,31 +95,7 @@ public class Arguments {
 		return printResultOnly;
 	}
 	
-	private void separateFilesAndExpressions() {
-		if (unnamedParameters == null || unnamedParameters.length == 0) {
-			readonlyFiles = Collections.emptyList();
-			return;
-		}
-		
-		StringBuilder expressionBuilder = new StringBuilder();
-		List<Path> files = new ArrayList<>();
-		
-		for (String parameter : unnamedParameters) {
-			Path path = Paths.get(parameter);
-			
-			if (Files.exists(path)) {
-				files.add(path);
-			} else {
-				expressionBuilder.append(parameter);
-				expressionBuilder.append(" ");
-			}
-		}
-		
-		if (expressionBuilder.length() > 0) {
-			expressionBuilder.deleteCharAt(expressionBuilder.length() - 1);
-			expression = expressionBuilder.toString();
-		}
-		
-		readonlyFiles = Collections.unmodifiableList(files);
+	public boolean isVersionRequested() {
+		return versionRequested;
 	}
 }

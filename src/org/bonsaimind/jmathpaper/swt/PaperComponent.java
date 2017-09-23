@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper.swt;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
@@ -92,8 +93,29 @@ public class PaperComponent extends SashForm {
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 	}
 	
+	public void evaluate(String expression) {
+		EvaluatedExpression evaluatedExpression = paper.evaluate(expression);
+		
+		if (evaluatedExpression.isValid()) {
+			convertEvaluatedExpressionToTableItem(evaluatedExpression);
+			
+			resetInput();
+			
+			if (!cTabItem.getText().startsWith("*")) {
+				cTabItem.setText("*" + cTabItem.getText());
+			}
+		} else {
+			inputText.setText(expression);
+			errorLabel.setText(evaluatedExpression.getErrorMessage());
+		}
+	}
+	
 	public File getFile() {
 		return file;
+	}
+	
+	public Paper getPaper() {
+		return paper;
 	}
 	
 	public boolean isEmpty() {
@@ -104,8 +126,8 @@ public class PaperComponent extends SashForm {
 		return getMaximizedControl() == null;
 	}
 	
-	public void load(File file) throws IOException {
-		paper.loadFrom(file.toPath());
+	public void load(Path file) throws IOException {
+		paper.loadFrom(file);
 		
 		expressionsTable.clearAll();
 		
@@ -201,19 +223,7 @@ public class PaperComponent extends SashForm {
 	private void onInputTextReturnKey(Event event) {
 		if (event.detail == SWT.TRAVERSE_RETURN) {
 			if (inputText.getText().length() > 0) {
-				EvaluatedExpression evaluatedExpression = paper.evaluate(inputText.getText());
-				
-				if (evaluatedExpression.isValid()) {
-					convertEvaluatedExpressionToTableItem(evaluatedExpression);
-					
-					resetInput();
-					
-					if (!cTabItem.getText().startsWith("*")) {
-						cTabItem.setText("*" + cTabItem.getText());
-					}
-				} else {
-					errorLabel.setText(evaluatedExpression.getErrorMessage());
-				}
+				evaluate(inputText.getText());
 			} else {
 				resetInput();
 			}

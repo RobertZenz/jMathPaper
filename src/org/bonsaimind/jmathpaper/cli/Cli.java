@@ -17,9 +17,11 @@
 
 package org.bonsaimind.jmathpaper.cli;
 
+import java.io.IOException;
+
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.Evaluator;
+import org.bonsaimind.jmathpaper.core.Paper;
 
 public final class Cli {
 	private Cli() {
@@ -27,8 +29,21 @@ public final class Cli {
 	}
 	
 	public final static void run(Arguments arguments) {
-		Evaluator evaluator = new Evaluator();
-		EvaluatedExpression evaluatedExpression = evaluator.evaluate(arguments.getExpression());
+		Paper paper = new Paper();
+		
+		if (arguments.getContext() != null) {
+			try {
+				paper.loadFrom(arguments.getContext());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return;
+			}
+		} else {
+			// TODO Load the global paper.
+		}
+		
+		EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
 		
 		if (evaluatedExpression.getErrorMessage() == null) {
 			if (!arguments.isPrintResultOnly()) {

@@ -35,7 +35,12 @@ public final class Main {
 			return;
 		}
 		
-		if (arguments.getExpression() != null && arguments.getFiles().isEmpty()) {
+		if (arguments.isVersionRequested()) {
+			System.out.println("jMathPaper 1.0");
+			return;
+		}
+		
+		if (arguments.getExpression() != null && !arguments.hasFiles()) {
 			Cli.run(arguments);
 			return;
 		}

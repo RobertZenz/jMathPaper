@@ -130,6 +130,10 @@ public class Paper {
 		return readonlyEvaluatedExpression;
 	}
 	
+	public Path getFile() {
+		return file;
+	}
+	
 	public String getNotes() {
 		return notes;
 	}

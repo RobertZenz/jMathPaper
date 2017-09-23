@@ -19,8 +19,12 @@ package org.bonsaimind.jmathpaper.swt;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import org.bonsaimind.jmathpaper.Arguments;
+import org.bonsaimind.jmathpaper.core.Paper;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -136,11 +140,15 @@ public class MainComposite extends Composite {
 		getDisplay().addFilter(SWT.Traverse, this::onTraverse);
 	}
 	
-	public void init(List<String> fileNames) {
-		if (fileNames != null && !fileNames.isEmpty()) {
-			for (String fileName : fileNames) {
+	public void init(Arguments arguments) {
+		if (arguments.hasFiles()) {
+			for (String fileName : arguments.getFiles()) {
 				open(fileName);
 			}
+		}
+		
+		if (arguments.getContext() != null) {
+			open(arguments.getContext());
 		}
 		
 		if (cTabFolder.getItemCount() == 0) {
@@ -149,6 +157,11 @@ public class MainComposite extends Composite {
 		
 		if (cTabFolder.getSelection() != null) {
 			cTabFolder.getSelection().getControl().setFocus();
+		}
+		
+		if (arguments.getExpression() != null) {
+			PaperComponent paperComponent = (PaperComponent)cTabFolder.getSelection().getControl();
+			paperComponent.evaluate(arguments.getExpression());
 		}
 	}
 	
@@ -298,23 +311,30 @@ public class MainComposite extends Composite {
 		}
 	}
 	
-	private void open(File file) {
+	private void open(Path file) {
 		if (cTabFolder.getItemCount() == 1
 				&& ((PaperComponent)cTabFolder.getSelection().getControl()).isEmpty()) {
 			onClosePushed(null);
 		}
 		
+		for (CTabItem cTabItem : cTabFolder.getItems()) {
+			PaperComponent paperComponent = ((PaperComponent)cTabItem.getControl());
+			Paper paper = paperComponent.getPaper();
+			
+			if (file.equals(paper.getFile())) {
+				cTabFolder.setSelection(cTabItem);
+				return;
+			}
+		}
+		
 		onNewPushed(null);
 		
 		CTabItem cTabItem = cTabFolder.getSelection();
-		cTabItem.setText(file.getName());
-		cTabItem.setToolTipText(file.getAbsolutePath());
-		
-		PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
-		paperComponent.setFile(file);
+		cTabItem.setText(file.getFileName().toString());
+		cTabItem.setToolTipText(file.toAbsolutePath().toString());
 		
 		try {
-			paperComponent.load(file);
+			((PaperComponent)cTabItem.getControl()).load(file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -323,9 +343,9 @@ public class MainComposite extends Composite {
 	
 	private void open(String filePath) {
 		if (filePath != null) {
-			File file = new File(filePath);
+			Path file = Paths.get(filePath);
 			
-			if (file.exists()) {
+			if (Files.isRegularFile(file)) {
 				open(file);
 			}
 		}
