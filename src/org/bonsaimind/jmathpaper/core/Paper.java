@@ -167,6 +167,10 @@ public class Paper {
 		fromString(Files.readAllLines(file, StandardCharsets.UTF_8));
 	}
 	
+	public void setFile(Path file) {
+		this.file = file;
+	}
+	
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}

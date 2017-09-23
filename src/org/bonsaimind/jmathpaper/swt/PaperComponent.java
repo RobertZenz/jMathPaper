@@ -17,7 +17,6 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -42,7 +41,6 @@ public class PaperComponent extends SashForm {
 	private Label errorLabel = null;
 	private Composite expressionsComposite = null;
 	private Table expressionsTable = null;
-	private File file = null;
 	private Text inputText = null;
 	private Composite notesComposite = null;
 	private Text notesText = null;
@@ -110,10 +108,6 @@ public class PaperComponent extends SashForm {
 		}
 	}
 	
-	public File getFile() {
-		return file;
-	}
-	
 	public Paper getPaper() {
 		return paper;
 	}
@@ -138,13 +132,9 @@ public class PaperComponent extends SashForm {
 		notesText.setText(paper.getNotes());
 	}
 	
-	public void save(File file) throws IOException {
+	public void save(Path file) throws IOException {
 		paper.setNotes(notesText.getText());
-		paper.storeTo(file.toPath());
-	}
-	
-	public void setFile(File file) {
-		this.file = file;
+		paper.storeTo(file);
 	}
 	
 	@Override

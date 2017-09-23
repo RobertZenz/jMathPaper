@@ -17,7 +17,6 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -246,13 +245,12 @@ public class MainComposite extends Composite {
 		if (cTabFolder.getSelection() != null) {
 			CTabItem cTabItem = cTabFolder.getSelection();
 			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			Paper paper = paperComponent.getPaper();
 			
 			FileDialog fileDialog = new FileDialog(getShell(), SWT.SAVE);
 			
-			if (paperComponent.getFile() != null) {
-				File file = paperComponent.getFile();
-				
-				fileDialog.setFileName(file.getName());
+			if (paper.getFile() != null) {
+				fileDialog.setFileName(paper.getFile().getFileName().toString());
 			} else {
 				fileDialog.setFileName("new-paper.jmathpaper");
 			}
@@ -262,11 +260,7 @@ public class MainComposite extends Composite {
 			String filePath = fileDialog.open();
 			
 			if (filePath != null) {
-				File file = new File(filePath);
-				
-				paperComponent.setFile(file);
-				cTabItem.setText(file.getName());
-				cTabItem.setToolTipText(file.getAbsolutePath());
+				paper.setFile(Paths.get(filePath));
 				onSavePushed(null);
 			}
 		}
@@ -276,12 +270,13 @@ public class MainComposite extends Composite {
 		if (cTabFolder.getSelection() != null) {
 			CTabItem cTabItem = cTabFolder.getSelection();
 			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
+			Paper paper = paperComponent.getPaper();
 			
-			if (paperComponent.getFile() != null) {
+			if (paper.getFile() != null) {
 				try {
-					paperComponent.save(paperComponent.getFile());
-					cTabItem.setText(paperComponent.getFile().getName());
-					cTabItem.setToolTipText(paperComponent.getFile().getAbsolutePath());
+					paperComponent.save(paper.getFile());
+					cTabItem.setText(paper.getFile().getFileName().toString());
+					cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
