@@ -29,6 +29,9 @@ import com.udojava.evalex.Expression;
 
 public class Evaluator {
 	private static final Pattern BINARY_NUMBER = Pattern.compile("(^|[^0-9])0b(?<VALUE>[01]+)($|[^.,])");
+	private static final String COMMENT_INLINE_END = "*/";
+	private static final String COMMENT_INLINE_START = "/*";
+	private static final String COMMENT_START = "//";
 	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
 	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>.*)$");
 	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
@@ -60,9 +63,8 @@ public class Evaluator {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) {
-		EvaluatedExpression evaluatedExpression = null;
 		String id = null;
-		String processedExpression = expression;
+		String processedExpression = stripComments(expression);
 		
 		Matcher idFinderMatcher = ID_FINDER.matcher(processedExpression);
 		
@@ -70,6 +72,8 @@ public class Evaluator {
 			id = idFinderMatcher.group("ID");
 			processedExpression = idFinderMatcher.group("EXPRESSION");
 		}
+		
+		EvaluatedExpression evaluatedExpression = null;
 		
 		try {
 			if (id == null) {
@@ -122,6 +126,10 @@ public class Evaluator {
 	}
 	
 	private BigDecimal evaluateInternal(String expression) {
+		if (expression == null || expression.length() == 0) {
+			return BigDecimal.ZERO;
+		}
+		
 		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
 		expression = applyPattern(expression, OCTAL_NUMBER, Evaluator::convertFromOctal);
 		expression = applyPattern(expression, HEX_NUMBER, Evaluator::convertFromHex);
@@ -141,5 +149,40 @@ public class Evaluator {
 		expressionCounter = expressionCounter + 1;
 		
 		return "#" + Integer.toString(expressionCounter);
+	}
+	
+	private String stripComments(String expression) {
+		String strippedExpression = expression;
+		
+		int commentStartIndex = strippedExpression.indexOf(COMMENT_INLINE_START);
+		
+		// I'm aware that this is not the most efficient way to do it,
+		// but this is the easiest option and we are dealing with strings with
+		// an estimated length of less then 12 characters...so it's okay.
+		while (commentStartIndex >= 0) {
+			int commentEndIndex = strippedExpression.indexOf(
+					COMMENT_INLINE_END,
+					commentStartIndex + COMMENT_INLINE_START.length());
+			
+			if (commentEndIndex >= 0) {
+				String start = strippedExpression.substring(0, commentStartIndex);
+				String end = strippedExpression.substring(commentEndIndex + COMMENT_INLINE_END.length());
+				
+				strippedExpression = start + end;
+			} else {
+				// Seems like the expression is malformed, better chicken out.
+				return strippedExpression;
+			}
+			
+			commentStartIndex = strippedExpression.indexOf(commentStartIndex);
+		}
+		
+		commentStartIndex = strippedExpression.indexOf(COMMENT_START);
+		
+		if (commentStartIndex >= 0) {
+			strippedExpression = strippedExpression.substring(0, commentStartIndex);
+		}
+		
+		return strippedExpression;
 	}
 }

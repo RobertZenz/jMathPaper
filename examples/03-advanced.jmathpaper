@@ -1,6 +1,9 @@
-#1                             sin(45) = 0.7071068
-#2                                0xff =       255
-#3                              0b1010 =        10
-#4                               0o777 =       511
+#1                              sin(45) = 0.7071068
+#2                                 0xff =       255
+#3                               0b1010 =        10
+#4                                0o777 =       511
+#5           3*3*3 // This is a comment =        27
+#6            // This is also a comment =         0
+#7 25 + 25 + /* Inlined comment */ + 10 =        60
 
 Some "advanced" functionality is the usage of pre-defined functions and using using numbers of a different base.
