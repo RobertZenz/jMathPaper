@@ -149,8 +149,8 @@ public class MainComposite extends Composite {
 	
 	public void init(Arguments arguments) {
 		if (arguments.hasFiles()) {
-			for (String fileName : arguments.getFiles()) {
-				open(fileName);
+			for (Path file : arguments.getFiles()) {
+				open(file);
 			}
 		}
 		

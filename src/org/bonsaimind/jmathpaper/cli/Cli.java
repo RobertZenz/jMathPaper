@@ -35,6 +35,8 @@ public final class Cli {
 		try {
 			if (arguments.getContext() != null) {
 				paper.loadFrom(arguments.getContext());
+			} else if (arguments.hasFiles()) {
+				paper.loadFrom(arguments.getFiles().get(arguments.getFiles().size() - 1));
 			} else {
 				paper.loadFrom(Configuration.getGlobalPaperFile());
 			}

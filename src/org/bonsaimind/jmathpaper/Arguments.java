@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import picocli.CommandLine.Option;
@@ -37,6 +38,8 @@ public class Arguments {
 	
 	@Option(names = { "-o", "--open" }, paramLabel = "FILE", description = "Opens the given paper. This starts the UI by default.")
 	private List<String> files = null;
+	
+	private List<Path> filesPaths = null;
 	
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
@@ -75,8 +78,16 @@ public class Arguments {
 		return expression;
 	}
 	
-	public List<String> getFiles() {
-		return files;
+	public List<Path> getFiles() {
+		if (filesPaths == null && hasFiles()) {
+			filesPaths = new ArrayList<>();
+			
+			for (String file : files) {
+				filesPaths.add(Paths.get(file));
+			}
+		}
+		
+		return filesPaths;
 	}
 	
 	public boolean hasFiles() {
