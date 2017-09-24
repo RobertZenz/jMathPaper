@@ -13,6 +13,7 @@
 	<property name="jar" value="jmathpaper" />
 
 	<property name="evalex.version" value="1.10" />
+	<property name="jline.version" value="3.5.1" />
 	<property name="lanterna.version" value="3.0.0" />
 	<property name="picocli.version" value="1.0.1" />
 	<property name="swt.version" value="4.6.2" />
@@ -45,18 +46,21 @@
 	<target name="jar" depends="compile" description="Creates the jar.">
 		<jar jarfile="${dist}/${jar}-${version}-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
 		<jar jarfile="${dist}/${jar}-${version}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
 		<jar jarfile="${dist}/${jar}-${version}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />

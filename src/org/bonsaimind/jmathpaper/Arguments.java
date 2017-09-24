@@ -26,6 +26,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 public class Arguments {
+	
 	@Option(names = { "-c", "--context" }, paramLabel = "FILE", arity = "1", description = "The paper to use as context for a given expression.")
 	private String context = null;
 	
@@ -49,6 +50,9 @@ public class Arguments {
 	
 	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
 	private boolean printResultOnly = false;
+	
+	@Option(names = { "-u", "--ui" }, arity = "0..1", description = "Define what user interface (UI) to start.")
+	private String ui = null;
 	
 	@Option(names = { "--version" }, description = "Prints the version information.")
 	private boolean versionRequested = false;
@@ -108,5 +112,20 @@ public class Arguments {
 	
 	public boolean isVersionRequested() {
 		return versionRequested;
+	}
+	
+	public boolean useCli() {
+		return "c".equalsIgnoreCase(ui)
+				|| "cli".equalsIgnoreCase(ui);
+	}
+	
+	public boolean useSwt() {
+		return "s".equalsIgnoreCase(ui)
+				|| "swt".equalsIgnoreCase(ui);
+	}
+	
+	public boolean useTui() {
+		return "t".equalsIgnoreCase(ui)
+				|| "tui".equalsIgnoreCase(ui);
 	}
 }

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.cli;
+package org.bonsaimind.jmathpaper.tui;
 
 import java.io.IOException;
 
@@ -23,13 +23,18 @@ import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
 
-public final class Cli {
-	private Cli() {
-		// No instancing required.
+public final class Tui {
+	private Tui() {
+		// No instance required.
 	}
 	
-	public final static void run(Arguments arguments) {
+	public static final void run(Arguments arguments) {
 		Paper paper = new Paper();
 		
 		try {
@@ -46,39 +51,32 @@ public final class Cli {
 			return;
 		}
 		
-		if (arguments.getExpression() != null) {
-			EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
-			
-			try {
-				paper.store();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		try (Terminal terminal = TerminalBuilder.terminal()) {
+			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+				terminal.writer().write(evaluatedExpression.toString());
+				terminal.writer().write("\n");
 			}
+			terminal.flush();
 			
-			if (evaluatedExpression == null) {
-				// Nothing to do here, everything is oh-kay.
-			} else if (evaluatedExpression.getErrorMessage() == null) {
-				if (!arguments.isPrintResultOnly()) {
-					System.out.print(paper.toString().trim());
-				} else {
-					System.out.print(evaluatedExpression.getResult().toPlainString());
-				}
+			boolean running = true;
+			
+			LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+			
+			while (running) {
+				String line = reader.readLine("> ");
 				
-				if (!arguments.isNoNewline()) {
-					System.out.println();
-				}
-			} else {
-				System.err.println(evaluatedExpression.getErrorMessage());
+				EvaluatedExpression evaluatedExpression = paper.evaluate(line);
+				
+				terminal.writer().write(evaluatedExpression.toString());
+				terminal.writer().write("\n");
+				terminal.flush();
 			}
-		} else {
-			if (!arguments.isPrintResultOnly()) {
-				System.out.print(paper.toString().trim());
-			}
-			
-			if (!arguments.isNoNewline()) {
-				System.out.println();
-			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UserInterruptException e) {
+			// Everything okay, just exit.
+			return;
 		}
 	}
 }

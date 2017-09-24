@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper;
 
 import org.bonsaimind.jmathpaper.cli.Cli;
 import org.bonsaimind.jmathpaper.swt.Swt;
+import org.bonsaimind.jmathpaper.tui.Tui;
 
 import picocli.CommandLine;
 
@@ -40,8 +41,14 @@ public final class Main {
 			return;
 		}
 		
-		if (arguments.getExpression() != null && !arguments.hasFiles()) {
+		if ((arguments.getExpression() != null && !arguments.hasFiles())
+				|| arguments.useCli()) {
 			Cli.run(arguments);
+			return;
+		}
+		
+		if (arguments.useTui()) {
+			Tui.run(arguments);
 			return;
 		}
 		
