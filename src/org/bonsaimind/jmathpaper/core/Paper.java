@@ -30,9 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Paper {
-	public static final String CLEAN_COMMAND = "clean";
-	public static final String CLEAR_COMMAND = "clear";
-	public static final String RESET_COMMAND = "reset";
 	private static final int DEFAULT_WIDTH = 50;
 	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
@@ -90,9 +87,7 @@ public class Paper {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) {
-		if (expression.equalsIgnoreCase(CLEAN_COMMAND)
-				|| expression.equalsIgnoreCase(CLEAR_COMMAND)
-				|| expression.equalsIgnoreCase(RESET_COMMAND)) {
+		if (Command.getCommand(expression) == Command.CLEAR) {
 			clear();
 			return null;
 		}
