@@ -75,12 +75,14 @@ public final class Tui {
 				
 				EvaluatedExpression evaluatedExpression = paper.evaluate(line);
 				
-				terminal.writer().write(evaluatedExpression.toString(
-						paper.getIdColumnSize(),
-						paper.getExpressionColumnSize(),
-						paper.getResultColumnSize()));
-				terminal.writer().write("\n");
-				terminal.flush();
+				if (evaluatedExpression != null) {
+					terminal.writer().write(evaluatedExpression.toString(
+							paper.getIdColumnSize(),
+							paper.getExpressionColumnSize(),
+							paper.getResultColumnSize()));
+					terminal.writer().write("\n");
+					terminal.flush();
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
