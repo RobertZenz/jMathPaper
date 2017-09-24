@@ -20,9 +20,9 @@ package org.bonsaimind.jmathpaper.swt;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.ui.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -148,6 +148,7 @@ public class PaperComponent extends SashForm {
 	
 	public void load(Path file) throws IOException {
 		paper.loadFrom(file);
+		paper.setFile(file);
 		
 		expressionsTable.clearAll();
 		
@@ -164,7 +165,8 @@ public class PaperComponent extends SashForm {
 	
 	public void save(Path file) throws IOException {
 		paper.setNotes(notesText.getText());
-		paper.storeTo(file);
+		paper.saveTo(file);
+		paper.setFile(file);
 	}
 	
 	@Override

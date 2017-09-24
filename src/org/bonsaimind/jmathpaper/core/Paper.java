@@ -186,29 +186,17 @@ public class Paper {
 			throw new FileNotFoundException(file.toAbsolutePath().toString());
 		}
 		
-		this.file = file;
-		
 		fromString(Files.readAllLines(file, StandardCharsets.UTF_8));
 	}
 	
-	public void setFile(Path file) {
-		this.file = file;
+	public void save() throws IOException {
+		saveTo(file);
 	}
 	
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-	
-	public void store() throws IOException {
-		storeTo(file);
-	}
-	
-	public void storeTo(Path file) throws IOException {
+	public void saveTo(Path file) throws IOException {
 		if (file == null) {
 			throw new IllegalArgumentException("file cannot be null.");
 		}
-		
-		this.file = file;
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(
 				file,
@@ -217,6 +205,14 @@ public class Paper {
 				StandardOpenOption.TRUNCATE_EXISTING)) {
 			writer.write(toString());
 		}
+	}
+	
+	public void setFile(Path file) {
+		this.file = file;
+	}
+	
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 	
 	@Override
@@ -244,6 +240,10 @@ public class Paper {
 		idColumnSize = Math.max(idColumnSize, evaluatedExpression.getId().length());
 		expressionColumnSize = Math.max(expressionColumnSize, evaluatedExpression.getExpression().length());
 		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getResult().toPlainString().length());
+		
+		if ((idColumnSize + expressionColumnSize + resultColumnSize + 4) < DEFAULT_WIDTH) {
+			expressionColumnSize = DEFAULT_WIDTH - 4 - idColumnSize - resultColumnSize;
+		}
 	}
 	
 	protected void remeasureColumnSizes() {

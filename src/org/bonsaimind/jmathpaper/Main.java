@@ -18,6 +18,7 @@
 package org.bonsaimind.jmathpaper;
 
 import org.bonsaimind.jmathpaper.cli.Cli;
+import org.bonsaimind.jmathpaper.core.ui.Ui;
 import org.bonsaimind.jmathpaper.swt.Swt;
 import org.bonsaimind.jmathpaper.tui.Tui;
 
@@ -41,14 +42,24 @@ public final class Main {
 			return;
 		}
 		
+		Ui ui = null;
+		
 		if ((arguments.getExpression() != null && !arguments.hasFiles())
 				|| arguments.useCli()) {
-			Cli.run(arguments);
-			return;
+			ui = new Cli();
 		}
 		
 		if (arguments.useTui()) {
-			Tui.run(arguments);
+			ui = new Tui();
+		}
+		
+		if (ui != null) {
+			try {
+				ui.start(arguments);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return;
 		}
 		

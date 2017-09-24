@@ -17,41 +17,29 @@
 
 package org.bonsaimind.jmathpaper.tui;
 
-import java.io.IOException;
-
-import org.bonsaimind.jmathpaper.Arguments;
-import org.bonsaimind.jmathpaper.Configuration;
-import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
+import org.bonsaimind.jmathpaper.core.ui.CommandProcessor;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
-public final class Tui {
-	private Tui() {
-		// No instance required.
+public class Tui extends AbstractPapersUi {
+	private boolean running = true;
+	
+	public Tui() {
+		super();
 	}
 	
-	public static final void run(Arguments arguments) {
-		Paper paper = new Paper();
-		
-		try {
-			if (arguments.getContext() != null) {
-				paper.loadFrom(arguments.getContext());
-			} else if (arguments.hasFiles()) {
-				paper.loadFrom(arguments.getFiles().get(arguments.getFiles().size() - 1));
-			} else {
-				paper.loadFrom(Configuration.getGlobalPaperFile());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		
+	@Override
+	public void quit() {
+		running = false;
+	}
+	
+	@Override
+	protected void internalStart() throws Exception {
 		try (Terminal terminal = TerminalBuilder.terminal()) {
 			if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
 				terminal.writer().write(paper.getNotes());
@@ -67,25 +55,14 @@ public final class Tui {
 				terminal.writer().write("\n");
 			}
 			
-			boolean running = true;
-			
 			LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
 			
 			while (running) {
-				String line = reader.readLine("> ");
+				String input = reader.readLine("> ");
 				
-				switch (Command.getCommand(line)) {
-					case CLEAR:
-						paper.clear();
-						break;
-					
-					case CLOSE:
-					case QUIT:
-						// Exit the application.
-						return;
-					
-					default:
-						EvaluatedExpression evaluatedExpression = paper.evaluate(line);
+				if (input.trim().length() > 0) {
+					if (!CommandProcessor.applyCommand(this, input)) {
+						EvaluatedExpression evaluatedExpression = paper.evaluate(input);
 						
 						terminal.writer().write(evaluatedExpression.toString(
 								paper.getIdColumnSize(),
@@ -93,11 +70,9 @@ public final class Tui {
 								paper.getResultColumnSize()));
 						terminal.writer().write("\n");
 						terminal.flush();
+					}
 				}
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (UserInterruptException e) {
 			// Everything okay, just exit.
 			return;

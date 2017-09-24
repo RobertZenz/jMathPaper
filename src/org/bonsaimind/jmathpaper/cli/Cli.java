@@ -19,63 +19,50 @@ package org.bonsaimind.jmathpaper.cli;
 
 import java.io.IOException;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
-import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 
-public final class Cli {
-	private Cli() {
-		// No instancing required.
+public final class Cli extends AbstractPapersUi {
+	public Cli() {
+		super();
 	}
 	
-	public final static void run(Arguments arguments) {
-		Paper paper = new Paper();
+	@Override
+	public void clear() {
+		super.clear();
 		
 		try {
-			if (arguments.getContext() != null) {
-				paper.loadFrom(arguments.getContext());
-			} else if (arguments.hasFiles()) {
-				paper.loadFrom(arguments.getFiles().get(arguments.getFiles().size() - 1));
-			} else {
-				paper.loadFrom(Configuration.getGlobalPaperFile());
-			}
+			save();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
 		}
-		
+	}
+	
+	@Override
+	public void quit() {
+		// Nothing to do here.
+	}
+	
+	@Override
+	protected boolean exitWhenExpressionIsCommand() {
+		return true;
+	}
+	
+	@Override
+	protected void initDefaultPaper() throws IOException {
+		open(Configuration.getGlobalPaperFile());
+	}
+	
+	@Override
+	protected void internalStart() throws Exception {
 		if (arguments.getExpression() != null) {
-			switch (Command.getCommand(arguments.getExpression())) {
-				case CLEAR:
-					paper.clear();
-					try {
-						paper.store();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					return;
-				
-				case CLOSE:
-				case QUIT:
-					return;
-			}
+			save();
 			
-			EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
+			EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
 			
-			try {
-				paper.store();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			if (evaluatedExpression == null) {
-				// Nothing to do here, everything is oh-kay.
-			} else if (evaluatedExpression.getErrorMessage() == null) {
+			if (evaluatedExpression.getErrorMessage() == null) {
 				if (!arguments.isPrintResultOnly()) {
 					System.out.print(paper.toString().trim());
 				} else {
