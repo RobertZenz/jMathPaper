@@ -20,6 +20,7 @@ package org.bonsaimind.jmathpaper.swt;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.eclipse.swt.SWT;
@@ -89,6 +90,8 @@ public class PaperComponent extends SashForm {
 		
 		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		cTabItem.setControl(this);
 	}
 	
 	public void clear() {
@@ -99,11 +102,25 @@ public class PaperComponent extends SashForm {
 	}
 	
 	public void evaluate(String expression) {
+		switch (Command.getCommand(expression)) {
+			case CLEAR:
+				clear();
+				return;
+			
+			case CLOSE:
+				cTabItem.dispose();
+				return;
+			
+			case QUIT:
+				getShell().setVisible(false);
+				getShell().dispose();
+				return;
+			
+		}
+		
 		EvaluatedExpression evaluatedExpression = paper.evaluate(expression);
 		
-		if (evaluatedExpression == null) {
-			clear();
-		} else if (evaluatedExpression.isValid()) {
+		if (evaluatedExpression.isValid()) {
 			convertEvaluatedExpressionToTableItem(evaluatedExpression);
 			
 			resetInput();
@@ -139,6 +156,10 @@ public class PaperComponent extends SashForm {
 		}
 		
 		notesText.setText(paper.getNotes());
+	}
+	
+	public void registerAsControl(CTabItem cTabItem) {
+		cTabItem.setControl(this);
 	}
 	
 	public void save(Path file) throws IOException {

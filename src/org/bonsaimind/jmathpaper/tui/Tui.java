@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
+import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.jline.reader.LineReader;
@@ -73,15 +74,25 @@ public final class Tui {
 			while (running) {
 				String line = reader.readLine("> ");
 				
-				EvaluatedExpression evaluatedExpression = paper.evaluate(line);
-				
-				if (evaluatedExpression != null) {
-					terminal.writer().write(evaluatedExpression.toString(
-							paper.getIdColumnSize(),
-							paper.getExpressionColumnSize(),
-							paper.getResultColumnSize()));
-					terminal.writer().write("\n");
-					terminal.flush();
+				switch (Command.getCommand(line)) {
+					case CLEAR:
+						paper.clear();
+						break;
+					
+					case CLOSE:
+					case QUIT:
+						// Exit the application.
+						return;
+					
+					default:
+						EvaluatedExpression evaluatedExpression = paper.evaluate(line);
+						
+						terminal.writer().write(evaluatedExpression.toString(
+								paper.getIdColumnSize(),
+								paper.getExpressionColumnSize(),
+								paper.getResultColumnSize()));
+						terminal.writer().write("\n");
+						terminal.flush();
 				}
 			}
 		} catch (IOException e) {

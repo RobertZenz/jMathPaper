@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
+import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.Paper;
 
@@ -47,6 +48,22 @@ public final class Cli {
 		}
 		
 		if (arguments.getExpression() != null) {
+			switch (Command.getCommand(arguments.getExpression())) {
+				case CLEAR:
+					paper.clear();
+					try {
+						paper.store();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return;
+				
+				case CLOSE:
+				case QUIT:
+					return;
+			}
+			
 			EvaluatedExpression evaluatedExpression = paper.evaluate(arguments.getExpression());
 			
 			try {

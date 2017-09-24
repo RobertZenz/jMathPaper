@@ -21,8 +21,17 @@ public enum Command {
 	/** The paper should be cleared. */
 	CLEAR("clean", "clear", "reset"),
 	
+	/**
+	 * The current paper will be closed. Depending on the UI, that might mean
+	 * that the application exits.
+	 */
+	CLOSE("close", ":bd", ":bdelete"),
+	
 	/** No command chosen, only exists to simplify switch statements. */
-	NONE();
+	NONE(),
+	
+	/** Quit the application. */
+	QUIT("exit", "quit", ":q", ":q!");
 	
 	private String[] aliases = null;
 	

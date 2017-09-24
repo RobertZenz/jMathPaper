@@ -225,7 +225,6 @@ public class MainComposite extends Composite {
 		
 		PaperComponent paperComponent = new PaperComponent(cTabFolder, cTabItem, SWT.NONE);
 		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		cTabItem.setControl(paperComponent);
 		
 		cTabFolder.setSelection(cTabItem);
 		

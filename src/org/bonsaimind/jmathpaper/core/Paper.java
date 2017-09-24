@@ -87,11 +87,6 @@ public class Paper {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) {
-		if (Command.getCommand(expression) == Command.CLEAR) {
-			clear();
-			return null;
-		}
-		
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
 		if (evaluatedExpression.isValid()) {
