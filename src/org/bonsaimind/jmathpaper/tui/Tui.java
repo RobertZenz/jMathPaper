@@ -52,11 +52,19 @@ public final class Tui {
 		}
 		
 		try (Terminal terminal = TerminalBuilder.terminal()) {
-			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
-				terminal.writer().write(evaluatedExpression.toString());
+			if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
+				terminal.writer().write(paper.getNotes());
+				terminal.writer().write("\n");
 				terminal.writer().write("\n");
 			}
-			terminal.flush();
+			
+			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+				terminal.writer().write(evaluatedExpression.toString(
+						paper.getIdColumnSize(),
+						paper.getExpressionColumnSize(),
+						paper.getResultColumnSize()));
+				terminal.writer().write("\n");
+			}
 			
 			boolean running = true;
 			
@@ -67,7 +75,10 @@ public final class Tui {
 				
 				EvaluatedExpression evaluatedExpression = paper.evaluate(line);
 				
-				terminal.writer().write(evaluatedExpression.toString());
+				terminal.writer().write(evaluatedExpression.toString(
+						paper.getIdColumnSize(),
+						paper.getExpressionColumnSize(),
+						paper.getResultColumnSize()));
 				terminal.writer().write("\n");
 				terminal.flush();
 			}

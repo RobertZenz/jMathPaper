@@ -36,8 +36,11 @@ public class Paper {
 	private static final int DEFAULT_WIDTH = 50;
 	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
+	protected int expressionColumnSize = 0;
 	protected Path file = null;
+	protected int idColumnSize = 0;
 	protected String notes = "";
+	protected int resultColumnSize = 0;
 	private List<EvaluatedExpression> readonlyEvaluatedExpression = null;
 	
 	public Paper() {
@@ -99,6 +102,8 @@ public class Paper {
 		if (evaluatedExpression.isValid()) {
 			evaluator.addEvaluatedExpression(evaluatedExpression);
 			evaluatedExpressions.add(evaluatedExpression);
+			
+			measureExpression(evaluatedExpression);
 		}
 		
 		return evaluatedExpression;
@@ -131,6 +136,8 @@ public class Paper {
 		notes = notesBuilder.toString().trim();
 		
 		evaluator.setExpressionCounter(evaluatedExpressions.size());
+		
+		remeasureColumnSizes();
 	}
 	
 	public void fromString(String string) {
@@ -145,12 +152,24 @@ public class Paper {
 		return readonlyEvaluatedExpression;
 	}
 	
+	public int getExpressionColumnSize() {
+		return expressionColumnSize;
+	}
+	
 	public Path getFile() {
 		return file;
 	}
 	
+	public int getIdColumnSize() {
+		return idColumnSize;
+	}
+	
 	public String getNotes() {
 		return notes;
+	}
+	
+	public int getResultColumnSize() {
+		return resultColumnSize;
 	}
 	
 	@Override
@@ -212,24 +231,13 @@ public class Paper {
 	
 	@Override
 	public String toString() {
-		int idLength = 0;
-		int expressionLength = 0;
-		int resultLength = 0;
-		
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			idLength = Math.max(idLength, evaluatedExpression.getId().length());
-			expressionLength = Math.max(expressionLength, evaluatedExpression.getExpression().length());
-			resultLength = Math.max(resultLength, evaluatedExpression.getResult().toPlainString().length());
-		}
-		
-		if ((idLength + expressionLength + resultLength + 4) < DEFAULT_WIDTH) {
-			expressionLength = DEFAULT_WIDTH - 4 - idLength - resultLength;
-		}
-		
 		StringBuilder builder = new StringBuilder();
 		
 		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			builder.append(evaluatedExpression.toString(idLength, expressionLength, resultLength));
+			builder.append(evaluatedExpression.toString(
+					idColumnSize,
+					expressionColumnSize,
+					resultColumnSize));
 			builder.append('\n');
 		}
 		
@@ -240,5 +248,25 @@ public class Paper {
 		}
 		
 		return builder.toString();
+	}
+	
+	protected void measureExpression(EvaluatedExpression evaluatedExpression) {
+		idColumnSize = Math.max(idColumnSize, evaluatedExpression.getId().length());
+		expressionColumnSize = Math.max(expressionColumnSize, evaluatedExpression.getExpression().length());
+		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getResult().toPlainString().length());
+	}
+	
+	protected void remeasureColumnSizes() {
+		idColumnSize = 0;
+		expressionColumnSize = 0;
+		resultColumnSize = 0;
+		
+		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+			measureExpression(evaluatedExpression);
+		}
+		
+		if ((idColumnSize + expressionColumnSize + resultColumnSize + 4) < DEFAULT_WIDTH) {
+			expressionColumnSize = DEFAULT_WIDTH - 4 - idColumnSize - resultColumnSize;
+		}
 	}
 }
