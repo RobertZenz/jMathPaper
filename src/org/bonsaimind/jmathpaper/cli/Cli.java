@@ -26,7 +26,7 @@ import org.bonsaimind.jmathpaper.core.Paper;
 
 public final class Cli {
 	private Cli() {
-		super();
+		// No instancing required.
 	}
 	
 	public final static void run(Arguments arguments) {

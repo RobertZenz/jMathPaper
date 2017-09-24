@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public final class Swt {
 	private Swt() {
-		super();
+		// No instancing required.
 	}
 	
 	public static final void run(Arguments arguments) {

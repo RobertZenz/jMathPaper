@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 
 public final class Configuration {
 	private Configuration() {
-		super();
+		// No instancing required.
 	}
 	
 	public static final Path getConfigDirectory() {
