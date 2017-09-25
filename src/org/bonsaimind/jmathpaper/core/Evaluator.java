@@ -76,7 +76,18 @@ public class Evaluator {
 		EvaluatedExpression evaluatedExpression = null;
 		
 		try {
-			BigDecimal result = evaluateInternal(processedExpression);
+			Expression mathExpression = prepareExpression(processedExpression);
+			
+			BigDecimal result = BigDecimal.ZERO;
+			Boolean booleanResult = null;
+			
+			if (mathExpression != null) {
+				result = mathExpression.eval();
+				
+				if (mathExpression.isBoolean()) {
+					booleanResult = Boolean.valueOf(result.equals(BigDecimal.ONE));
+				}
+			}
 			
 			if (id == null) {
 				id = getNextId();
@@ -84,7 +95,7 @@ public class Evaluator {
 			
 			variables.put(id, result);
 			
-			return new EvaluatedExpression(id, expression, result);
+			return new EvaluatedExpression(id, expression, result, booleanResult);
 		} catch (Throwable th) {
 			return new EvaluatedExpression(
 					"",
@@ -121,9 +132,15 @@ public class Evaluator {
 		return buffer.toString();
 	}
 	
-	private BigDecimal evaluateInternal(String expression) {
+	private String getNextId() {
+		expressionCounter = expressionCounter + 1;
+		
+		return "#" + Integer.toString(expressionCounter);
+	}
+	
+	private Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
-			return BigDecimal.ZERO;
+			return null;
 		}
 		
 		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
@@ -138,13 +155,7 @@ public class Evaluator {
 			mathExpression.with(variable.getKey().replace('#', 'R'), variable.getValue());
 		}
 		
-		return mathExpression.eval();
-	}
-	
-	private String getNextId() {
-		expressionCounter = expressionCounter + 1;
-		
-		return "#" + Integer.toString(expressionCounter);
+		return mathExpression;
 	}
 	
 	private String stripComments(String expression) {

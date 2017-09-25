@@ -24,6 +24,7 @@ import java.math.BigDecimal;
  * expression which has been evaluated.
  */
 public class EvaluatedExpression {
+	protected Boolean booleanResult = null;
 	protected String errorMessage = null;
 	protected String expression = null;
 	protected String id = null;
@@ -38,7 +39,19 @@ public class EvaluatedExpression {
 	 * @param result The result
 	 */
 	public EvaluatedExpression(String id, String expression, BigDecimal result) {
-		this(id, expression, result, true, null);
+		this(id, expression, result, null, true, null);
+	}
+	
+	/**
+	 * Creates a new, valid, instance of {@link EvaluatedExpression}.
+	 *
+	 * @param id The ID.
+	 * @param expression The expression.
+	 * @param result The result
+	 * @param booleanResult The boolean result
+	 */
+	public EvaluatedExpression(String id, String expression, BigDecimal result, Boolean booleanResult) {
+		this(id, expression, result, booleanResult, true, null);
 	}
 	
 	/**
@@ -49,7 +62,7 @@ public class EvaluatedExpression {
 	 * @param errorMessage The error message.
 	 */
 	public EvaluatedExpression(String id, String expression, String errorMessage) {
-		this(id, expression, BigDecimal.ZERO, false, errorMessage);
+		this(id, expression, BigDecimal.ZERO, null, false, errorMessage);
 	}
 	
 	/**
@@ -76,6 +89,7 @@ public class EvaluatedExpression {
 			String id,
 			String expression,
 			BigDecimal result,
+			Boolean booleanResult,
 			boolean valid,
 			String errorMessage) {
 		this();
@@ -83,6 +97,7 @@ public class EvaluatedExpression {
 		this.id = id;
 		this.expression = expression;
 		this.result = result;
+		this.booleanResult = booleanResult;
 		this.valid = valid;
 		this.errorMessage = errorMessage;
 	}
@@ -122,13 +137,25 @@ public class EvaluatedExpression {
 		
 		String result = trimmedString.substring(lastSeparatorIndex + 1).trim();
 		
-		try {
-			evaluatedExpression.result = new BigDecimal(result).stripTrailingZeros();
+		if (result.equals("true") || result.equals("false")) {
+			evaluatedExpression.booleanResult = Boolean.valueOf(result);
+			
+			if (evaluatedExpression.booleanResult.booleanValue()) {
+				evaluatedExpression.result = BigDecimal.ONE;
+			} else {
+				evaluatedExpression.result = BigDecimal.ZERO;
+			}
+			
 			evaluatedExpression.valid = true;
-		} catch (NumberFormatException e) {
-			evaluatedExpression.result = BigDecimal.ZERO;
-			evaluatedExpression.errorMessage = result;
-			evaluatedExpression.valid = false;
+		} else {
+			try {
+				evaluatedExpression.result = new BigDecimal(result).stripTrailingZeros();
+				evaluatedExpression.valid = true;
+			} catch (NumberFormatException e) {
+				evaluatedExpression.result = BigDecimal.ZERO;
+				evaluatedExpression.errorMessage = result;
+				evaluatedExpression.valid = false;
+			}
 		}
 		
 		return evaluatedExpression;
@@ -198,10 +225,26 @@ public class EvaluatedExpression {
 		} else if (!result.equals(other.result)) {
 			return false;
 		}
+		if (booleanResult == null) {
+			if (other.booleanResult != null) {
+				return false;
+			}
+		} else if (!booleanResult.equals(other.booleanResult)) {
+			return false;
+		}
 		if (valid != other.valid) {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Gets the result as {@link Boolean} if any.
+	 * 
+	 * @return the result as {@link Boolean}.
+	 */
+	public Boolean getBooleanResult() {
+		return booleanResult;
 	}
 	
 	/**
@@ -251,6 +294,7 @@ public class EvaluatedExpression {
 		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
+		result = prime * result + ((this.booleanResult == null) ? 0 : this.booleanResult.hashCode());
 		result = prime * result + (valid ? 1231 : 1237);
 		return result;
 	}
@@ -295,7 +339,11 @@ public class EvaluatedExpression {
 		builder.append(" = ");
 		
 		if (valid) {
-			appendPadded(builder, result.toPlainString(), resultColumnWidth, 0);
+			if (booleanResult == null) {
+				appendPadded(builder, result.toPlainString(), resultColumnWidth, 0);
+			} else {
+				appendPadded(builder, booleanResult.toString(), resultColumnWidth, 0);
+			}
 		} else {
 			builder.append(errorMessage);
 		}

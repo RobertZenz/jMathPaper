@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="libs/swt/linux/swt-4.6.2-debug.jar" sourcepath="libs/swt/linux/swt-4.6.2-sources.zip"/>
 	<classpathentry kind="lib" path="libs/picocli/picocli-1.0.1.jar" sourcepath="libs/picocli/picocli-1.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="libs/lanterna/lanterna-3.0.0.jar" sourcepath="libs/lanterna/lanterna-3.0.0-sources.jar"/>
-	<classpathentry kind="lib" path="libs/evalex/EvalEx-1.10.jar" sourcepath="libs/evalex/EvalEx-1.10-sources.jar"/>
 	<classpathentry kind="lib" path="libs/jline/jline-3.5.1.jar" sourcepath="libs/jline/jline-3.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="libs/evalex/EvalEx-1.15.jar" sourcepath="libs/evalex/EvalEx-1.15-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

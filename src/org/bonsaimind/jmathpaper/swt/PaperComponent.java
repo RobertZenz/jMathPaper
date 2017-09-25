@@ -200,7 +200,11 @@ public class PaperComponent extends SashForm {
 		item.setText(1, evaluatedExpression.getExpression());
 		
 		if (evaluatedExpression.isValid()) {
-			item.setText(2, evaluatedExpression.getResult().toPlainString());
+			if (evaluatedExpression.getBooleanResult() != null) {
+				item.setText(2, evaluatedExpression.getBooleanResult().toString());
+			} else {
+				item.setText(2, evaluatedExpression.getResult().toPlainString());
+			}
 		} else {
 			item.setText(2, "Invalid");
 		}
