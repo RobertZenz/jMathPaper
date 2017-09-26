@@ -66,7 +66,7 @@ public final class Cli extends AbstractPapersUi {
 				if (!arguments.isPrintResultOnly()) {
 					System.out.print(paper.toString().trim());
 				} else {
-					System.out.print(evaluatedExpression.getResult().toPlainString());
+					System.out.print(evaluatedExpression.getFormattedResult());
 				}
 				
 				if (!arguments.isNoNewline()) {

@@ -239,7 +239,7 @@ public class Paper {
 	protected void measureExpression(EvaluatedExpression evaluatedExpression) {
 		idColumnSize = Math.max(idColumnSize, evaluatedExpression.getId().length());
 		expressionColumnSize = Math.max(expressionColumnSize, evaluatedExpression.getExpression().length());
-		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getResult().toPlainString().length());
+		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getFormattedResult().length());
 		
 		if ((idColumnSize + expressionColumnSize + resultColumnSize + 4) < DEFAULT_WIDTH) {
 			expressionColumnSize = DEFAULT_WIDTH - 4 - idColumnSize - resultColumnSize;
