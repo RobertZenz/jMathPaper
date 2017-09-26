@@ -200,9 +200,9 @@ public class PaperComponent extends SashForm {
 		item.setText(1, evaluatedExpression.getExpression());
 		
 		if (evaluatedExpression.isValid()) {
-			item.setText(2, evaluatedExpression.getResult().toPlainString());
+			item.setText(2, evaluatedExpression.getFormattedResult());
 		} else {
-			item.setText(2, "Invalid");
+			item.setText(2, "invalid");
 		}
 		
 		stretchedColumnHelper.pack();

@@ -28,6 +28,8 @@ Please see the attached license files for details.
 Usage
 -----
 
+### Basics
+
 When you start jMathPaper you are greeted with a (currently empty) list of
 previous expressions and the input box to enter a new one. You can enter any
 expression you want to evaluate. Additionally, there is a larger input are to
@@ -80,16 +82,20 @@ them again:
 
 We can also use mathematical functions, like `sin`:
 
-    #1                             sin(70) = 0.9396926
+    #1                                   sin(70) = 0.9396926
 
 See the documentation of [EvalEx](https://github.com/uklimaschewski/EvalEx/blob/master/README.md)
 to see what functions are supported.
 
-Additionally, we can also enter numbers in hex, octal or binary:
+### Different base
+
+We can also enter numbers in hex, octal or binary:
 
     hex                                 hex=0xff = 255
     octal                             octal=0o77 =  63
     binary                           binary=0b11 =   3
+
+### Comments
 
 If there is need to comment lines or parts of equations C style comments can be
 used:
@@ -97,6 +103,16 @@ used:
     #10       // We can also comment whole lines. =   0
     #11           1+1 // Or lines with equations. =   2
     #12    1 + /* Or inlined commenting. */ 1 + 1 =   3
+
+### Booleans
+
+Support for booleans is built right in, internally true and false are treated
+as zero and one.
+
+    comparison                   comparison= 1==1 = true
+    boolean      boolean= (true || false) && true = true
+
+### Commands
 
 There are also a few commands which can be used:
 

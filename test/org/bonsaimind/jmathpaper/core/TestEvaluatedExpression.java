@@ -40,6 +40,10 @@ public class TestEvaluatedExpression {
 		Assert.assertEquals(
 				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
 				EvaluatedExpression.fromString("1   \t  \t  1+1 \t =    2"));
+		
+		Assert.assertEquals(
+				new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true),
+				EvaluatedExpression.fromString("1 1>0 = true"));
 	}
 	
 	@Test
@@ -49,6 +53,9 @@ public class TestEvaluatedExpression {
 		
 		EvaluatedExpression invalidEvaluatedExpression = new EvaluatedExpression("1", "1+1", "error");
 		Assert.assertEquals(invalidEvaluatedExpression, EvaluatedExpression.fromString(invalidEvaluatedExpression.toString()));
+		
+		EvaluatedExpression validBooleanEvaluatedExpression = new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true);
+		Assert.assertEquals(validBooleanEvaluatedExpression, EvaluatedExpression.fromString(validBooleanEvaluatedExpression.toString()));
 	}
 	
 	@Test
@@ -60,5 +67,9 @@ public class TestEvaluatedExpression {
 		Assert.assertEquals(
 				"1 1+1 = error",
 				new EvaluatedExpression("1", "1+1", "error").toString());
+		
+		Assert.assertEquals(
+				"1 1>0 = true",
+				new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true).toString());
 	}
 }

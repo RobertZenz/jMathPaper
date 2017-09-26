@@ -33,7 +33,7 @@ public class Evaluator {
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
 	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
-	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>.*)$");
+	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>[^=]+.*)$");
 	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
 	private int expressionCounter = 0;
 	private Map<String, BigDecimal> variables = new HashMap<>();
@@ -73,10 +73,10 @@ public class Evaluator {
 			processedExpression = idFinderMatcher.group("EXPRESSION");
 		}
 		
-		EvaluatedExpression evaluatedExpression = null;
-		
 		try {
-			BigDecimal result = evaluateInternal(processedExpression);
+			Expression mathExpression = prepareExpression(processedExpression);
+			
+			BigDecimal result = mathExpression.eval();
 			
 			if (id == null) {
 				id = getNextId();
@@ -84,7 +84,7 @@ public class Evaluator {
 			
 			variables.put(id, result);
 			
-			return new EvaluatedExpression(id, expression, result);
+			return new EvaluatedExpression(id, expression, result, mathExpression.isBoolean());
 		} catch (Throwable th) {
 			return new EvaluatedExpression(
 					"",
@@ -121,10 +121,18 @@ public class Evaluator {
 		return buffer.toString();
 	}
 	
-	private BigDecimal evaluateInternal(String expression) {
+	private String getNextId() {
+		expressionCounter = expressionCounter + 1;
+		
+		return "#" + Integer.toString(expressionCounter);
+	}
+	
+	private Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
-			return BigDecimal.ZERO;
+			return null;
 		}
+		
+		expression = expression.replaceAll("==", "=");
 		
 		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
 		expression = applyPattern(expression, OCTAL_NUMBER, Evaluator::convertFromOctal);
@@ -138,13 +146,7 @@ public class Evaluator {
 			mathExpression.with(variable.getKey().replace('#', 'R'), variable.getValue());
 		}
 		
-		return mathExpression.eval();
-	}
-	
-	private String getNextId() {
-		expressionCounter = expressionCounter + 1;
-		
-		return "#" + Integer.toString(expressionCounter);
+		return mathExpression;
 	}
 	
 	private String stripComments(String expression) {
