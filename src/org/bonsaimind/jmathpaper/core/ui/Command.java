@@ -31,7 +31,7 @@ public enum Command {
 	LOAD("load"),
 	
 	/** Start a new paper. */
-	NEW(),
+	NEW("new"),
 	
 	/** Opens the given paper. */
 	OPEN("open", ":e"),

@@ -19,11 +19,10 @@ package org.bonsaimind.jmathpaper.cli;
 
 import java.io.IOException;
 
-import org.bonsaimind.jmathpaper.Configuration;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 
-public final class Cli extends AbstractPapersUi {
+public class Cli extends AbstractPapersUi {
 	public Cli() {
 		super();
 	}
@@ -48,11 +47,6 @@ public final class Cli extends AbstractPapersUi {
 	@Override
 	protected boolean exitWhenExpressionIsCommand() {
 		return true;
-	}
-	
-	@Override
-	protected void initDefaultPaper() throws IOException {
-		open(Configuration.getGlobalPaperFile());
 	}
 	
 	@Override

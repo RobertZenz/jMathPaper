@@ -53,16 +53,15 @@ public final class Main {
 			ui = new Tui();
 		}
 		
-		if (ui != null) {
-			try {
-				ui.start(arguments);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return;
+		if (arguments.useSwt() || ui == null) {
+			ui = new Swt();
 		}
 		
-		Swt.run(arguments);
+		try {
+			ui.start(arguments);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

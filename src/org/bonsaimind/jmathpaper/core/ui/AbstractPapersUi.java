@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bonsaimind.jmathpaper.Arguments;
+import org.bonsaimind.jmathpaper.Configuration;
 import org.bonsaimind.jmathpaper.core.Paper;
 
 public abstract class AbstractPapersUi implements Ui {
@@ -151,7 +152,7 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	protected void initDefaultPaper() throws IOException {
-		new_();
+		open(Configuration.getGlobalPaperFile());
 	}
 	
 	protected abstract void internalStart() throws Exception;

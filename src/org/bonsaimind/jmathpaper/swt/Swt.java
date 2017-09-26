@@ -17,37 +17,47 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
-import org.bonsaimind.jmathpaper.Arguments;
+import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public final class Swt {
-	private Swt() {
-		// No instancing required.
+public class Swt extends AbstractPapersUi {
+	protected MainComposite mainComposite = null;
+	
+	protected Shell shell = null;
+	
+	public Swt() {
+		super();
 	}
 	
-	public static final void run(Arguments arguments) {
+	@Override
+	public void quit() {
+		shell.dispose();
+	}
+	
+	@Override
+	protected void internalStart() throws Exception {
 		Display display = new Display();
 		
 		GridLayout mainLayout = new GridLayout(1, true);
 		
-		Shell mainWindow = new Shell();
-		mainWindow.setLayout(mainLayout);
-		mainWindow.setSize(720, 480);
-		mainWindow.setText("jMathPaper");
+		shell = new Shell();
+		shell.setLayout(mainLayout);
+		shell.setSize(720, 480);
+		shell.setText("jMathPaper");
 		
-		MainComposite mainContent = new MainComposite(mainWindow, SWT.NONE);
-		mainContent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		mainContent.setVisible(true);
+		mainComposite = new MainComposite(shell, SWT.NONE);
+		mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		mainComposite.setVisible(true);
 		
-		mainWindow.open();
+		shell.open();
 		
-		mainContent.init(arguments);
+		mainComposite.init(arguments);
 		
-		while (!mainWindow.isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}

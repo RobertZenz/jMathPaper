@@ -17,6 +17,10 @@
 
 package org.bonsaimind.jmathpaper.tui;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.CommandProcessor;
@@ -27,10 +31,34 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 public class Tui extends AbstractPapersUi {
-	private boolean running = true;
+	protected boolean running = true;
+	protected PrintWriter writer = null;
 	
 	public Tui() {
 		super();
+	}
+	
+	@Override
+	public void close() {
+		super.close();
+		
+		if (paper == null) {
+			try {
+				initDefaultPaper();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			printPaper();
+		}
+	}
+	
+	@Override
+	public void open(Path file) throws IOException {
+		super.open(file);
+		
+		printPaper();
 	}
 	
 	@Override
@@ -39,21 +67,18 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
+	public void reload() throws IOException {
+		super.reload();
+		
+		printPaper();
+	}
+	
+	@Override
 	protected void internalStart() throws Exception {
 		try (Terminal terminal = TerminalBuilder.terminal()) {
-			if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
-				terminal.writer().write(paper.getNotes());
-				terminal.writer().write("\n");
-				terminal.writer().write("\n");
-			}
+			writer = terminal.writer();
 			
-			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
-				terminal.writer().write(evaluatedExpression.toString(
-						paper.getIdColumnSize(),
-						paper.getExpressionColumnSize(),
-						paper.getResultColumnSize()));
-				terminal.writer().write("\n");
-			}
+			printPaper();
 			
 			LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
 			
@@ -64,11 +89,11 @@ public class Tui extends AbstractPapersUi {
 					if (!CommandProcessor.applyCommand(this, input)) {
 						EvaluatedExpression evaluatedExpression = paper.evaluate(input);
 						
-						terminal.writer().write(evaluatedExpression.toString(
+						writer.write(evaluatedExpression.toString(
 								paper.getIdColumnSize(),
 								paper.getExpressionColumnSize(),
 								paper.getResultColumnSize()));
-						terminal.writer().write("\n");
+						writer.write("\n");
 						terminal.flush();
 					}
 				}
@@ -76,6 +101,37 @@ public class Tui extends AbstractPapersUi {
 		} catch (UserInterruptException e) {
 			// Everything okay, just exit.
 			return;
+		}
+	}
+	
+	protected void printPaper() {
+		if (writer != null && paper != null) {
+			int paperWidth = paper.getIdColumnSize() + paper.getExpressionColumnSize() + paper.getResultColumnSize() + 4;
+			
+			for (int counter = 0; counter < paperWidth; counter++) {
+				writer.write("-");
+			}
+			writer.write("\n");
+			
+			if (paper.getFile() != null) {
+				writer.write(paper.getFile().toAbsolutePath().toString());
+				writer.write("\n");
+				writer.write("\n");
+			}
+			
+			if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
+				writer.write(paper.getNotes());
+				writer.write("\n");
+				writer.write("\n");
+			}
+			
+			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+				writer.write(evaluatedExpression.toString(
+						paper.getIdColumnSize(),
+						paper.getExpressionColumnSize(),
+						paper.getResultColumnSize()));
+				writer.write("\n");
+			}
 		}
 	}
 }

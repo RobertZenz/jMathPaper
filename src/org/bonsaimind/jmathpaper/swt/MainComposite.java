@@ -101,10 +101,10 @@ public class MainComposite extends Composite {
 		
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		
-		saveAsMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-		saveAsMenuItem.setText("Clea&r");
-		saveAsMenuItem.setToolTipText("Clears the current paper.");
-		saveAsMenuItem.addListener(SWT.Selection, this::onClearPushed);
+		clearMenuItem = new MenuItem(fileMenu, SWT.PUSH);
+		clearMenuItem.setText("Clea&r");
+		clearMenuItem.setToolTipText("Clears the current paper.");
+		clearMenuItem.addListener(SWT.Selection, this::onClearPushed);
 		
 		new MenuItem(fileMenu, SWT.SEPARATOR);
 		
@@ -209,6 +209,7 @@ public class MainComposite extends Composite {
 		
 		saveMenuItem.setEnabled(hasItems);
 		saveAsMenuItem.setEnabled(hasItems);
+		clearMenuItem.setEnabled(hasItems);
 		
 		boolean hasManyItems = cTabFolder.getItemCount() > 1;
 		
