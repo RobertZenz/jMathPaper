@@ -73,9 +73,4 @@ public class Cli extends AbstractPapersUi {
 			}
 		}
 	}
-	
-	@Override
-	protected boolean isOneshot() {
-		return true;
-	}
 }

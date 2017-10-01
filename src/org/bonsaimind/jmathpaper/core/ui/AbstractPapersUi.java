@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +36,9 @@ import org.bonsaimind.jmathpaper.core.Paper;
  * functionality based on that.
  */
 public abstract class AbstractPapersUi implements Ui {
+	/** The default separator for multiple expressions. */
+	protected static final String EXPRESSIONS_SEPARATOR = ";";
+	
 	/** The {@link Arguments} with which this has been run. */
 	protected Arguments arguments = null;
 	
@@ -275,8 +279,10 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	@Override
 	public void process(String input) throws CommandExecutionException, InvalidExpressionException {
-		if (!tryAsCommand(input)) {
-			evaluate(input);
+		for (String part : splitInput(input)) {
+			if (!tryAsCommand(part)) {
+				evaluate(part);
+			}
 		}
 	}
 	
@@ -323,11 +329,7 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		if (arguments.getExpression() != null) {
-			if (!tryAsCommand(arguments.getExpression())) {
-				evaluate(arguments.getExpression());
-			} else if (isOneshot()) {
-				return;
-			}
+			process(arguments.getExpression());
 		}
 	}
 	
@@ -395,15 +397,6 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	/**
-	 * Checks if is oneshot.
-	 *
-	 * @return true, if is oneshot
-	 */
-	protected boolean isOneshot() {
-		return false;
-	}
-	
-	/**
 	 * Opens the "default" {@link Paper}.
 	 * <p>
 	 * The default is used during startup when no {@link Paper}s have been
@@ -429,6 +422,17 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		this.paper = paper;
+	}
+	
+	/**
+	 * Splits the given {@link String input} with the
+	 * {@link #EXPRESSIONS_SEPARATOR} and returns the result.
+	 * 
+	 * @param input The {@link String input} to split.
+	 * @return The result of the split.
+	 */
+	protected Iterable<String> splitInput(String input) {
+		return Arrays.asList(input.split(EXPRESSIONS_SEPARATOR));
 	}
 	
 	/**
