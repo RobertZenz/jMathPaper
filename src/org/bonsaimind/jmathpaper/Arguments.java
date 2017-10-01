@@ -51,7 +51,7 @@ public class Arguments {
 	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
 	private boolean printResultOnly = false;
 	
-	@Option(names = { "-u", "--ui" }, arity = "0..1", description = "Define what user interface (UI) to start.")
+	@Option(names = { "-u", "--ui" }, arity = "1", description = "Define what user interface (UI) to start.")
 	private String ui = null;
 	
 	@Option(names = { "--version" }, description = "Prints the version information.")
