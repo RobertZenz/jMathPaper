@@ -34,8 +34,10 @@ public class Evaluator {
 	private static final String COMMENT_START = "//";
 	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
 	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>[^=]+.*)$");
+	private static final Pattern LAST_REFERENCE = Pattern.compile("(^|[^0-9,.])(?<VALUE>00)($|[^0-9.,])");
 	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
 	private int expressionCounter = 0;
+	private String lastVariableAdded = null;
 	private Map<String, BigDecimal> variables = new HashMap<>();
 	
 	public Evaluator() {
@@ -58,11 +60,14 @@ public class Evaluator {
 	
 	public void addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
 		variables.put(evaluatedExpression.getId(), evaluatedExpression.getResult());
+		lastVariableAdded = evaluatedExpression.getId();
 	}
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
+		String preparedExpression = preProcess(expression);
+		
 		String id = null;
-		String processedExpression = stripComments(expression);
+		String processedExpression = stripComments(preparedExpression);
 		
 		Matcher idFinderMatcher = ID_FINDER.matcher(processedExpression);
 		
@@ -82,7 +87,7 @@ public class Evaluator {
 			
 			variables.put(id, result);
 			
-			return new EvaluatedExpression(id, expression, result, mathExpression.isBoolean());
+			return new EvaluatedExpression(id, preparedExpression, result, mathExpression.isBoolean());
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
 		}
@@ -102,7 +107,7 @@ public class Evaluator {
 		Matcher matcher = pattern.matcher(expression);
 		
 		while (matcher.find()) {
-			matcher.appendReplacement(buffer, replacer.apply(matcher.group("VALUE")));
+			matcher.appendReplacement(buffer, "$1" + replacer.apply(matcher.group("VALUE")) + "$3");
 		}
 		
 		matcher.appendTail(buffer);
@@ -136,6 +141,18 @@ public class Evaluator {
 		}
 		
 		return mathExpression;
+	}
+	
+	private String preProcess(String expression) {
+		return applyPattern(expression, LAST_REFERENCE, this::replaceLastReference);
+	}
+	
+	private String replaceLastReference(String value) {
+		if (lastVariableAdded == null) {
+			return "0";
+		} else {
+			return lastVariableAdded;
+		}
 	}
 	
 	private String stripComments(String expression) {
