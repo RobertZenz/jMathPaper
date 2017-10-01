@@ -52,11 +52,10 @@ public class Cli extends AbstractPapersUi {
 		if (arguments.getExpression() != null) {
 			save();
 			
-			EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
-			
 			if (!arguments.isPrintResultOnly()) {
 				System.out.print(paper.toString().trim());
 			} else {
+				EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
 				System.out.print(evaluatedExpression.getFormattedResult());
 			}
 			
