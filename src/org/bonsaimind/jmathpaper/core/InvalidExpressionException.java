@@ -17,27 +17,20 @@
 
 package org.bonsaimind.jmathpaper.core;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-public class TestPaper {
-	@Test
-	public void testToFromStringSanity() {
-		Paper paper = new Paper();
-		
-		try {
-			paper.evaluate("1+1");
-			paper.evaluate("#1+5");
-			paper.evaluate("#1+8");
-		} catch (InvalidExpressionException e) {
-			Assert.fail(e.getCause().getMessage());
-		}
-		
-		paper.setNotes("Some test text.");
-		
-		Paper secondPaper = new Paper();
-		secondPaper.fromString(paper.toString());
-		
-		Assert.assertEquals(paper, secondPaper);
+public class InvalidExpressionException extends Exception {
+	public InvalidExpressionException() {
+		super();
+	}
+	
+	public InvalidExpressionException(String message) {
+		super(message);
+	}
+	
+	public InvalidExpressionException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	public InvalidExpressionException(Throwable cause) {
+		super(cause);
 	}
 }

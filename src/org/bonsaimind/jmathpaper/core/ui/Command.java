@@ -15,23 +15,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.core;
+package org.bonsaimind.jmathpaper.core.ui;
 
+/**
+ * A {@link Command} can be executed on an {@link Ui}.
+ */
 public enum Command {
 	/** The paper should be cleared. */
-	CLEAR("clean", "clear", "reset"),
+	CLEAR("clean", "clear"),
 	
 	/**
 	 * The current paper will be closed. Depending on the UI, that might mean
 	 * that the application exits.
 	 */
-	CLOSE("close", ":bd", ":bdelete"),
+	CLOSE("close", ":bdelete", ":bd"),
 	
-	/** No command chosen, only exists to simplify switch statements. */
-	NONE(),
+	/** Start a new paper. */
+	NEW("new", ":new"),
+	
+	/** Switches to the next paper, if there is any. */
+	NEXT("next", "right", ":bnext", ":bn"),
+	
+	/** Opens the given paper. */
+	OPEN("open", ":e"),
+	
+	/** Switches to the previous paper, if there is any. */
+	PREVIOUS("previous", "left", ":bprevious", ":bp"),
 	
 	/** Quit the application. */
-	QUIT("exit", "quit", ":q", ":q!");
+	QUIT("quit", "exit", ":q", ":q!"),
+	
+	/** Reloads the paper. */
+	RELOAD("reload", "reset"),
+	
+	/** Save the current paper, if a name is given, at that location. */
+	SAVE("save", "store", ":w"),
+	
+	/**
+	 * Save the current paper, if a name is given, at that location and then
+	 * exit.
+	 */
+	SAVE_AND_QUIT(":x");
 	
 	private String[] aliases = null;
 	
@@ -39,21 +63,19 @@ public enum Command {
 		this.aliases = aliases;
 	}
 	
-	public static Command getCommand(String input) {
-		if (input == null || input.length() == 0) {
-			return NONE;
+	public static Command getCommand(String name) {
+		if (name == null || name.length() == 0) {
+			return null;
 		}
-		
-		String trimmedInput = input.trim();
 		
 		for (Command command : values()) {
 			for (String alias : command.aliases) {
-				if (trimmedInput.equalsIgnoreCase(alias)) {
+				if (name.equalsIgnoreCase(alias)) {
 					return command;
 				}
 			}
 		}
 		
-		return NONE;
+		return null;
 	}
 }

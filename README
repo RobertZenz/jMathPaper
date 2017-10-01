@@ -112,11 +112,60 @@ as zero and one.
     comparison                   comparison= 1==1 = true
     boolean      boolean= (true || false) && true = true
 
+### Different UIs
+
+jMathPaper supports three main mode of operations:
+
+ 1. CLI, only processing arguments given.
+ 2. TUI, a simple text interface.
+ 3. SWT, a GUI based on SWT.
+
+By default with no arguments given the SWT UI is started, if an expression is
+given the CLI UI will be used instead.
+
+One can also force one UI to use by specifying `-t` as argument and one of
+the following values:
+
+ * `c` or `cli`
+ * `t` or `tui`
+ * `s` or `swt`
+
 ### Commands
 
-There are also a few commands which can be used:
+There are also commands which can be used to control the application, they can
+be entered instead of expressions:
 
-    clean/clear/reset  Clears the current paper.
+    Command     Description                           Aliases
+    --------------------------------------------------------------------
+    clean       Cleans the current paper, removing    clean, clear
+                all expressions from it.
+    
+    close       Closes the current paper.             close, :bdelete,
+                                                      :bd
+    
+    new         Creates a new paper.                  new, :new
+    
+    next        Switches to the next paper in         next, right,
+                the list, if there is any.            :bnext, :bn
+    
+    open       Opens a paper from the given path.     open, :e
+               The path to open the files is expected
+               as argument to this command.
+    
+    previous   Switches to the previous paper in      previous, left,
+               the list, if there is any.             :bprevious, :bp
+    
+    quit       Quits the application.                 quit, exit, :q,
+                                                      :q!
+    
+    reload    Reloads the current paper, effectively  reload, reset
+              undoing all changes.
+    
+    save      Saves the current paper, the location   save, store, :w
+              can be given as argument.
+    
+    save/quit Saves the current paper and quits,      :x
+              the location can be given as argument.
 
 
 Technical information

@@ -15,29 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.core;
+package org.bonsaimind.jmathpaper.swt.events;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
-public class TestPaper {
-	@Test
-	public void testToFromStringSanity() {
-		Paper paper = new Paper();
+public class EventForwarder implements Listener {
+	private Runnable target = null;
+	
+	public EventForwarder(Runnable target) {
+		super();
 		
-		try {
-			paper.evaluate("1+1");
-			paper.evaluate("#1+5");
-			paper.evaluate("#1+8");
-		} catch (InvalidExpressionException e) {
-			Assert.fail(e.getCause().getMessage());
-		}
-		
-		paper.setNotes("Some test text.");
-		
-		Paper secondPaper = new Paper();
-		secondPaper.fromString(paper.toString());
-		
-		Assert.assertEquals(paper, secondPaper);
+		this.target = target;
+	}
+	
+	@Override
+	public void handleEvent(Event event) {
+		target.run();
 	}
 }

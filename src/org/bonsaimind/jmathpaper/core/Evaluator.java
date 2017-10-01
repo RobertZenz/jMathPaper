@@ -57,12 +57,10 @@ public class Evaluator {
 	}
 	
 	public void addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
-		if (evaluatedExpression.isValid()) {
-			variables.put(evaluatedExpression.getId(), evaluatedExpression.getResult());
-		}
+		variables.put(evaluatedExpression.getId(), evaluatedExpression.getResult());
 	}
 	
-	public EvaluatedExpression evaluate(String expression) {
+	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		String id = null;
 		String processedExpression = stripComments(expression);
 		
@@ -86,10 +84,7 @@ public class Evaluator {
 			
 			return new EvaluatedExpression(id, expression, result, mathExpression.isBoolean());
 		} catch (Throwable th) {
-			return new EvaluatedExpression(
-					"",
-					expression,
-					th.getMessage());
+			throw new InvalidExpressionException(th.getMessage(), th);
 		}
 	}
 	

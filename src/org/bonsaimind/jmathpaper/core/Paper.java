@@ -49,52 +49,13 @@ public class Paper {
 		evaluator.reset();
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Paper other = (Paper)obj;
-		if (evaluatedExpressions == null) {
-			if (other.evaluatedExpressions != null) {
-				return false;
-			}
-		} else if (other.evaluatedExpressions == null) {
-			return false;
-		} else if (evaluatedExpressions.size() != other.evaluatedExpressions.size()) {
-			return false;
-		} else {
-			for (int index = 0; index < evaluatedExpressions.size(); index++) {
-				if (!evaluatedExpressions.get(index).equals(other.evaluatedExpressions.get(index))) {
-					return false;
-				}
-			}
-		}
-		if (notes == null) {
-			if (other.notes != null) {
-				return false;
-			}
-		} else if (!notes.equals(other.notes)) {
-			return false;
-		}
-		return true;
-	}
-	
-	public EvaluatedExpression evaluate(String expression) {
+	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
-		if (evaluatedExpression.isValid()) {
-			evaluator.addEvaluatedExpression(evaluatedExpression);
-			evaluatedExpressions.add(evaluatedExpression);
-			
-			measureExpression(evaluatedExpression);
-		}
+		evaluator.addEvaluatedExpression(evaluatedExpression);
+		evaluatedExpressions.add(evaluatedExpression);
+		
+		measureExpression(evaluatedExpression);
 		
 		return evaluatedExpression;
 	}
@@ -162,17 +123,6 @@ public class Paper {
 		return resultColumnSize;
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			result = prime * result + evaluatedExpression.hashCode();
-		}
-		result = prime * result + ((notes == null) ? 0 : notes.hashCode());
-		return result;
-	}
-	
 	public void load() throws IOException {
 		loadFrom(file);
 	}
@@ -186,29 +136,17 @@ public class Paper {
 			throw new FileNotFoundException(file.toAbsolutePath().toString());
 		}
 		
-		this.file = file;
-		
 		fromString(Files.readAllLines(file, StandardCharsets.UTF_8));
 	}
 	
-	public void setFile(Path file) {
-		this.file = file;
+	public void save() throws IOException {
+		saveTo(file);
 	}
 	
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-	
-	public void store() throws IOException {
-		storeTo(file);
-	}
-	
-	public void storeTo(Path file) throws IOException {
+	public void saveTo(Path file) throws IOException {
 		if (file == null) {
 			throw new IllegalArgumentException("file cannot be null.");
 		}
-		
-		this.file = file;
 		
 		try (BufferedWriter writer = Files.newBufferedWriter(
 				file,
@@ -217,6 +155,14 @@ public class Paper {
 				StandardOpenOption.TRUNCATE_EXISTING)) {
 			writer.write(toString());
 		}
+	}
+	
+	public void setFile(Path file) {
+		this.file = file;
+	}
+	
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 	
 	@Override
@@ -243,7 +189,11 @@ public class Paper {
 	protected void measureExpression(EvaluatedExpression evaluatedExpression) {
 		idColumnSize = Math.max(idColumnSize, evaluatedExpression.getId().length());
 		expressionColumnSize = Math.max(expressionColumnSize, evaluatedExpression.getExpression().length());
-		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getResult().toPlainString().length());
+		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getFormattedResult().length());
+		
+		if ((idColumnSize + expressionColumnSize + resultColumnSize + 4) < DEFAULT_WIDTH) {
+			expressionColumnSize = DEFAULT_WIDTH - 4 - idColumnSize - resultColumnSize;
+		}
 	}
 	
 	protected void remeasureColumnSizes() {

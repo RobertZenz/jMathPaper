@@ -17,14 +17,12 @@
 
 package org.bonsaimind.jmathpaper.swt;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-import org.bonsaimind.jmathpaper.core.Command;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
+import org.bonsaimind.jmathpaper.core.ui.Ui;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -38,20 +36,21 @@ import org.eclipse.swt.widgets.Text;
 
 public class PaperComponent extends SashForm {
 	private String bufferedInput = null;
-	private CTabItem cTabItem = null;
 	private Label errorLabel = null;
 	private Composite expressionsComposite = null;
 	private Table expressionsTable = null;
 	private Text inputText = null;
 	private Composite notesComposite = null;
 	private Text notesText = null;
-	private Paper paper = new Paper();
+	private Paper paper = null;
 	private StretchedColumnHelper stretchedColumnHelper = null;
+	private Ui ui = null;
 	
-	public PaperComponent(Composite parent, CTabItem cTabItem, int style) {
+	public PaperComponent(Composite parent, Ui ui, Paper paper, int style) {
 		super(parent, style);
 		
-		this.cTabItem = cTabItem;
+		this.ui = ui;
+		this.paper = paper;
 		
 		expressionsComposite = new Composite(this, SWT.NONE);
 		expressionsComposite.setLayout(new GridLayout(1, false));
@@ -90,81 +89,20 @@ public class PaperComponent extends SashForm {
 		
 		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		cTabItem.setControl(this);
 	}
 	
-	public void clear() {
-		paper.clear();
+	public void clearExpressions() {
 		expressionsTable.removeAll();
 		
 		resetInput();
 	}
 	
-	public void evaluate(String expression) {
-		switch (Command.getCommand(expression)) {
-			case CLEAR:
-				clear();
-				return;
-			
-			case CLOSE:
-				cTabItem.dispose();
-				return;
-			
-			case QUIT:
-				getShell().setVisible(false);
-				getShell().dispose();
-				return;
-			
-		}
-		
-		EvaluatedExpression evaluatedExpression = paper.evaluate(expression);
-		
-		if (evaluatedExpression.isValid()) {
-			convertEvaluatedExpressionToTableItem(evaluatedExpression);
-			
-			resetInput();
-			
-			if (!cTabItem.getText().startsWith("*")) {
-				cTabItem.setText("*" + cTabItem.getText());
-			}
-		} else {
-			inputText.setText(expression);
-			errorLabel.setText(evaluatedExpression.getErrorMessage());
-		}
+	public String getNotes() {
+		return notesText.getText();
 	}
 	
 	public Paper getPaper() {
 		return paper;
-	}
-	
-	public boolean isEmpty() {
-		return expressionsTable.getItemCount() == 0;
-	}
-	
-	public boolean isNotesVisible() {
-		return getMaximizedControl() == null;
-	}
-	
-	public void load(Path file) throws IOException {
-		paper.loadFrom(file);
-		
-		expressionsTable.clearAll();
-		
-		for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
-			convertEvaluatedExpressionToTableItem(evaluatedExpression);
-		}
-		
-		notesText.setText(paper.getNotes());
-	}
-	
-	public void registerAsControl(CTabItem cTabItem) {
-		cTabItem.setControl(this);
-	}
-	
-	public void save(Path file) throws IOException {
-		paper.setNotes(notesText.getText());
-		paper.storeTo(file);
 	}
 	
 	@Override
@@ -193,17 +131,24 @@ public class PaperComponent extends SashForm {
 		}
 	}
 	
+	public void updateExpressions() {
+		for (int index = expressionsTable.getItemCount(); index < paper.getEvaluatedExpressions().size(); index++) {
+			EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(index);
+			
+			convertEvaluatedExpressionToTableItem(evaluatedExpression);
+		}
+	}
+	
+	public void updateNotes() {
+		notesText.setText(paper.getNotes());
+	}
+	
 	private void convertEvaluatedExpressionToTableItem(EvaluatedExpression evaluatedExpression) {
 		TableItem item = new TableItem(expressionsTable, SWT.NONE);
 		item.setData(evaluatedExpression);
 		item.setText(0, evaluatedExpression.getId());
 		item.setText(1, evaluatedExpression.getExpression());
-		
-		if (evaluatedExpression.isValid()) {
-			item.setText(2, evaluatedExpression.getFormattedResult());
-		} else {
-			item.setText(2, "invalid");
-		}
+		item.setText(2, evaluatedExpression.getFormattedResult());
 		
 		stretchedColumnHelper.pack();
 	}
@@ -243,7 +188,13 @@ public class PaperComponent extends SashForm {
 	private void onInputTextReturnKey(Event event) {
 		if (event.detail == SWT.TRAVERSE_RETURN) {
 			if (inputText.getText().length() > 0) {
-				evaluate(inputText.getText());
+				try {
+					ui.process(inputText.getText());
+					resetInput();
+				} catch (CommandExecutionException | InvalidExpressionException e) {
+					errorLabel.setText(e.getMessage());
+					errorLabel.setVisible(true);
+				}
 			} else {
 				resetInput();
 			}

@@ -30,15 +30,11 @@ public class TestEvaluatedExpression {
 		Assert.assertNull(EvaluatedExpression.fromString("invalid"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false),
 				EvaluatedExpression.fromString("1 1+1 = 2"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", "error"),
-				EvaluatedExpression.fromString("1 1+1 = error"));
-		
-		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2")),
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false),
 				EvaluatedExpression.fromString("1   \t  \t  1+1 \t =    2"));
 		
 		Assert.assertEquals(
@@ -48,11 +44,8 @@ public class TestEvaluatedExpression {
 	
 	@Test
 	public void testToFromStringSanity() {
-		EvaluatedExpression validEvaluatedExpression = new EvaluatedExpression("1", "1+1", new BigDecimal("2"));
+		EvaluatedExpression validEvaluatedExpression = new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false);
 		Assert.assertEquals(validEvaluatedExpression, EvaluatedExpression.fromString(validEvaluatedExpression.toString()));
-		
-		EvaluatedExpression invalidEvaluatedExpression = new EvaluatedExpression("1", "1+1", "error");
-		Assert.assertEquals(invalidEvaluatedExpression, EvaluatedExpression.fromString(invalidEvaluatedExpression.toString()));
 		
 		EvaluatedExpression validBooleanEvaluatedExpression = new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true);
 		Assert.assertEquals(validBooleanEvaluatedExpression, EvaluatedExpression.fromString(validBooleanEvaluatedExpression.toString()));
@@ -62,11 +55,7 @@ public class TestEvaluatedExpression {
 	public void testToString() {
 		Assert.assertEquals(
 				"1 1+1 = 2",
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2")).toString());
-		
-		Assert.assertEquals(
-				"1 1+1 = error",
-				new EvaluatedExpression("1", "1+1", "error").toString());
+				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false).toString());
 		
 		Assert.assertEquals(
 				"1 1>0 = true",

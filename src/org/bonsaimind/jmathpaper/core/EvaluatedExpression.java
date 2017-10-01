@@ -24,46 +24,32 @@ import java.math.BigDecimal;
  * expression which has been evaluated.
  */
 public class EvaluatedExpression {
-	protected String errorMessage = null;
 	protected String expression = null;
 	protected String formattedResult = null;
 	protected String id = null;
 	protected boolean isBoolean = false;
 	protected BigDecimal result = BigDecimal.ZERO;
-	protected boolean valid = true;
 	
 	/**
-	 * Creates a new, valid, instance of {@link EvaluatedExpression}.
+	 * Creates a new instance of {@link EvaluatedExpression}.
 	 *
 	 * @param id The ID.
 	 * @param expression The expression.
-	 * @param result The result
+	 * @param result The result. Use {@link BigDecimal#ZERO} if the expression
+	 *        could not be validated.
+	 * @param isBoolean The result should be seen as boolean.
 	 */
-	public EvaluatedExpression(String id, String expression, BigDecimal result) {
-		this(id, expression, result, false, true, null);
-	}
-	
-	/**
-	 * Creates a new, valid, instance of {@link EvaluatedExpression}.
-	 *
-	 * @param id The ID.
-	 * @param expression The expression.
-	 * @param result The result
-	 * @param isBoolean If the result is a boolean.
-	 */
-	public EvaluatedExpression(String id, String expression, BigDecimal result, boolean isBoolean) {
-		this(id, expression, result, isBoolean, true, null);
-	}
-	
-	/**
-	 * Creates a new, invalid, instance of {@link EvaluatedExpression}.
-	 *
-	 * @param id The ID.
-	 * @param expression The expression.
-	 * @param errorMessage The error message.
-	 */
-	public EvaluatedExpression(String id, String expression, String errorMessage) {
-		this(id, expression, BigDecimal.ZERO, false, false, errorMessage);
+	public EvaluatedExpression(
+			String id,
+			String expression,
+			BigDecimal result,
+			boolean isBoolean) {
+		this();
+		
+		this.id = id;
+		this.expression = expression;
+		this.result = result;
+		this.isBoolean = isBoolean;
 	}
 	
 	/**
@@ -73,34 +59,6 @@ public class EvaluatedExpression {
 	 */
 	protected EvaluatedExpression() {
 		super();
-	}
-	
-	/**
-	 * Creates a new instance of {@link EvaluatedExpression}.
-	 *
-	 * @param id The ID.
-	 * @param expression The expression.
-	 * @param result The result. Use {@link BigDecimal#ZERO} if the expression
-	 *        could not be validated.
-	 * @param valid If this expression is valid/could be evaluated.
-	 * @param errorMessage The error message, can be {@code null} if there is
-	 *        none.
-	 */
-	protected EvaluatedExpression(
-			String id,
-			String expression,
-			BigDecimal result,
-			boolean isBoolean,
-			boolean valid,
-			String errorMessage) {
-		this();
-		
-		this.id = id;
-		this.expression = expression;
-		this.result = result;
-		this.isBoolean = isBoolean;
-		this.valid = valid;
-		this.errorMessage = errorMessage;
 	}
 	
 	/**
@@ -146,16 +104,13 @@ public class EvaluatedExpression {
 			} else {
 				evaluatedExpression.result = BigDecimal.ZERO;
 			}
-			
-			evaluatedExpression.valid = true;
 		} else {
 			try {
 				evaluatedExpression.result = new BigDecimal(result).stripTrailingZeros();
-				evaluatedExpression.valid = true;
 			} catch (NumberFormatException e) {
-				evaluatedExpression.result = BigDecimal.ZERO;
-				evaluatedExpression.errorMessage = result;
-				evaluatedExpression.valid = false;
+				e.printStackTrace();
+				
+				return null;
 			}
 		}
 		
@@ -212,13 +167,6 @@ public class EvaluatedExpression {
 			return false;
 		}
 		EvaluatedExpression other = (EvaluatedExpression)obj;
-		if (errorMessage == null) {
-			if (other.errorMessage != null) {
-				return false;
-			}
-		} else if (!errorMessage.equals(other.errorMessage)) {
-			return false;
-		}
 		if (expression == null) {
 			if (other.expression != null) {
 				return false;
@@ -243,19 +191,7 @@ public class EvaluatedExpression {
 		if (isBoolean != other.isBoolean) {
 			return false;
 		}
-		if (valid != other.valid) {
-			return false;
-		}
 		return true;
-	}
-	
-	/**
-	 * Gets the error message, {@code null} if there is none.
-	 * 
-	 * @return The error message, {@code null} if there is none.
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
 	}
 	
 	/**
@@ -308,12 +244,10 @@ public class EvaluatedExpression {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((errorMessage == null) ? 0 : errorMessage.hashCode());
 		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
 		result = prime * result + (isBoolean ? 1231 : 1237);
-		result = prime * result + (valid ? 1231 : 1237);
 		return result;
 	}
 	
@@ -324,17 +258,6 @@ public class EvaluatedExpression {
 	 */
 	public boolean isBoolean() {
 		return isBoolean;
-	}
-	
-	/**
-	 * Gets if this {@link EvaluatedExpression} is valid.
-	 * <p>
-	 * A valid expression could be evaluated and has a result.
-	 * 
-	 * @return {@code true} if this {@link EvaluatedExpression} is valid.
-	 */
-	public boolean isValid() {
-		return valid;
 	}
 	
 	/**
@@ -365,11 +288,7 @@ public class EvaluatedExpression {
 		appendPadded(builder, expression, expressionColumnWidth, 0);
 		builder.append(" = ");
 		
-		if (valid) {
-			appendPadded(builder, getFormattedResult(), resultColumnWidth, 0);
-		} else {
-			builder.append(errorMessage);
-		}
+		appendPadded(builder, getFormattedResult(), resultColumnWidth, 0);
 		
 		return builder.toString();
 	}

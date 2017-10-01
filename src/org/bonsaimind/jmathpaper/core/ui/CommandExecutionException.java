@@ -15,29 +15,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.core;
+package org.bonsaimind.jmathpaper.core.ui;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-public class TestPaper {
-	@Test
-	public void testToFromStringSanity() {
-		Paper paper = new Paper();
-		
-		try {
-			paper.evaluate("1+1");
-			paper.evaluate("#1+5");
-			paper.evaluate("#1+8");
-		} catch (InvalidExpressionException e) {
-			Assert.fail(e.getCause().getMessage());
-		}
-		
-		paper.setNotes("Some test text.");
-		
-		Paper secondPaper = new Paper();
-		secondPaper.fromString(paper.toString());
-		
-		Assert.assertEquals(paper, secondPaper);
+public class CommandExecutionException extends Exception {
+	public CommandExecutionException() {
+		super();
+	}
+	
+	public CommandExecutionException(String message) {
+		super(message);
+	}
+	
+	public CommandExecutionException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	public CommandExecutionException(Throwable cause) {
+		super(cause);
 	}
 }

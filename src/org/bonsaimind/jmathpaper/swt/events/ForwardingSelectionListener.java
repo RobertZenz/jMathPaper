@@ -15,29 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bonsaimind.jmathpaper.core;
+package org.bonsaimind.jmathpaper.swt.events;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 
-public class TestPaper {
-	@Test
-	public void testToFromStringSanity() {
-		Paper paper = new Paper();
+public class ForwardingSelectionListener implements SelectionListener {
+	private Runnable target = null;
+	
+	public ForwardingSelectionListener(Runnable target) {
+		super();
 		
-		try {
-			paper.evaluate("1+1");
-			paper.evaluate("#1+5");
-			paper.evaluate("#1+8");
-		} catch (InvalidExpressionException e) {
-			Assert.fail(e.getCause().getMessage());
-		}
-		
-		paper.setNotes("Some test text.");
-		
-		Paper secondPaper = new Paper();
-		secondPaper.fromString(paper.toString());
-		
-		Assert.assertEquals(paper, secondPaper);
+		this.target = target;
+	}
+	
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		target.run();
+	}
+	
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		target.run();
 	}
 }
