@@ -33,7 +33,7 @@ public class Evaluator {
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
 	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
-	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_]+)=(?<EXPRESSION>[^=]+.*)$");
+	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_][a-zA-Z_0-9]+)=(?<EXPRESSION>[^=]+.*)$");
 	private static final Pattern LAST_REFERENCE = Pattern.compile("(^|[^0-9,.])(?<VALUE>00)($|[^0-9.,])");
 	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
 	private int expressionCounter = 0;
@@ -153,7 +153,7 @@ public class Evaluator {
 	}
 	
 	private String preProcess(String expression) {
-		return applyPattern(expression, LAST_REFERENCE, this::replaceLastReference);
+		return applyPattern(expression.trim(), LAST_REFERENCE, this::replaceLastReference);
 	}
 	
 	private String replaceLastReference(String value) {
