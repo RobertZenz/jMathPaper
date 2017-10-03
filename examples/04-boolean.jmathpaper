@@ -1,8 +1,10 @@
-#1          1==1 = true
-#2          2==1 = false
-#3           2>1 = true
-#4 true || false = true
-#5 true && false = false
+#1                                          1==1 =  true
+#2                                          2==1 =     0
+#3                                           2>1 =  true
+#4                                 true || false =  true
+#5                                 true && false =     0
+aliases                  aliases= true and false = false
+aliases                   aliases= true or false =  true
 
 We can also work with boolean value. They are internally represented as 0 (false) and 1(true).
 
@@ -11,4 +13,3 @@ The following operations are supported:
  * Comparison: == < > <= >= !=
  * And: &&
  * Or: ||
-

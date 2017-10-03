@@ -126,7 +126,16 @@ public class Evaluator {
 			return null;
 		}
 		
-		expression = expression.replaceAll("==", "=");
+		expression = expression.replace(" and ", " && ");
+		expression = expression.replace(" or ", " || ");
+		expression = expression.replace(" equal ", " == ");
+		expression = expression.replace(" equals ", " == ");
+		expression = expression.replace(" notequal ", " != ");
+		expression = expression.replace(" notequals ", " != ");
+		expression = expression.replace(" greater ", " > ");
+		expression = expression.replace(" greaterequals ", " >= ");
+		expression = expression.replace(" less ", " < ");
+		expression = expression.replace(" lessequals ", " <= ");
 		
 		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
 		expression = applyPattern(expression, OCTAL_NUMBER, Evaluator::convertFromOctal);
