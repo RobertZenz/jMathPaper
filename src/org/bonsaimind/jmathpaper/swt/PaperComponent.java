@@ -192,7 +192,12 @@ public class PaperComponent extends SashForm {
 					ui.process(inputText.getText());
 					resetInput();
 				} catch (CommandExecutionException | InvalidExpressionException e) {
-					errorLabel.setText(e.getMessage());
+					if (e.getMessage() != null) {
+						errorLabel.setText(e.getMessage());
+					} else {
+						errorLabel.setText("No details available: " + e.getClass().getSimpleName());
+					}
+					
 					errorLabel.setVisible(true);
 				}
 			} else {
