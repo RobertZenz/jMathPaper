@@ -341,15 +341,6 @@ public class Swt extends AbstractPapersUi {
 		return null;
 	}
 	
-	@Override
-	protected void openDefaultPaper() throws IOException {
-		if (arguments.getExpression() != null) {
-			open(Configuration.getGlobalPaperFile());
-		} else {
-			new_();
-		}
-	}
-	
 	protected void markChanged() {
 		if (cTabFolder.getSelection() != null) {
 			CTabItem cTabItem = cTabFolder.getSelection();
@@ -357,6 +348,15 @@ public class Swt extends AbstractPapersUi {
 			if (!cTabItem.getText().startsWith("*")) {
 				cTabItem.setText("*" + cTabItem.getText());
 			}
+		}
+	}
+	
+	@Override
+	protected void openDefaultPaper() throws IOException {
+		if (arguments.getExpression() != null) {
+			open(Configuration.getGlobalPaperFile());
+		} else {
+			new_();
 		}
 	}
 	
