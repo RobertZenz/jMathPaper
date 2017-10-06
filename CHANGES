@@ -2,6 +2,18 @@ Changes
 =======
 
 
+1.1
+---
+
+ * #7, added ability to quickly reference the last result by using `00`.
+ * #12, added support for C-style comments.
+ * #15, added a simple TUI.
+ * #16, added a simple CLI.
+ * #17, fixed that IDs are increased even when the expression was not valid.
+ * #18, extended support for boolean expressions.
+ * #20, added support for multiple expressions separated by a semicolon.
+
+
 1.0
 ---
 
