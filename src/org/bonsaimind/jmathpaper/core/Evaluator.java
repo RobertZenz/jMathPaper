@@ -64,10 +64,10 @@ public class Evaluator {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
-		String preparedExpression = preProcess(expression);
+		String preProcessedExpression = preProcess(expression);
 		
 		String id = null;
-		String processedExpression = stripComments(preparedExpression);
+		String processedExpression = stripComments(preProcessedExpression);
 		
 		Matcher idFinderMatcher = ID_FINDER.matcher(processedExpression);
 		
@@ -87,7 +87,7 @@ public class Evaluator {
 			
 			variables.put(id, result);
 			
-			return new EvaluatedExpression(id, preparedExpression, result, mathExpression.isBoolean());
+			return new EvaluatedExpression(id, preProcessedExpression, result, mathExpression.isBoolean());
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
 		}
