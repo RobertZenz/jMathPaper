@@ -78,7 +78,10 @@ public class Tui extends AbstractPapersUi {
 			
 			printPaper();
 			
-			LineReader reader = LineReaderBuilder.builder().terminal(terminal).build();
+			LineReader reader = LineReaderBuilder.builder()
+					.history(new PaperBasedHistory(this))
+					.terminal(terminal)
+					.build();
 			
 			String previousValue = null;
 			
