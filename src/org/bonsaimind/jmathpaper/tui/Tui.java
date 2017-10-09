@@ -25,8 +25,6 @@ import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -78,10 +76,8 @@ public class Tui extends AbstractPapersUi {
 			
 			printPaper();
 			
-			LineReader reader = LineReaderBuilder.builder()
-					.history(new PaperBasedHistory(this))
-					.terminal(terminal)
-					.build();
+			ClearingLineReader reader = new ClearingLineReader(terminal);
+			reader.setHistory(new PaperBasedHistory(this));
 			
 			String previousValue = null;
 			
