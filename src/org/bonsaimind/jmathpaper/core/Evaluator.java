@@ -124,7 +124,7 @@ public class Evaluator {
 	
 	private Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
-			return null;
+			return new Expression("0");
 		}
 		
 		expression = expression.replace(" and ", " && ");
