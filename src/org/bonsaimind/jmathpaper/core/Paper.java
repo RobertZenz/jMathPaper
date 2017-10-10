@@ -52,7 +52,6 @@ public class Paper {
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
-		evaluator.addEvaluatedExpression(evaluatedExpression);
 		evaluatedExpressions.add(evaluatedExpression);
 		
 		measureExpression(evaluatedExpression);

@@ -86,6 +86,7 @@ public class Evaluator {
 			}
 			
 			variables.put(id, result);
+			lastVariableAdded = id;
 			
 			return new EvaluatedExpression(id, preProcessedExpression, result, mathExpression.isBoolean());
 		} catch (Throwable th) {
