@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Ant-Version: Apache Ant 1.9.3
-Created-By: 1.8.0_141-8u141-b15-3~14.04-b15 (Oracle Corporation)
+Created-By: 1.8.0_111-8u111-b14-3~14.04.1-b14 (Oracle Corporation)
 Main-Class: org.bonsaimind.jmathpaper.Main
 Implementation-Title: jMathPaper
-Implementation-Version: 1.1
+Implementation-Version: 1.1.1
 Implementation-Vendor: Robert 'Bobby' Zenz
 
