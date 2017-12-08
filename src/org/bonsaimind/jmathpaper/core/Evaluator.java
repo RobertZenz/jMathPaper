@@ -135,8 +135,10 @@ public class Evaluator {
 		expression = expression.replace(" notequal ", " != ");
 		expression = expression.replace(" notequals ", " != ");
 		expression = expression.replace(" greater ", " > ");
+		expression = expression.replace(" greaterequal ", " >= ");
 		expression = expression.replace(" greaterequals ", " >= ");
 		expression = expression.replace(" less ", " < ");
+		expression = expression.replace(" lessequal ", " <= ");
 		expression = expression.replace(" lessequals ", " <= ");
 		
 		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);

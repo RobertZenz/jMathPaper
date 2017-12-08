@@ -129,9 +129,10 @@ The following operations are supported:
     ==           equals                               equal, equals
     !=           not equals                           notequal, notequals
     >            greater                              greater
-    >=           greater equals                       greaterequals
+    >=           greater equals                       greaterequal,
+                                                      greaterequals
     <            less                                 less
-    <=           less equals                          lessequals
+    <=           less equals                          lessequal, lessequals
     &&           and                                  and
     ||           or                                   or
 
