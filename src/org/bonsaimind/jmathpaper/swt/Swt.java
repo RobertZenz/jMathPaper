@@ -162,7 +162,8 @@ public class Swt extends AbstractPapersUi {
 		saveMenuItem.addListener(SWT.Selection, new EventForwarder(this::save));
 		
 		saveAsMenuItem = new MenuItem(fileMenu, SWT.PUSH);
-		saveAsMenuItem.setText("S&ave as");
+		saveAsMenuItem.setAccelerator(SWT.CTRL | SWT.SHIFT | 'S');
+		saveAsMenuItem.setText("S&ave as\tShift+Ctrl+S");
 		saveAsMenuItem.setToolTipText("Saves the current paper under a new name.");
 		saveAsMenuItem.addListener(SWT.Selection, this::onSaveAsPushed);
 		
