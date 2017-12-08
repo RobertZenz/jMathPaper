@@ -49,7 +49,7 @@ public final class Main {
 		}
 		
 		if (arguments.isVersionRequested()) {
-			System.out.println("jMathPaper 1.1.1");
+			System.out.println("jMathPaper " + Version.CURRENT);
 			return;
 		}
 		

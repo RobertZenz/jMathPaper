@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
+import org.bonsaimind.jmathpaper.Version;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
@@ -109,7 +110,7 @@ public class Swt extends AbstractPapersUi {
 		shell = new Shell();
 		shell.setLayout(mainLayout);
 		shell.setSize(720, 480);
-		shell.setText("jMathPaper");
+		shell.setText("jMathPaper " + Version.CURRENT);
 		
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
