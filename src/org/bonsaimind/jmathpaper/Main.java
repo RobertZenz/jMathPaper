@@ -23,6 +23,7 @@ import org.bonsaimind.jmathpaper.swt.Swt;
 import org.bonsaimind.jmathpaper.tui.Tui;
 
 import picocli.CommandLine;
+import picocli.CommandLine.ParameterException;
 
 public final class Main {
 	private Main() {
@@ -30,7 +31,17 @@ public final class Main {
 	}
 	
 	public static final void main(String[] args) {
-		Arguments arguments = CommandLine.populateCommand(new Arguments(), args);
+		Arguments arguments = null;
+		
+		try {
+			arguments = CommandLine.populateCommand(new Arguments(), args);
+		} catch (ParameterException e) {
+			System.out.println(e.getMessage());
+			System.out.println();
+			CommandLine.usage(new Arguments(), System.out);
+			
+			System.exit(2);
+		}
 		
 		if (arguments.isHelpRequested()) {
 			CommandLine.usage(arguments, System.out);
