@@ -50,6 +50,8 @@ public class Swt extends AbstractPapersUi {
 	private MenuItem closeAllMenuItem = null;
 	private MenuItem closeMenuItem = null;
 	private CTabFolder cTabFolder = null;
+	private FileDialog fileOpenDialog = null;
+	private FileDialog fileSaveDialog = null;
 	private MenuItem nextPaperMenuItem = null;
 	private MenuItem openMenuItem = null;
 	private int paperCounter = 0;
@@ -424,10 +426,16 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	private void onOpenPushed(Event event) {
-		FileDialog fileDialog = new FileDialog(shell, SWT.OPEN);
-		fileDialog.setOverwrite(true);
+		if (fileOpenDialog == null) {
+			fileOpenDialog = new FileDialog(shell, SWT.OPEN);
+		}
 		
-		open(fileDialog.open());
+		if (getPaper() != null && getPaper().getFile() != null) {
+			fileOpenDialog.setFilterPath(getPaper().getFile().getParent().toString());
+			fileOpenDialog.setFileName(getPaper().getFile().getFileName().toString());
+		}
+		
+		open(fileOpenDialog.open());
 	}
 	
 	private void onSaveAsPushed(Event event) {
@@ -436,17 +444,19 @@ public class Swt extends AbstractPapersUi {
 			PaperComponent paperComponent = (PaperComponent)cTabItem.getControl();
 			Paper paper = paperComponent.getPaper();
 			
-			FileDialog fileDialog = new FileDialog(shell, SWT.SAVE);
-			
-			if (paper.getFile() != null) {
-				fileDialog.setFileName(paper.getFile().getFileName().toString());
-			} else {
-				fileDialog.setFileName("new-paper.jmathpaper");
+			if (fileSaveDialog == null) {
+				fileSaveDialog = new FileDialog(shell, SWT.SAVE);
+				fileSaveDialog.setOverwrite(true);
 			}
 			
-			fileDialog.setOverwrite(true);
+			if (paper.getFile() != null) {
+				fileSaveDialog.setFilterPath(paper.getFile().getParent().toString());
+				fileSaveDialog.setFileName(paper.getFile().getFileName().toString());
+			} else {
+				fileSaveDialog.setFileName("new-paper.jmathpaper");
+			}
 			
-			String filePath = fileDialog.open();
+			String filePath = fileSaveDialog.open();
 			
 			if (filePath != null) {
 				paper.setFile(Paths.get(filePath));
