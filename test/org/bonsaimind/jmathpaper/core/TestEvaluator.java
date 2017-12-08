@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public class TestEvaluator {
 	private static final void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
-		Assert.assertTrue("Expected a boolean result, but evaluated expression is not of type boolean.", evaluatedExpression.isBoolean());
+		Assert.assertTrue("Expected a boolean result, but evaluated expression is not of type boolean.", evaluatedExpression instanceof BooleanEvaluatedExpression);
 		
 		if (expected) {
 			Assert.assertEquals(BigDecimal.ONE, evaluatedExpression.getResult());

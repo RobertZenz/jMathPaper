@@ -20,257 +20,10 @@ package org.bonsaimind.jmathpaper.core;
 import java.math.BigDecimal;
 
 /**
- * The {@link EvaluatedExpression} is a simple immutable container for an
- * expression which has been evaluated.
+ * {@link EvaluatedExpression} is the interface for defining a container for an
+ * evaluated expression, including the expression, the id and the result.
  */
-public class EvaluatedExpression {
-	protected String expression = null;
-	protected String formattedResult = null;
-	protected String id = null;
-	protected boolean isBoolean = false;
-	protected BigDecimal result = BigDecimal.ZERO;
-	
-	/**
-	 * Creates a new instance of {@link EvaluatedExpression}.
-	 *
-	 * @param id The ID.
-	 * @param expression The expression.
-	 * @param result The result. Use {@link BigDecimal#ZERO} if the expression
-	 *        could not be validated.
-	 * @param isBoolean The result should be seen as boolean.
-	 */
-	public EvaluatedExpression(
-			String id,
-			String expression,
-			BigDecimal result,
-			boolean isBoolean) {
-		this();
-		
-		this.id = id;
-		this.expression = expression;
-		this.result = result;
-		this.isBoolean = isBoolean;
-	}
-	
-	/**
-	 * Creates a new instance of {@link EvaluatedExpression}.
-	 * <p>
-	 * Required for the {@link #fromString(String)} method.
-	 */
-	protected EvaluatedExpression() {
-		super();
-	}
-	
-	/**
-	 * Creates a new {@link EvaluatedExpression} from the given string
-	 * representation.
-	 * <p>
-	 * If the given string representation can not be processed {@code null} is
-	 * returned.
-	 * 
-	 * @param string The string representation.
-	 * @return The created {@link EvaluatedExpression} created from the given
-	 *         string representation. {@code null} if the given string
-	 *         representation could not be processed.
-	 */
-	public static EvaluatedExpression fromString(String string) {
-		if (string == null) {
-			return null;
-		}
-		
-		String trimmedString = string.trim();
-		
-		int firstSeparatorIndex = trimmedString.indexOf(" ");
-		if (firstSeparatorIndex < 0) {
-			return null;
-		}
-		
-		int lastSeparatorIndex = trimmedString.lastIndexOf("=");
-		if (lastSeparatorIndex < 0) {
-			return null;
-		}
-		
-		EvaluatedExpression evaluatedExpression = new EvaluatedExpression();
-		evaluatedExpression.id = trimmedString.substring(0, firstSeparatorIndex).trim();
-		evaluatedExpression.expression = trimmedString.substring(firstSeparatorIndex + 1, lastSeparatorIndex).trim();
-		
-		String result = trimmedString.substring(lastSeparatorIndex + 1).trim();
-		
-		if (result.equals("true") || result.equals("false")) {
-			evaluatedExpression.isBoolean = Boolean.parseBoolean(result);
-			
-			if (evaluatedExpression.isBoolean) {
-				evaluatedExpression.result = BigDecimal.ONE;
-			} else {
-				evaluatedExpression.result = BigDecimal.ZERO;
-			}
-		} else {
-			try {
-				evaluatedExpression.result = new BigDecimal(result).stripTrailingZeros();
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-				
-				return null;
-			}
-		}
-		
-		return evaluatedExpression;
-	}
-	
-	/**
-	 * A small helper function to add a padded {@link String} to a
-	 * {@link StringBuilder} .
-	 * 
-	 * @param builder The {@link StringBuilder} to append to.
-	 * @param value The {@link String} to append.
-	 * @param padLeft The amount of padding on the left.
-	 * @param padRight The amount of padding on the right.
-	 */
-	protected static final void appendPadded(StringBuilder builder, String value, int padLeft, int padRight) {
-		for (int counter = 0; counter < padLeft - value.length(); counter++) {
-			builder.append(" ");
-		}
-		
-		builder.append(value);
-		
-		for (int counter = 0; counter < padRight - value.length(); counter++) {
-			builder.append(" ");
-		}
-	}
-	
-	/**
-	 * Returns {@code "true"} if the given value is not zero.
-	 * 
-	 * @param value The value to check.
-	 * @return {@code "true"} if the given value is not zero.
-	 */
-	protected static final String toBooleanString(BigDecimal value) {
-		if (value.intValue() == 0) {
-			return Boolean.FALSE.toString();
-		} else {
-			return Boolean.TRUE.toString();
-		}
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		EvaluatedExpression other = (EvaluatedExpression)obj;
-		if (expression == null) {
-			if (other.expression != null) {
-				return false;
-			}
-		} else if (!expression.equals(other.expression)) {
-			return false;
-		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
-			return false;
-		}
-		if (result == null) {
-			if (other.result != null) {
-				return false;
-			}
-		} else if (!result.equals(other.result)) {
-			return false;
-		}
-		if (isBoolean != other.isBoolean) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * Gets the expression.
-	 * 
-	 * @return The expression.
-	 */
-	public String getExpression() {
-		return expression;
-	}
-	
-	/**
-	 * Gets the formatted result.
-	 * 
-	 * @return the formatted result.
-	 */
-	public String getFormattedResult() {
-		if (formattedResult == null) {
-			if (isBoolean) {
-				formattedResult = toBooleanString(result);
-			} else {
-				formattedResult = result.toPlainString();
-			}
-		}
-		return formattedResult;
-	}
-	
-	/**
-	 * The ID.
-	 * 
-	 * @return The ID.
-	 */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-	 * The {@link BigDecimal result}.
-	 * 
-	 * @return The {@link BigDecimal result}.
-	 */
-	public BigDecimal getResult() {
-		return result;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((expression == null) ? 0 : expression.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
-		result = prime * result + (isBoolean ? 1231 : 1237);
-		return result;
-	}
-	
-	/**
-	 * Gets if the result should be seen as boolean.
-	 * 
-	 * @return {@code true} if the result should be seen as boolean.
-	 */
-	public boolean isBoolean() {
-		return isBoolean;
-	}
-	
-	/**
-	 * Creates a well defined string representation from this
-	 * {@link EvaluatedExpression}.
-	 * 
-	 * @return A well defined string representation.
-	 */
-	@Override
-	public String toString() {
-		return toString(0, 0, 0);
-	}
-	
+public interface EvaluatedExpression {
 	/**
 	 * Creates a well defined string representation from this
 	 * {@link EvaluatedExpression}.
@@ -280,16 +33,33 @@ public class EvaluatedExpression {
 	 * @param resultColumnWidth The width of the column for the result.
 	 * @return A well defined string representation.
 	 */
-	public String toString(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth) {
-		StringBuilder builder = new StringBuilder();
-		
-		appendPadded(builder, id, 0, idColumnWidth);
-		builder.append(" ");
-		appendPadded(builder, expression, expressionColumnWidth, 0);
-		builder.append(" = ");
-		
-		appendPadded(builder, getFormattedResult(), resultColumnWidth, 0);
-		
-		return builder.toString();
-	}
+	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth);
+	
+	/**
+	 * Gets the expression.
+	 * 
+	 * @return The expression.
+	 */
+	public String getExpression();
+	
+	/**
+	 * Gets the formatted result.
+	 * 
+	 * @return The formatted result.
+	 */
+	public String getFormattedResult();
+	
+	/**
+	 * Gets the ID.
+	 * 
+	 * @return The ID.
+	 */
+	public String getId();
+	
+	/**
+	 * Gets the result.
+	 * 
+	 * @return The result.
+	 */
+	public BigDecimal getResult();
 }

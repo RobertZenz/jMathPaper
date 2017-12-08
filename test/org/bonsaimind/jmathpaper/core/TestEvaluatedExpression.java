@@ -19,46 +19,48 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEvaluatedExpression {
 	@Test
 	public void testFromString() {
-		Assert.assertNull(EvaluatedExpression.fromString(null));
-		Assert.assertNull(EvaluatedExpression.fromString(""));
-		Assert.assertNull(EvaluatedExpression.fromString("invalid"));
+		Assert.assertNull(EvaluatedExpressionCreator.create(null));
+		Assert.assertNull(EvaluatedExpressionCreator.create(""));
+		Assert.assertNull(EvaluatedExpressionCreator.create("invalid"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false),
-				EvaluatedExpression.fromString("1 1+1 = 2"));
+				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")),
+				EvaluatedExpressionCreator.create("1 1+1 = 2"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false),
-				EvaluatedExpression.fromString("1   \t  \t  1+1 \t =    2"));
+				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")),
+				EvaluatedExpressionCreator.create("1   \t  \t  1+1 \t =    2"));
 		
 		Assert.assertEquals(
-				new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true),
-				EvaluatedExpression.fromString("1 1>0 = true"));
+				new BooleanEvaluatedExpression("1", "1>0", true),
+				EvaluatedExpressionCreator.create("1 1>0 = true"));
 	}
 	
 	@Test
 	public void testToFromStringSanity() {
-		EvaluatedExpression validEvaluatedExpression = new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false);
-		Assert.assertEquals(validEvaluatedExpression, EvaluatedExpression.fromString(validEvaluatedExpression.toString()));
+		EvaluatedExpression validEvaluatedExpression = new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2"));
+		Assert.assertEquals(validEvaluatedExpression, EvaluatedExpressionCreator.create(validEvaluatedExpression.toString()));
 		
-		EvaluatedExpression validBooleanEvaluatedExpression = new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true);
-		Assert.assertEquals(validBooleanEvaluatedExpression, EvaluatedExpression.fromString(validBooleanEvaluatedExpression.toString()));
+		EvaluatedExpression validBooleanEvaluatedExpression = new BooleanEvaluatedExpression("1", "1>0", true);
+		Assert.assertEquals(validBooleanEvaluatedExpression, EvaluatedExpressionCreator.create(validBooleanEvaluatedExpression.toString()));
 	}
 	
 	@Test
 	public void testToString() {
 		Assert.assertEquals(
 				"1 1+1 = 2",
-				new EvaluatedExpression("1", "1+1", new BigDecimal("2"), false).toString());
+				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")).toString());
 		
 		Assert.assertEquals(
 				"1 1>0 = true",
-				new EvaluatedExpression("1", "1>0", new BigDecimal("1"), true).toString());
+				new BooleanEvaluatedExpression("1", "1>0", true).toString());
 	}
 }

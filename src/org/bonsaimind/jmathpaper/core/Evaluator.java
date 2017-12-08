@@ -26,6 +26,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
+
 import com.udojava.evalex.Expression;
 
 public class Evaluator {
@@ -89,7 +92,11 @@ public class Evaluator {
 			variables.put(id, result);
 			lastVariableAdded = id;
 			
-			return new EvaluatedExpression(id, preProcessedExpression, result, mathExpression.isBoolean());
+			if (mathExpression.isBoolean()) {
+				return new BooleanEvaluatedExpression(id, processedExpression, result);
+			} else {
+				return new NumberEvaluatedExpression(id, processedExpression, result);
+			}
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
 		}

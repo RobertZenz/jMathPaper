@@ -93,7 +93,7 @@ public class Tui extends AbstractPapersUi {
 								
 								EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
 								
-								writer.write(evaluatedExpression.toString(
+								writer.write(evaluatedExpression.format(
 										paper.getIdColumnSize(),
 										paper.getExpressionColumnSize(),
 										paper.getResultColumnSize()));
@@ -140,7 +140,7 @@ public class Tui extends AbstractPapersUi {
 			}
 			
 			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
-				writer.write(evaluatedExpression.toString(
+				writer.write(evaluatedExpression.format(
 						paper.getIdColumnSize(),
 						paper.getExpressionColumnSize(),
 						paper.getResultColumnSize()));

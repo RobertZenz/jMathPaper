@@ -68,7 +68,7 @@ public class Paper {
 		for (String line : string) {
 			if (!notesReached) {
 				if (!line.isEmpty()) {
-					EvaluatedExpression evaluatedExpression = EvaluatedExpression.fromString(line);
+					EvaluatedExpression evaluatedExpression = EvaluatedExpressionCreator.create(line);
 					
 					if (evaluatedExpression != null) {
 						evaluator.addEvaluatedExpression(evaluatedExpression);
@@ -169,7 +169,7 @@ public class Paper {
 		StringBuilder builder = new StringBuilder();
 		
 		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			builder.append(evaluatedExpression.toString(
+			builder.append(evaluatedExpression.format(
 					idColumnSize,
 					expressionColumnSize,
 					resultColumnSize));
