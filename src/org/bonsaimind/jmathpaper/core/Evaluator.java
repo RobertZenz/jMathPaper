@@ -93,9 +93,9 @@ public class Evaluator {
 			lastVariableAdded = id;
 			
 			if (mathExpression.isBoolean()) {
-				return new BooleanEvaluatedExpression(id, processedExpression, result);
+				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
 			} else {
-				return new NumberEvaluatedExpression(id, processedExpression, result);
+				return new NumberEvaluatedExpression(id, preProcessedExpression, result);
 			}
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
