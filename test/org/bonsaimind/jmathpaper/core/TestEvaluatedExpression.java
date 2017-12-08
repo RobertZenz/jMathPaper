@@ -26,34 +26,6 @@ import org.junit.Test;
 
 public class TestEvaluatedExpression {
 	@Test
-	public void testFromString() {
-		Assert.assertNull(EvaluatedExpressionCreator.create(null));
-		Assert.assertNull(EvaluatedExpressionCreator.create(""));
-		Assert.assertNull(EvaluatedExpressionCreator.create("invalid"));
-		
-		Assert.assertEquals(
-				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")),
-				EvaluatedExpressionCreator.create("1 1+1 = 2"));
-		
-		Assert.assertEquals(
-				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")),
-				EvaluatedExpressionCreator.create("1   \t  \t  1+1 \t =    2"));
-		
-		Assert.assertEquals(
-				new BooleanEvaluatedExpression("1", "1>0", true),
-				EvaluatedExpressionCreator.create("1 1>0 = true"));
-	}
-	
-	@Test
-	public void testToFromStringSanity() {
-		EvaluatedExpression validEvaluatedExpression = new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2"));
-		Assert.assertEquals(validEvaluatedExpression, EvaluatedExpressionCreator.create(validEvaluatedExpression.toString()));
-		
-		EvaluatedExpression validBooleanEvaluatedExpression = new BooleanEvaluatedExpression("1", "1>0", true);
-		Assert.assertEquals(validBooleanEvaluatedExpression, EvaluatedExpressionCreator.create(validBooleanEvaluatedExpression.toString()));
-	}
-	
-	@Test
 	public void testToString() {
 		Assert.assertEquals(
 				"1 1+1 = 2",

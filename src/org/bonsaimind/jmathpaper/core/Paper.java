@@ -59,20 +59,21 @@ public class Paper {
 		return evaluatedExpression;
 	}
 	
-	public void fromString(List<String> string) {
-		clear();
-		
+	public void evaluateFromText(String text) {
+		evaluateLines(Arrays.asList(text.split("\\n")));
+	}
+	
+	public void evaluateLines(List<String> lines) {
 		StringBuilder notesBuilder = new StringBuilder();
 		boolean notesReached = false;
 		
-		for (String line : string) {
+		for (String line : lines) {
 			if (!notesReached) {
-				if (!line.isEmpty()) {
-					EvaluatedExpression evaluatedExpression = EvaluatedExpressionCreator.create(line);
-					
-					if (evaluatedExpression != null) {
-						evaluator.addEvaluatedExpression(evaluatedExpression);
-						evaluatedExpressions.add(evaluatedExpression);
+				if (!line.trim().isEmpty()) {
+					try {
+						evaluate(extractExpression(line));
+					} catch (InvalidExpressionException e) {
+						e.printStackTrace();
 					}
 				} else {
 					notesReached = true;
@@ -88,10 +89,6 @@ public class Paper {
 		evaluator.setExpressionCounter(evaluatedExpressions.size());
 		
 		remeasureColumnSizes();
-	}
-	
-	public void fromString(String string) {
-		fromString(Arrays.asList(string.split("\\n")));
 	}
 	
 	public List<EvaluatedExpression> getEvaluatedExpressions() {
@@ -135,7 +132,9 @@ public class Paper {
 			throw new FileNotFoundException(file.toAbsolutePath().toString());
 		}
 		
-		fromString(Files.readAllLines(file, StandardCharsets.UTF_8));
+		clear();
+		
+		evaluateLines(Files.readAllLines(file, StandardCharsets.UTF_8));
 	}
 	
 	public void save() throws IOException {
@@ -183,6 +182,28 @@ public class Paper {
 		}
 		
 		return builder.toString();
+	}
+	
+	protected String extractExpression(String line) {
+		if (line == null) {
+			return null;
+		}
+		
+		String trimmedString = line.trim();
+		
+		int firstSeparatorIndex = trimmedString.indexOf(" ");
+		if (firstSeparatorIndex >= 0) {
+			trimmedString = trimmedString.substring(firstSeparatorIndex + 1);
+		}
+		
+		int lastSeparatorIndex = trimmedString.lastIndexOf("=");
+		if (lastSeparatorIndex >= 0) {
+			trimmedString = trimmedString.substring(0, lastSeparatorIndex);
+		}
+		
+		trimmedString = trimmedString.trim();
+		
+		return trimmedString;
 	}
 	
 	protected void measureExpression(EvaluatedExpression evaluatedExpression) {

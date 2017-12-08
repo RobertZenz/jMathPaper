@@ -36,7 +36,7 @@ public class TestPaper {
 		paper.setNotes("Some test text.");
 		
 		Paper secondPaper = new Paper();
-		secondPaper.fromString(paper.toString());
+		secondPaper.evaluateFromText(paper.toString());
 		
 		Assert.assertEquals(paper.toString(), secondPaper.toString());
 	}

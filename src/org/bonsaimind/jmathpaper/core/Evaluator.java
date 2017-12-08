@@ -62,11 +62,6 @@ public class Evaluator {
 		return Long.toString(Long.parseLong(value, 8));
 	}
 	
-	public void addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
-		variables.put(evaluatedExpression.getId(), evaluatedExpression.getResult());
-		lastVariableAdded = evaluatedExpression.getId();
-	}
-	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		String preProcessedExpression = preProcess(expression);
 		
