@@ -53,6 +53,8 @@ public final class Main {
 			return;
 		}
 		
+		Configuration.init();
+		
 		Ui ui = null;
 		
 		if ((arguments.getExpression() != null && !arguments.hasFiles())

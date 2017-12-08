@@ -23,33 +23,37 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class Configuration {
+	private static Path cachedConfigDirectory = null;
+	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
+	
 	private Configuration() {
 		// No instancing required.
 	}
 	
 	public static final Path getConfigDirectory() {
-		Path configDirectory = null;
-		
-		String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
-		
-		if (xdgConfigHome == null || xdgConfigHome.trim().length() == 0) {
-			String userHome = System.getenv("HOME");
+		if (cachedConfigDirectory == null) {
+			String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
 			
-			if (userHome == null || userHome.trim().length() == 0) {
-				// Wait, what?
-				return Paths.get(".");
+			if (xdgConfigHome == null || xdgConfigHome.trim().length() == 0) {
+				String userHome = System.getenv("HOME");
+				
+				if (userHome == null || userHome.trim().length() == 0) {
+					// Wait, what?
+					return Paths.get(".");
+				}
+				
+				cachedConfigDirectory = Paths.get(userHome, ".local", "share");
 			}
 			
-			configDirectory = Paths.get(userHome, ".local");
+			cachedConfigDirectory = cachedConfigDirectory.resolve("jmathpaper");
+			cachedConfigDirectory = cachedConfigDirectory.normalize().toAbsolutePath();
 		}
 		
-		configDirectory = Paths.get(configDirectory.toString(), "jmathpaper");
-		
-		return configDirectory;
+		return cachedConfigDirectory;
 	}
 	
 	public static final Path getGlobalPaperFile() {
-		Path globalPaperFile = Paths.get(getConfigDirectory().toString(), "global.jmathpaper");
+		Path globalPaperFile = getConfigDirectory().resolve(GLOBAL_PAPER_NAME);
 		
 		if (!Files.exists(globalPaperFile)) {
 			try {
@@ -62,5 +66,42 @@ public final class Configuration {
 		}
 		
 		return globalPaperFile;
+	}
+	
+	public static final void init() {
+		migrateGlobalPaper();
+	}
+	
+	/**
+	 * Migrates the global paper from its old location (1.1) in
+	 * {@code $HOME/.local/jmathpaper} to its new home (1.2+) in
+	 * {@code $HOME/.local/share/jmathpaper}.
+	 */
+	private static final void migrateGlobalPaper() {
+		Path configDirectory = getConfigDirectory();
+		
+		if (configDirectory.getNameCount() >= 3
+				&& configDirectory.getName(configDirectory.getNameCount() - 2).toString().equals("share")
+				&& configDirectory.getName(configDirectory.getNameCount() - 3).toString().equals(".local")) {
+			Path oldLocation = configDirectory.getParent().getParent();
+			oldLocation = oldLocation.resolve("jmathpaper").resolve(GLOBAL_PAPER_NAME);
+			
+			if (Files.isRegularFile(oldLocation)) {
+				Path newLocation = configDirectory.resolve(GLOBAL_PAPER_NAME);
+				
+				try {
+					if (!Files.exists(newLocation)) {
+						Files.createDirectories(newLocation.getParent());
+						Files.copy(oldLocation, newLocation);
+					}
+					
+					Files.deleteIfExists(oldLocation);
+					Files.deleteIfExists(oldLocation.getParent());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
