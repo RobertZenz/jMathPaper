@@ -38,6 +38,6 @@ public class TestPaper {
 		Paper secondPaper = new Paper();
 		secondPaper.fromString(paper.toString());
 		
-		Assert.assertEquals(paper, secondPaper);
+		Assert.assertEquals(paper.toString(), secondPaper.toString());
 	}
 }
