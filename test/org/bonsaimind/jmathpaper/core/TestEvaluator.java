@@ -36,7 +36,16 @@ public class TestEvaluator {
 	}
 	
 	private static final void assertResult(String expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
-		Assert.assertEquals(new BigDecimal(expected), evaluator.evaluate(expression).getResult().setScale(0));
+		BigDecimal expectedBigDecimal = new BigDecimal(expected);
+		BigDecimal actualBigDecimal = evaluator.evaluate(expression).getResult();
+		
+		if (expectedBigDecimal.compareTo(actualBigDecimal) != 0) {
+			Assert.fail("expected: <"
+					+ expectedBigDecimal.toPlainString()
+					+ "> but was: <"
+					+ actualBigDecimal.toPlainString()
+					+ ">");
+		}
 	}
 	
 	@Test
@@ -75,6 +84,13 @@ public class TestEvaluator {
 		assertResult("12", "0b1100", new Evaluator());
 		assertResult("63", "0o77", new Evaluator());
 		assertResult("255", "0xff", new Evaluator());
+	}
+	
+	@Test
+	public void testPrecision() throws InvalidExpressionException {
+		assertResult("123456790", "123456789+1", new Evaluator());
+		assertResult("123456789123456790", "123456789123456789+1", new Evaluator());
+		assertResult("1.000000001", "1.000000+0.000000001", new Evaluator());
 	}
 	
 	@Test

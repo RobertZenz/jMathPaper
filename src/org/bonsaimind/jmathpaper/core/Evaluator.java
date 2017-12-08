@@ -18,6 +18,7 @@
 package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -144,7 +145,9 @@ public class Evaluator {
 		
 		String processedExpression = expression.replace('#', 'R');
 		
-		Expression mathExpression = new Expression(processedExpression);
+		Expression mathExpression = new Expression(
+				processedExpression,
+				MathContext.UNLIMITED);
 		
 		for (Entry<String, BigDecimal> variable : variables.entrySet()) {
 			mathExpression.with(variable.getKey().replace('#', 'R'), variable.getValue());
