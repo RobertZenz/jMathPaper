@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEvaluator {
-	private static final void assertResult(boolean expected, Evaluator evaluator, String expression) throws InvalidExpressionException {
+	private static final void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
 		Assert.assertTrue("Expected a boolean result, but evaluated expression is not of type boolean.", evaluatedExpression.isBoolean());
@@ -35,59 +35,59 @@ public class TestEvaluator {
 		}
 	}
 	
-	private static final void assertResult(String expected, Evaluator evaluator, String expression) throws InvalidExpressionException {
+	private static final void assertResult(String expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		Assert.assertEquals(new BigDecimal(expected), evaluator.evaluate(expression).getResult().setScale(0));
 	}
 	
 	@Test
 	public void testBasicExpression() throws InvalidExpressionException {
-		assertResult("2", new Evaluator(), "1+1");
-		assertResult("680", new Evaluator(), "5*8*(8+9)");
+		assertResult("2", "1+1", new Evaluator());
+		assertResult("680", "5*8*(8+9)", new Evaluator());
 	}
 	
 	@Test
 	public void testBooleans() throws InvalidExpressionException {
-		assertResult(true, new Evaluator(), "1==1");
-		assertResult(false, new Evaluator(), "1==2");
-		assertResult(false, new Evaluator(), "true and false");
+		assertResult(true, "1==1", new Evaluator());
+		assertResult(false, "1==2", new Evaluator());
+		assertResult(false, "true and false", new Evaluator());
 	}
 	
 	@Test
 	public void testComments() throws InvalidExpressionException {
-		assertResult("0", new Evaluator(), "// Completely empty statement");
-		assertResult("0", new Evaluator(), "/* Another empty. */");
-		assertResult("2", new Evaluator(), "1 /* Inlined */ + 1");
-		assertResult("2", new Evaluator(), "1 + /* Nested // */ 1");
+		assertResult("0", "// Completely empty statement", new Evaluator());
+		assertResult("0", "/* Another empty. */", new Evaluator());
+		assertResult("2", "1 /* Inlined */ + 1", new Evaluator());
+		assertResult("2", "1 + /* Nested // */ 1", new Evaluator());
 	}
 	
 	@Test
 	public void testlastResultReference() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
-		assertResult("25", evaluator, "00 + 5*5");
-		assertResult("30", evaluator, "00+5");
-		assertResult("150", evaluator, "5*00");
+		assertResult("25", "00 + 5*5", evaluator);
+		assertResult("30", "00+5", evaluator);
+		assertResult("150", "5*00", evaluator);
 	}
 	
 	@Test
 	public void testNumberBases() throws InvalidExpressionException {
-		assertResult("32", new Evaluator(), "32");
-		assertResult("12", new Evaluator(), "0b1100");
-		assertResult("63", new Evaluator(), "0o77");
-		assertResult("255", new Evaluator(), "0xff");
+		assertResult("32", "32", new Evaluator());
+		assertResult("12", "0b1100", new Evaluator());
+		assertResult("63", "0o77", new Evaluator());
+		assertResult("255", "0xff", new Evaluator());
 	}
 	
 	@Test
 	public void testVariableDefinition() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
-		assertResult("2", evaluator, "a=2");
-		assertResult("12", evaluator, "b=a+10");
-		assertResult("22", evaluator, "abc5=b+10");
-		assertResult("220", evaluator, "_10=abc5*10");
+		assertResult("2", "a=2", evaluator);
+		assertResult("12", "b=a+10", evaluator);
+		assertResult("22", "abc5=b+10", evaluator);
+		assertResult("220", "_10=abc5*10", evaluator);
 		
-		assertResult("10", evaluator, "test = 10");
-		assertResult("10", evaluator, "test");
-		assertResult("15", evaluator, "test2 = test + 5");
+		assertResult("10", "test = 10", evaluator);
+		assertResult("10", "test", evaluator);
+		assertResult("15", "test2 = test + 5", evaluator);
 	}
 }
