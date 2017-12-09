@@ -30,6 +30,9 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 	/** The {@link BigDecimal} value that is used for {@code true}. */
 	public static final BigDecimal TRUE = BigDecimal.ONE;
 	
+	/** The result as {@link Boolean}. */
+	protected Boolean booleanResult = Boolean.FALSE;
+	
 	/**
 	 * Creates a new instance of {@link BooleanEvaluatedExpression}.
 	 *
@@ -39,6 +42,8 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 	 */
 	public BooleanEvaluatedExpression(String id, String expression, BigDecimal result) {
 		super(id, expression, result);
+		
+		booleanResult = asBoolean(result);
 	}
 	
 	/**
@@ -50,6 +55,8 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 	 */
 	public BooleanEvaluatedExpression(String id, String expression, boolean result) {
 		super(id, expression, asBigDecimal(result));
+		
+		booleanResult = Boolean.valueOf(result);
 	}
 	
 	/**
@@ -61,6 +68,8 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 	 */
 	public BooleanEvaluatedExpression(String id, String expression, Boolean result) {
 		super(id, expression, asBigDecimal(result.booleanValue()));
+		
+		booleanResult = result;
 	}
 	
 	/**
@@ -78,14 +87,33 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 	}
 	
 	/**
+	 * Returns the appropriate value for the given value.
+	 * 
+	 * @param value The value.
+	 * @return Either {@link Boolean#TRUE} or {@link Boolean#FALSE}.
+	 */
+	protected static final Boolean asBoolean(BigDecimal value) {
+		if (FALSE.compareTo(value) == 0) {
+			return Boolean.FALSE;
+		} else {
+			return Boolean.TRUE;
+		}
+	}
+	
+	/**
+	 * Gets the result as {@link Boolean}.
+	 * 
+	 * @return The result as {@link Boolean}.
+	 */
+	public Boolean getBooleanResult() {
+		return booleanResult;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected String formatResult() {
-		if (FALSE.compareTo(result) == 0) {
-			return Boolean.FALSE.toString();
-		} else {
-			return Boolean.TRUE.toString();
-		}
+		return asBoolean(result).toString();
 	}
 }
