@@ -36,6 +36,25 @@ public class TestEvaluator {
 	
 	private static final void assertExpression(
 			String expectedId,
+			boolean expectedResult,
+			String expression,
+			Evaluator evaluator) throws InvalidExpressionException {
+		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
+		
+		Assert.assertEquals(expectedId, evaluatedExpression.getId());
+		Assert.assertEquals(expression, evaluatedExpression.getExpression());
+		
+		Assert.assertTrue(
+				"Expected a BooleanEvaluatedExpression, but got: <" + evaluatedExpression.getClass().getName() + ">",
+				evaluatedExpression instanceof BooleanEvaluatedExpression);
+		
+		Assert.assertEquals(
+				Boolean.valueOf(expectedResult),
+				((BooleanEvaluatedExpression)evaluatedExpression).getBooleanResult());
+	}
+	
+	private static final void assertExpression(
+			String expectedId,
 			String expectedResult,
 			String expression,
 			Evaluator evaluator) throws InvalidExpressionException {
@@ -49,13 +68,13 @@ public class TestEvaluator {
 	private static final void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
-		Assert.assertTrue("Expected a boolean result, but evaluated expression is not of type boolean.", evaluatedExpression instanceof BooleanEvaluatedExpression);
+		Assert.assertTrue(
+				"Expected a BooleanEvaluatedExpression, but got: <" + evaluatedExpression.getClass().getName() + ">",
+				evaluatedExpression instanceof BooleanEvaluatedExpression);
 		
-		if (expected) {
-			Assert.assertEquals(BigDecimal.ONE, evaluatedExpression.getResult());
-		} else {
-			Assert.assertEquals(BigDecimal.ZERO, evaluatedExpression.getResult());
-		}
+		Assert.assertEquals(
+				Boolean.valueOf(expected),
+				((BooleanEvaluatedExpression)evaluatedExpression).getBooleanResult());
 	}
 	
 	private static final void assertResult(String expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
