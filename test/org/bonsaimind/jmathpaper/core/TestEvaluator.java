@@ -114,13 +114,17 @@ public class TestEvaluator {
 	public void testVariableDefinition() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
+		assertExpression("#1", "2", "1+1", evaluator);
+		assertExpression("#2", "4", "2+2", evaluator);
+		assertExpression("#3", "6", "3+3", evaluator);
+		
 		assertExpression("a", "2", "a=2", evaluator);
 		assertExpression("b", "12", "b=a+10", evaluator);
 		assertExpression("abc5", "22", "abc5=b+10", evaluator);
 		assertExpression("_10", "220", "_10=abc5*10", evaluator);
 		
 		assertExpression("test", "10", "test = 10", evaluator);
-		assertExpression("#1", "10", "test", evaluator);
+		assertExpression("#4", "10", "test", evaluator);
 		assertExpression("test2", "15", "test2 = test + 5", evaluator);
 	}
 }
