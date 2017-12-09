@@ -35,6 +35,12 @@
 			</classpath>
 		</javac>
 
+		<copy todir="${build}">
+			<fileset dir="${src}">
+				<include name="**/*.regex" />
+			</fileset>
+		</copy>
+
 		<manifest file="MANIFEST.MF">
 			<attribute name="Main-Class" value="org.bonsaimind.jmathpaper.Main" />
 			<attribute name="Implementation-Title" value="${ant.project.name}" />

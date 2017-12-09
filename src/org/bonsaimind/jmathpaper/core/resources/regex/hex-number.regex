@@ -1,0 +1,36 @@
+#
+# Copyright 2017, Robert 'Bobby' Zenz
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Regular Expression for finding prefixed hex numbers.
+#
+# Matched samples:
+#   0x0
+#   0x1
+#   0xaf7249cd2
+#
+# The number without the prefix is the group VALUE.
+
+
+(^|[^0-9a-zA-Z,.])	# Must start with the string start or not a number nor
+					# letter nor comma nor point.
+0x					# The prefix that is expected.
+(?<VALUE>			# Start of the main group.
+	[0-9a-fA-F]+	# Must be followed by numbers between 0 and 9 or A to F
+					# (either lower- or uppercase), at least one.
+)
+($|[^0-9a-zA-Z.,])	# Must end with either the string end or not a number nor
+					# a letter nor a point or comma.

@@ -28,18 +28,19 @@ import java.util.regex.Pattern;
 
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
 import com.udojava.evalex.Expression;
 
 public class Evaluator {
-	private static final Pattern BINARY_NUMBER = Pattern.compile("(^|[^0-9])0b(?<VALUE>[01]+)($|[^.,])");
+	private static final Pattern BINARY_NUMBER = ResourceLoader.compileRegex("binary-number");
 	private static final String COMMENT_INLINE_END = "*/";
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
-	private static final Pattern HEX_NUMBER = Pattern.compile("(^|[^0-9])0x(?<VALUE>[0-9a-fA-F]+)($|[^.,])");
-	private static final Pattern ID_FINDER = Pattern.compile("^(?<ID>[a-zA-Z_][a-zA-Z_0-9]*)(\\s)*=(?<EXPRESSION>[^=]+.*)$");
-	private static final Pattern LAST_REFERENCE = Pattern.compile("(^|[^0-9,.])(?<VALUE>00)($|[^0-9.,])");
-	private static final Pattern OCTAL_NUMBER = Pattern.compile("(^|[^0-9])0o(?<VALUE>[0-7]+)($|[^.,])");
+	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
+	private static final Pattern ID = ResourceLoader.compileRegex("id");
+	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
+	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private int expressionCounter = 0;
 	private String lastVariableAdded = null;
 	private Map<String, BigDecimal> variables = new HashMap<>();
@@ -68,11 +69,11 @@ public class Evaluator {
 		String id = null;
 		String processedExpression = stripComments(preProcessedExpression);
 		
-		Matcher idFinderMatcher = ID_FINDER.matcher(processedExpression);
+		Matcher idMatcher = ID.matcher(processedExpression);
 		
-		if (idFinderMatcher.matches()) {
-			id = idFinderMatcher.group("ID");
-			processedExpression = idFinderMatcher.group("EXPRESSION");
+		if (idMatcher.matches()) {
+			id = idMatcher.group("ID");
+			processedExpression = idMatcher.group("EXPRESSION");
 		}
 		
 		try {
