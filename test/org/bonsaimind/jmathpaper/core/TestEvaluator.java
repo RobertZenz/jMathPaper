@@ -24,6 +24,28 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEvaluator {
+	private static final void assertEquals(BigDecimal expected, BigDecimal actual) {
+		if (expected.compareTo(actual) != 0) {
+			Assert.fail("expected: <"
+					+ expected.toPlainString()
+					+ "> but was: <"
+					+ actual.toPlainString()
+					+ ">");
+		}
+	}
+	
+	private static final void assertExpression(
+			String expectedId,
+			String expectedResult,
+			String expression,
+			Evaluator evaluator) throws InvalidExpressionException {
+		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
+		
+		Assert.assertEquals(expectedId, evaluatedExpression.getId());
+		Assert.assertEquals(expression, evaluatedExpression.getExpression());
+		assertEquals(new BigDecimal(expectedResult), evaluatedExpression.getResult());
+	}
+	
 	private static final void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
 		
@@ -40,13 +62,7 @@ public class TestEvaluator {
 		BigDecimal expectedBigDecimal = new BigDecimal(expected);
 		BigDecimal actualBigDecimal = evaluator.evaluate(expression).getResult();
 		
-		if (expectedBigDecimal.compareTo(actualBigDecimal) != 0) {
-			Assert.fail("expected: <"
-					+ expectedBigDecimal.toPlainString()
-					+ "> but was: <"
-					+ actualBigDecimal.toPlainString()
-					+ ">");
-		}
+		assertEquals(expectedBigDecimal, actualBigDecimal);
 	}
 	
 	@Test
@@ -98,13 +114,13 @@ public class TestEvaluator {
 	public void testVariableDefinition() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
-		assertResult("2", "a=2", evaluator);
-		assertResult("12", "b=a+10", evaluator);
-		assertResult("22", "abc5=b+10", evaluator);
-		assertResult("220", "_10=abc5*10", evaluator);
+		assertExpression("a", "2", "a=2", evaluator);
+		assertExpression("b", "12", "b=a+10", evaluator);
+		assertExpression("abc5", "22", "abc5=b+10", evaluator);
+		assertExpression("_10", "220", "_10=abc5*10", evaluator);
 		
-		assertResult("10", "test = 10", evaluator);
-		assertResult("10", "test", evaluator);
-		assertResult("15", "test2 = test + 5", evaluator);
+		assertExpression("test", "10", "test = 10", evaluator);
+		assertExpression("#1", "10", "test", evaluator);
+		assertExpression("test2", "15", "test2 = test + 5", evaluator);
 	}
 }
