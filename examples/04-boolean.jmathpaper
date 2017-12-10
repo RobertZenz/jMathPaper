@@ -1,8 +1,8 @@
 #1                                          1==1 =  true
-#2                                          2==1 =     0
+#2                                          2==1 = false
 #3                                           2>1 =  true
 #4                                 true || false =  true
-#5                                 true && false =     0
+#5                                 true && false = false
 aliases                  aliases= true and false = false
 aliases                   aliases= true or false =  true
 

@@ -1,9 +1,9 @@
-#1                                       1+1 =   2
-#2                                      #1+5 =   7
-length                              length=5 =   5
-width                                width=5 =   5
-depth                                depth=5 =   5
-volume             volume=length*width*depth = 125
+#1                                             1+1 =   2
+#2                                            #1+5 =   7
+length                                    length=5 =   5
+width                                      width=5 =   5
+depth                                      depth=5 =   5
+volume                   volume=length*width*depth = 125
 
 Referencing previous values is one of the main features of JMathPaper.
 
