@@ -19,6 +19,7 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +39,7 @@ public class Evaluator {
 	private static final String COMMENT_INLINE_END = "*/";
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
+	private static final MathContext DEFAULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
 	private static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
 	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
 	private static final Pattern ID = ResourceLoader.compileRegex("id");
@@ -144,7 +146,7 @@ public class Evaluator {
 		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
 				this,
 				processedExpression,
-				MathContext.UNLIMITED);
+				DEFAULT_MATH_CONTEXT);
 		
 		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
 			if (previousEvaluatedExpression instanceof FunctionEvaluatedExpression) {
