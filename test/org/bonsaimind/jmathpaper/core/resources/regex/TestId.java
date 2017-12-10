@@ -18,38 +18,11 @@
 package org.bonsaimind.jmathpaper.core.resources.regex;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestId {
-	private static final Pattern ID_PATTERN = ResourceLoader.compileRegex("id");
-	
-	private static final void assertMatch(String expectedId, String expectedExpression, String value) {
-		Matcher matcher = ID_PATTERN.matcher(value);
-		
-		Assert.assertTrue(
-				"Match expected for: <" + value + "> but did not match.",
-				matcher.find());
-		
-		Assert.assertEquals(
-				"Expected ID not found.",
-				expectedId,
-				matcher.group("ID"));
-		Assert.assertEquals(
-				"Expected expression not found.",
-				expectedExpression,
-				matcher.group("EXPRESSION"));
-	}
-	
-	private static final void assertNoMatch(String value) {
-		Assert.assertFalse(
-				"No match expected for: <" + value + "> but did match.",
-				ID_PATTERN.matcher(value).find());
-	}
-	
+public class TestId extends AbstractRegexTest {
 	@Test
 	public void test() {
 		assertNoMatch("");
@@ -68,5 +41,27 @@ public class TestId {
 		
 		assertMatch("_", "1", "_=1");
 		assertMatch("_0012", "1", "_0012=1");
+	}
+	
+	protected void assertMatch(String expectedId, String expectedExpression, String value) {
+		Matcher matcher = pattern.matcher(value);
+		
+		Assert.assertTrue(
+				"Match expected for: <" + value + "> but did not match.",
+				matcher.find());
+		
+		Assert.assertEquals(
+				"Expected ID not found.",
+				expectedId,
+				matcher.group("ID"));
+		Assert.assertEquals(
+				"Expected expression not found.",
+				expectedExpression,
+				matcher.group("EXPRESSION"));
+	}
+	
+	@Override
+	protected String getRegexName() {
+		return "id";
 	}
 }

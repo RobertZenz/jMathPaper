@@ -17,21 +17,25 @@
 
 package org.bonsaimind.jmathpaper.core.resources.regex;
 
-import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.junit.Assert;
+import org.junit.Before;
 
-public abstract class AbstractValueTest extends AbstractRegexTest {
-	protected void assertMatch(String expectedValue, String value) {
-		Matcher matcher = pattern.matcher(value);
-		
-		Assert.assertTrue(
-				"Match expected for: <" + value + "> but did not match.",
-				matcher.find());
-		
-		Assert.assertEquals(
-				"Expected value not found.",
-				expectedValue,
-				matcher.group("VALUE"));
+public abstract class AbstractRegexTest {
+	protected Pattern pattern = null;
+	
+	@Before
+	public void setUp() {
+		pattern = ResourceLoader.compileRegex(getRegexName());
 	}
+	
+	protected void assertNoMatch(String value) {
+		Assert.assertFalse(
+				"No match expected for: <" + value + "> but did match.",
+				pattern.matcher(value).find());
+	}
+	
+	protected abstract String getRegexName();
 }
