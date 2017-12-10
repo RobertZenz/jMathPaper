@@ -20,24 +20,34 @@ package org.bonsaimind.jmathpaper.core;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestPaper {
+public class TestPaper extends AbstractExpressionTest {
 	@Test
-	public void testToFromStringSanity() {
+	public void testToFromStringSanity() throws InvalidExpressionException {
 		Paper paper = new Paper();
-		
-		try {
-			paper.evaluate("1+1");
-			paper.evaluate("#1+5");
-			paper.evaluate("#1+8");
-		} catch (InvalidExpressionException e) {
-			Assert.fail(e.getCause().getMessage());
-		}
-		
+		paper.evaluate("1+1");
+		paper.evaluate("#1+5");
+		paper.evaluate("#1+8");
 		paper.setNotes("Some test text.");
 		
 		Paper secondPaper = new Paper();
 		secondPaper.evaluateFromText(paper.toString());
 		
 		Assert.assertEquals(paper.toString(), secondPaper.toString());
+	}
+	
+	@Test
+	public void testVariabeLoading() throws InvalidExpressionException {
+		Paper paper = new Paper();
+		paper.evaluate("a=1");
+		paper.evaluate("b=2");
+		paper.evaluate("c=3");
+		paper.evaluate("b=4");
+		
+		Paper loadedPaper = new Paper();
+		loadedPaper.evaluateFromText(paper.toString());
+		
+		assertExpression("#1", "1", "a", paper.evaluate("a"));
+		assertExpression("#2", "4", "b", paper.evaluate("b"));
+		assertExpression("#3", "3", "c", paper.evaluate("c"));
 	}
 }

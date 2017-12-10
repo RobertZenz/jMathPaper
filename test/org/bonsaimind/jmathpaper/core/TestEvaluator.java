@@ -17,73 +17,9 @@
 
 package org.bonsaimind.jmathpaper.core;
 
-import java.math.BigDecimal;
-
-import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
-import org.junit.Assert;
 import org.junit.Test;
 
-public class TestEvaluator {
-	private static final void assertEquals(BigDecimal expected, BigDecimal actual) {
-		if (expected.compareTo(actual) != 0) {
-			Assert.fail("expected: <"
-					+ expected.toPlainString()
-					+ "> but was: <"
-					+ actual.toPlainString()
-					+ ">");
-		}
-	}
-	
-	private static final void assertExpression(
-			String expectedId,
-			boolean expectedResult,
-			String expression,
-			Evaluator evaluator) throws InvalidExpressionException {
-		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
-		
-		Assert.assertEquals(expectedId, evaluatedExpression.getId());
-		Assert.assertEquals(expression, evaluatedExpression.getExpression());
-		
-		Assert.assertTrue(
-				"Expected a BooleanEvaluatedExpression, but got: <" + evaluatedExpression.getClass().getName() + ">",
-				evaluatedExpression instanceof BooleanEvaluatedExpression);
-		
-		Assert.assertEquals(
-				Boolean.valueOf(expectedResult),
-				((BooleanEvaluatedExpression)evaluatedExpression).getBooleanResult());
-	}
-	
-	private static final void assertExpression(
-			String expectedId,
-			String expectedResult,
-			String expression,
-			Evaluator evaluator) throws InvalidExpressionException {
-		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
-		
-		Assert.assertEquals(expectedId, evaluatedExpression.getId());
-		Assert.assertEquals(expression, evaluatedExpression.getExpression());
-		assertEquals(new BigDecimal(expectedResult), evaluatedExpression.getResult());
-	}
-	
-	private static final void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
-		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
-		
-		Assert.assertTrue(
-				"Expected a BooleanEvaluatedExpression, but got: <" + evaluatedExpression.getClass().getName() + ">",
-				evaluatedExpression instanceof BooleanEvaluatedExpression);
-		
-		Assert.assertEquals(
-				Boolean.valueOf(expected),
-				((BooleanEvaluatedExpression)evaluatedExpression).getBooleanResult());
-	}
-	
-	private static final void assertResult(String expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
-		BigDecimal expectedBigDecimal = new BigDecimal(expected);
-		BigDecimal actualBigDecimal = evaluator.evaluate(expression).getResult();
-		
-		assertEquals(expectedBigDecimal, actualBigDecimal);
-	}
-	
+public class TestEvaluator extends AbstractExpressionTest {
 	@Test
 	public void testBasicExpression() throws InvalidExpressionException {
 		assertResult("2", "1+1", new Evaluator());
@@ -130,7 +66,7 @@ public class TestEvaluator {
 	}
 	
 	@Test
-	public void testVariableDefinition() throws InvalidExpressionException {
+	public void testVariables() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
 		assertExpression("#1", "2", "1+1", evaluator);
