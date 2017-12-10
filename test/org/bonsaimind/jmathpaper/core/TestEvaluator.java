@@ -42,6 +42,38 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testFunctions() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		assertFunction("func", "a+5", "func(a)=a+5", evaluator);
+		assertResult("25", "func(20)", evaluator);
+		
+		// Redefine
+		assertFunction("func", "a+10", "func(a)=a+10", evaluator);
+		assertResult("30", "func(20)", evaluator);
+		
+		// Variable usage inside functions
+		assertExpression("var", "1", "var=1", evaluator);
+		assertFunction("func", "a+var", "func(a)=a+var", evaluator);
+		assertResult("2", "func(1)", evaluator);
+		
+		// Parameters override variables
+		assertExpression("var", "1", "var=1", evaluator);
+		assertFunction("func", "var + 100", "func(var)=var + 100", evaluator);
+		assertResult("200", "func(100)", evaluator);
+		
+		// Function usage inside function
+		assertFunction("funcA", "5", "funcA()=5", evaluator);
+		assertFunction("funcB", "funcA() + 1", "funcB()=funcA() + 1", evaluator);
+		assertResult("6", "funcB()", evaluator);
+		
+		// Boolean support
+		assertFunction("bool", "a and b", "bool(a, b)=a and b", evaluator);
+		assertResult(false, "bool(true, false)", evaluator);
+		assertResult(true, "bool(true, true)", evaluator);
+	}
+	
+	@Test
 	public void testlastResultReference() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		

@@ -19,14 +19,15 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
@@ -37,13 +38,14 @@ public class Evaluator {
 	private static final String COMMENT_INLINE_END = "*/";
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
+	private static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
 	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
 	private static final Pattern ID = ResourceLoader.compileRegex("id");
 	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private int expressionCounter = 0;
 	private String lastVariableAdded = null;
-	private Map<String, BigDecimal> variables = new HashMap<>();
+	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
 	
 	public Evaluator() {
 		super();
@@ -65,9 +67,27 @@ public class Evaluator {
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		String preProcessedExpression = preProcess(expression);
+		String processedExpression = stripComments(preProcessedExpression);
+		
+		Matcher functionMatcher = FUNCTION.matcher(processedExpression);
+		
+		if (functionMatcher.matches()) {
+			String parametersList = functionMatcher.group("PARAMETERS");
+			List<String> parameters = null;
+			
+			if (parametersList != null && !parametersList.trim().isEmpty()) {
+				parameters = Arrays.asList(parametersList.split("\\s*,\\s*"));
+			}
+			
+			return addEvaluatedExpression(new FunctionEvaluatedExpression(
+					functionMatcher.group("ID"),
+					preProcessedExpression,
+					parameters,
+					functionMatcher.group("EXPRESSION"),
+					prepareExpression(functionMatcher.group("EXPRESSION")).isBoolean()));
+		}
 		
 		String id = null;
-		String processedExpression = stripComments(preProcessedExpression);
 		
 		Matcher idMatcher = ID.matcher(processedExpression);
 		
@@ -85,48 +105,19 @@ public class Evaluator {
 				id = getNextId();
 			}
 			
-			variables.put(id, result);
 			lastVariableAdded = id;
 			
 			if (mathExpression.isBoolean()) {
-				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
+				return addEvaluatedExpression(new BooleanEvaluatedExpression(id, preProcessedExpression, result));
 			} else {
-				return new NumberEvaluatedExpression(id, preProcessedExpression, result);
+				return addEvaluatedExpression(new NumberEvaluatedExpression(id, preProcessedExpression, result));
 			}
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
 		}
 	}
 	
-	public void reset() {
-		expressionCounter = 0;
-		variables.clear();
-	}
-	
-	public void setExpressionCounter(int counter) {
-		expressionCounter = counter;
-	}
-	
-	private String applyPattern(String expression, Pattern pattern, Function<String, String> replacer) {
-		StringBuffer buffer = new StringBuffer(expression.length());
-		Matcher matcher = pattern.matcher(expression);
-		
-		while (matcher.find()) {
-			matcher.appendReplacement(buffer, "$1" + replacer.apply(matcher.group("VALUE")) + "$3");
-		}
-		
-		matcher.appendTail(buffer);
-		
-		return buffer.toString();
-	}
-	
-	private String getNextId() {
-		expressionCounter = expressionCounter + 1;
-		
-		return "#" + Integer.toString(expressionCounter);
-	}
-	
-	private Expression prepareExpression(String expression) {
+	public Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
 			return new Expression("0");
 		}
@@ -150,15 +141,64 @@ public class Evaluator {
 		
 		String processedExpression = expression.replace('#', 'R');
 		
-		Expression mathExpression = new Expression(
+		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
+				this,
 				processedExpression,
 				MathContext.UNLIMITED);
 		
-		for (Entry<String, BigDecimal> variable : variables.entrySet()) {
-			mathExpression.with(variable.getKey().replace('#', 'R'), variable.getValue());
+		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
+			if (previousEvaluatedExpression instanceof FunctionEvaluatedExpression) {
+				FunctionEvaluatedExpression functionEvaluatedExpression = (FunctionEvaluatedExpression)previousEvaluatedExpression;
+				
+				mathExpression.addFunction(mathExpression.new EvaluatingFunction(
+						functionEvaluatedExpression.getId(),
+						functionEvaluatedExpression.getParameters(),
+						functionEvaluatedExpression.getBody(),
+						functionEvaluatedExpression.isBoolean()));
+			} else {
+				mathExpression.with(
+						previousEvaluatedExpression.getId().replace('#', 'R'),
+						previousEvaluatedExpression.getResult());
+			}
 		}
 		
 		return mathExpression;
+	}
+	
+	public void reset() {
+		expressionCounter = 0;
+		previousEvaluatedExpressions.clear();
+	}
+	
+	public void setExpressionCounter(int counter) {
+		expressionCounter = counter;
+	}
+	
+	private EvaluatedExpression addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
+		if (evaluatedExpression != null) {
+			previousEvaluatedExpressions.add(evaluatedExpression);
+		}
+		
+		return evaluatedExpression;
+	}
+	
+	private String applyPattern(String expression, Pattern pattern, Function<String, String> replacer) {
+		StringBuffer buffer = new StringBuffer(expression.length());
+		Matcher matcher = pattern.matcher(expression);
+		
+		while (matcher.find()) {
+			matcher.appendReplacement(buffer, "$1" + replacer.apply(matcher.group("VALUE")) + "$3");
+		}
+		
+		matcher.appendTail(buffer);
+		
+		return buffer.toString();
+	}
+	
+	private String getNextId() {
+		expressionCounter = expressionCounter + 1;
+		
+		return "#" + Integer.toString(expressionCounter);
 	}
 	
 	private String preProcess(String expression) {

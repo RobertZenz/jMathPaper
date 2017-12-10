@@ -20,6 +20,7 @@ package org.bonsaimind.jmathpaper.core;
 import java.math.BigDecimal;
 
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.junit.Assert;
 
 public abstract class AbstractExpressionTest {
@@ -76,6 +77,31 @@ public abstract class AbstractExpressionTest {
 			String expression,
 			Evaluator evaluator) throws InvalidExpressionException {
 		assertExpression(expectedId, expectedResult, expression, evaluator.evaluate(expression));
+	}
+	
+	protected void assertFunction(
+			String expectedId,
+			String expectedBody,
+			EvaluatedExpression evaluatedExpression) throws InvalidExpressionException {
+		Assert.assertTrue(
+				"Expected a FunctionEvaluatedExpression, but got: <" + evaluatedExpression.getClass().getName() + ">",
+				evaluatedExpression instanceof FunctionEvaluatedExpression);
+		
+		Assert.assertEquals(
+				Boolean.TRUE,
+				((FunctionEvaluatedExpression)evaluatedExpression).getBooleanResult());
+		
+		Assert.assertEquals(
+				expectedBody,
+				((FunctionEvaluatedExpression)evaluatedExpression).getBody());
+	}
+	
+	protected void assertFunction(
+			String expectedId,
+			String expectedBody,
+			String expression,
+			Evaluator evaluator) throws InvalidExpressionException {
+		assertFunction(expectedId, expectedBody, evaluator.evaluate(expression));
 	}
 	
 	protected void assertResult(boolean expected, EvaluatedExpression evaluatedExpression) throws InvalidExpressionException {

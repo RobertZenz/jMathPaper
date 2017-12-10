@@ -22,6 +22,20 @@ import org.junit.Test;
 
 public class TestPaper extends AbstractExpressionTest {
 	@Test
+	public void testFunctionLoading() throws InvalidExpressionException {
+		Paper paper = new Paper();
+		paper.evaluate("a(x)=x+1");
+		paper.evaluate("b(x)=x+2");
+		paper.evaluate("a(x)=x+3");
+		
+		Paper loadedPaper = new Paper();
+		loadedPaper.evaluateFromText(paper.toString());
+		
+		assertExpression("#1", "4", "a(1)", paper.evaluate("a(1)"));
+		assertExpression("#2", "3", "b(1)", paper.evaluate("b(1)"));
+	}
+	
+	@Test
 	public void testToFromStringSanity() throws InvalidExpressionException {
 		Paper paper = new Paper();
 		paper.evaluate("1+1");
