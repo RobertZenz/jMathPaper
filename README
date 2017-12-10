@@ -97,6 +97,16 @@ the name of the variable and an equals sign:
 The variable names must begin with either a lower- or uppercase letter or
 an underscore, and can contain any letter, underscores or numbers. 
 
+### Functions
+
+Functions can also be defined on the fly:
+
+    add                      add(x, y, z)=x+y+z = true
+    #1                             add(1, 2, 3) =    6
+    value                             value()=5 =    6
+    add              add(x, y, z)=x+y+z+value() = true
+    #2                             add(1, 2, 3) =   11
+
 ### Different base
 
 We can also enter numbers in hex, octal or binary:

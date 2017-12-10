@@ -1,0 +1,10 @@
+add                       add(x, y, z)=x + y + z = true
+#1                                  add(1, 2, 3) =    6
+noparams                            noparams()=5 = true
+#2                 5 * add(1, 2, 3) + noparams() =   35
+
+Functions can be defined on the fly similar to variables.
+
+They can accept an arbitrary number of parameters.
+
+Parameter names may conflict with local variable names, in which case the parameter overrides the variable.
