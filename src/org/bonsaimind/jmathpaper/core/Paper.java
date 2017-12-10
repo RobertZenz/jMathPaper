@@ -20,6 +20,8 @@ package org.bonsaimind.jmathpaper.core;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -115,8 +117,16 @@ public class Paper {
 		return notes;
 	}
 	
+	public int getPrecision() {
+		return evaluator.getMathContext().getPrecision();
+	}
+	
 	public int getResultColumnSize() {
 		return resultColumnSize;
+	}
+	
+	public RoundingMode getRoundingMode() {
+		return evaluator.getMathContext().getRoundingMode();
 	}
 	
 	public void load() throws IOException {
@@ -161,6 +171,18 @@ public class Paper {
 	
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+	
+	public void setPrecision(int precision) {
+		evaluator.setMathContext(new MathContext(
+				precision,
+				evaluator.getMathContext().getRoundingMode()));
+	}
+	
+	public void setRoundingMode(RoundingMode roundingMode) {
+		evaluator.setMathContext(new MathContext(
+				evaluator.getMathContext().getPrecision(),
+				roundingMode));
 	}
 	
 	@Override

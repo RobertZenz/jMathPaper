@@ -47,6 +47,7 @@ public class Evaluator {
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private int expressionCounter = 0;
 	private String lastVariableAdded = null;
+	private MathContext mathContext = DEFAULT_MATH_CONTEXT;
 	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
 	
 	public Evaluator() {
@@ -119,6 +120,10 @@ public class Evaluator {
 		}
 	}
 	
+	public MathContext getMathContext() {
+		return mathContext;
+	}
+	
 	public Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
 			return new Expression("0");
@@ -146,7 +151,7 @@ public class Evaluator {
 		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
 				this,
 				processedExpression,
-				DEFAULT_MATH_CONTEXT);
+				mathContext);
 		
 		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
 			if (previousEvaluatedExpression instanceof FunctionEvaluatedExpression) {
@@ -174,6 +179,10 @@ public class Evaluator {
 	
 	public void setExpressionCounter(int counter) {
 		expressionCounter = counter;
+	}
+	
+	public void setMathContext(MathContext mathContext) {
+		this.mathContext = mathContext;
 	}
 	
 	private EvaluatedExpression addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
