@@ -39,6 +39,9 @@ public enum Command {
 	/** Opens the given paper. */
 	OPEN("open", ":e"),
 	
+	/** Sets the given option to the given value. */
+	OPTION("option", "opt", "setoption", "setopt", ":so", ":setopt"),
+	
 	/** Switches to the previous paper, if there is any. */
 	PREVIOUS("previous", "left", ":bprevious", ":bp"),
 	

@@ -147,6 +147,40 @@ public class Paper {
 		evaluateLines(Files.readAllLines(file, StandardCharsets.UTF_8));
 	}
 	
+	/**
+	 * Reevaluates all statements.
+	 * <p>
+	 * If one of the statement fails to evaluate and
+	 * {@link InvalidExpressionException} will be thrown for that statement.
+	 * Only when all statements could be evaluated, the current state will be
+	 * overridden with the new one. So if an exception occurs, the {@link Paper}
+	 * is left unchanged.
+	 * 
+	 * @throws InvalidExpressionException If any of the statements failed to
+	 *         reevaluate.
+	 */
+	public void reevaluate() throws InvalidExpressionException {
+		if (evaluatedExpressions.isEmpty()) {
+			return;
+		}
+		
+		Evaluator newEvaluator = new Evaluator();
+		newEvaluator.setMathContext(evaluator.getMathContext());
+		
+		List<EvaluatedExpression> newEvaluatedExpressions = new ArrayList<>();
+		
+		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+			newEvaluatedExpressions.add(newEvaluator.evaluate(evaluatedExpression.getExpression()));
+		}
+		
+		evaluator = newEvaluator;
+		
+		evaluatedExpressions.clear();
+		evaluatedExpressions.addAll(newEvaluatedExpressions);
+		
+		remeasureColumnSizes();
+	}
+	
 	public void save() throws IOException {
 		saveTo(file);
 	}

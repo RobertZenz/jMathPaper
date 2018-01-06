@@ -148,4 +148,11 @@ public class Tui extends AbstractPapersUi {
 			}
 		}
 	}
+	
+	@Override
+	protected void reevaluate() throws InvalidExpressionException {
+		super.reevaluate();
+		
+		printPaper();
+	}
 }

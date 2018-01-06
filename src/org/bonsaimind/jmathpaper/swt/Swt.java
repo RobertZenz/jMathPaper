@@ -365,6 +365,20 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
+	protected void reevaluate() throws InvalidExpressionException {
+		super.reevaluate();
+		
+		PaperComponent paperComponent = getCurrentPaperComponent();
+		
+		if (paperComponent != null) {
+			paperComponent.clearExpressions();
+			paperComponent.updateExpressions();
+		}
+		
+		updateTabItemText();
+	}
+	
+	@Override
 	protected void setPaper(Paper paper) {
 		if (this.paper != paper) {
 			super.setPaper(paper);

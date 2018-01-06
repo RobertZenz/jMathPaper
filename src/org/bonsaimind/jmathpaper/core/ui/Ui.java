@@ -207,4 +207,6 @@ public interface Ui {
 	 * @throws IOException If accessing the file failed.
 	 */
 	public void save(Path file) throws IllegalArgumentException, IllegalStateException, IOException;
+	
+	public void setOption(Option option, String value) throws CommandExecutionException;
 }

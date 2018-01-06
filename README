@@ -194,6 +194,10 @@ be entered instead of expressions:
                 multiple parameters are provided, all
                 are opened.
     
+    option      Set the given option with the given    option, opt,
+                value. See the Options section for     setoption, setopt,
+                further information.                   :so, :setopt
+    
     previous    Switches to the previous paper in      previous, left,
                 the list, if there is any.              :bprevious, :bp
     
@@ -220,6 +224,35 @@ Parameters are to be provided space separated and can be quoted, some examples:
     open ./relative\ path\ with\ spaces/file.jmathpaper
     open a.jmathpaper b.jmathpaper c.jmathpaper
 
+### Options
+
+There are various options available to change how jMathPaper behaves, they can
+be set either through the GUI (if available) or with the `option` command.
+
+    option OPTION VALUE
+
+Will set `OPTION` to `VALUE`. The following options are available:
+
+    Option      Description                            Aliases
+    --------------------------------------------------------------------
+    precision   The precision of the calculations.     precision, prec,
+                The value is expected to be a number,  decimals, dec
+                with 0 meaning "endless". Negatives
+                are not allowed.
+    
+    rounding    The rounding method that is used.      rounding,
+                Allowed values are:                    rounding-mode
+                 * ceiling
+                 * down
+                 * floor
+                 * half-down
+                 * half-even
+                 * half-up
+                 * unnecessary
+                 * up
+
+Options only apply to the current paper.
+
 ### Chaining
 
 Expressions and commands can be chained by using a semicolon (`;`). So
@@ -243,6 +276,6 @@ Technical information
 
 jMathPaper is a Java 8 application which uses SWT and EvalEx.
 
-The save format is a simple plaintext format, with UTF-8 as encoding and UNIX
+The save format is a simple plain text format, with UTF-8 as encoding and UNIX
 line endings. Everything from the start of the file to the first empty line is
 treated as expression, everything below the first empty line is treated as note.

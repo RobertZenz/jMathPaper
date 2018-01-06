@@ -18,6 +18,7 @@
 package org.bonsaimind.jmathpaper.core.ui;
 
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -138,6 +139,10 @@ public abstract class AbstractPapersUi implements Ui {
 					}
 					break;
 				
+				case OPTION:
+					tryAsOption(parameters);
+					break;
+				
 				case PREVIOUS:
 					previous();
 					break;
@@ -172,8 +177,10 @@ public abstract class AbstractPapersUi implements Ui {
 					break;
 				
 			}
+		} catch (CommandExecutionException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new CommandExecutionException("Could not execute command " + command.name() + ".", e);
+			throw new CommandExecutionException("Could not execute command " + command.name() + ": " + e.getMessage(), e);
 		}
 	}
 	
@@ -359,6 +366,33 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setOption(Option option, String value) throws CommandExecutionException {
+		checkCurrentPaper();
+		
+		try {
+			switch (option) {
+				case PRECISION:
+					getPaper().setPrecision(Integer.parseInt(value));
+					reevaluate();
+					break;
+				
+				case ROUNDING:
+					getPaper().setRoundingMode(getEnum(RoundingMode.class, value));
+					reevaluate();
+					break;
+				
+			}
+		} catch (InvalidExpressionException e) {
+			throw new CommandExecutionException(e.getMessage(), e);
+		} catch (Exception e) {
+			throw new CommandExecutionException("Failed to set option \"" + option.name() + "\" to \"" + value + "\": " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
 		StringBuilder value = new StringBuilder();
 		value.append(getClass().getSimpleName());
@@ -399,6 +433,39 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	/**
+	 * A helper method which gets the appropriate Enum value from the given
+	 * class and name.
+	 * 
+	 * @param enumClass The Enum class.
+	 * @param name The name of the value.
+	 * @return The value of the Enum.
+	 * @throws IllegalArgumentException If {@code enumClass} is null,
+	 *         {@code name} is null or empty or if there is no value with that
+	 *         name.
+	 */
+	protected <ENUM extends Enum<?>> ENUM getEnum(Class<ENUM> enumClass, String name) {
+		if (enumClass == null) {
+			throw new IllegalArgumentException("enumClass cannot be null.");
+		}
+		
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("name cannot be null or empty.");
+		}
+		
+		for (ENUM value : enumClass.getEnumConstants()) {
+			String valueName = value.name();
+			
+			if (valueName.equalsIgnoreCase(name)
+					|| valueName.replace("_", "-").equalsIgnoreCase(name)
+					|| valueName.replace("_", "").equalsIgnoreCase(name)) {
+				return value;
+			}
+		}
+		
+		throw new IllegalArgumentException("\"" + name + "\" is not a value of " + enumClass.getSimpleName() + ".");
+	}
+	
+	/**
 	 * Opens the "default" {@link Paper}.
 	 * <p>
 	 * The default is used during startup when no {@link Paper}s have been
@@ -408,6 +475,21 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	protected void openDefaultPaper() throws IOException {
 		open(Configuration.getGlobalPaperFile());
+	}
+	
+	/**
+	 * Reevaluates the current {@link Paper}.
+	 * <p>
+	 * Extending classes should override this function and update accordingly
+	 * after calling super.
+	 * 
+	 * @throws InvalidExpressionException If the reevaluation of one statement
+	 *         fails.
+	 */
+	protected void reevaluate() throws InvalidExpressionException {
+		checkCurrentPaper();
+		
+		paper.reevaluate();
 	}
 	
 	/**
@@ -563,13 +645,34 @@ public abstract class AbstractPapersUi implements Ui {
 			
 			execute(
 					command,
-					parameters.toArray(new String[parameters.size() - 1]));
+					parameters.toArray(new String[parameters.size()]));
 			
 			return true;
 		}
 		
 		return false;
 	}
+	
+	/**
+	 * Tries the given {@link String input} as {@link Option}, returns
+	 * {@code true} if that succeeded, otherwise {@code false}.
+	 *
+	 * @param input The {@link String input} to try as {@link Option}.
+	 * @return {@code true} if the {@link String input} was an {@link Option}.
+	 * @throws CommandExecutionException If the execution of the {@link Option}
+	 *         failed.
+	 */
+	protected boolean tryAsOption(String... input) throws CommandExecutionException {
+		if (input == null || input.length <= 1) {
+			return false;
+		}
+		
+		Option option = Option.getOption(input[0]);
+		
+		if (option != null) {
+			for (int index = 1; index < input.length; index++) {
+				setOption(option, input[index]);
+			}
 			
 			return true;
 		}
