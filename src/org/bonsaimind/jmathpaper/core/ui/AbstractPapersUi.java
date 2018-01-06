@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,9 +35,6 @@ import org.bonsaimind.jmathpaper.core.Paper;
  * functionality based on that.
  */
 public abstract class AbstractPapersUi implements Ui {
-	/** The default separator for multiple expressions. */
-	protected static final String EXPRESSIONS_SEPARATOR = ";";
-	
 	/** The {@link Arguments} with which this has been run. */
 	protected Arguments arguments = null;
 	
@@ -279,7 +275,7 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	@Override
 	public void process(String input) throws CommandExecutionException, InvalidExpressionException {
-		for (String part : splitInput(input)) {
+		for (String part : splitStatements(input)) {
 			if (!tryAsCommand(part)) {
 				evaluate(part);
 			}
@@ -425,14 +421,69 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	/**
-	 * Splits the given {@link String input} with the
-	 * {@link #EXPRESSIONS_SEPARATOR} and returns the result.
+	 * Splits the given {@link String input} into single, processable
+	 * statements.
 	 * 
 	 * @param input The {@link String input} to split.
 	 * @return The result of the split.
 	 */
-	protected Iterable<String> splitInput(String input) {
-		return Arrays.asList(input.split(EXPRESSIONS_SEPARATOR));
+	protected Iterable<String> splitStatements(String input) {
+		if (input == null || input.length() == 0) {
+			return Collections.emptyList();
+		}
+		
+		List<String> statements = new ArrayList<>();
+		
+		StringBuilder currentStatement = new StringBuilder();
+		StringBuilder currentWhitespace = new StringBuilder();
+		boolean insideQuotes = false;
+		boolean nextIsEscaped = false;
+		
+		for (int index = 0; index < input.length(); index++) {
+			char currentChar = input.charAt(index);
+			
+			if (Character.isWhitespace(currentChar)) {
+				if (currentStatement.length() > 0) {
+					currentWhitespace.append(currentChar);
+				}
+				
+				nextIsEscaped = false;
+			} else if (currentChar == '\\') {
+				nextIsEscaped = true;
+			} else if (!nextIsEscaped && !insideQuotes && currentChar == ';') {
+				if (currentStatement.length() > 0) {
+					statements.add(currentStatement.toString());
+				}
+				
+				currentStatement.delete(0, currentStatement.length());
+				currentWhitespace.delete(0, currentWhitespace.length());
+			} else if (!nextIsEscaped && currentChar == '"'
+					&& (currentWhitespace.length() > 0
+							|| currentStatement.length() == 0
+							|| insideQuotes)) {
+				insideQuotes = !insideQuotes;
+				
+				if (currentStatement.length() > 0) {
+					currentWhitespace.append(currentChar);
+				}
+			} else {
+				if (currentWhitespace.length() > 0) {
+					currentStatement.append(currentWhitespace);
+				}
+				
+				currentWhitespace.delete(0, currentWhitespace.length());
+				
+				currentStatement.append(currentChar);
+				
+				nextIsEscaped = false;
+			}
+		}
+		
+		if (currentStatement.length() > 0) {
+			statements.add(currentStatement.toString());
+		}
+		
+		return statements;
 	}
 	
 	/**
