@@ -35,6 +35,27 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	}
 	
 	@Test
+	public void testSplitParameters() {
+		assertSplitParameters(new String[] {}, null);
+		assertSplitParameters(new String[] {}, "");
+		assertSplitParameters(new String[] {}, "     ");
+		
+		assertSplitParameters(new String[] { "param" }, "param");
+		assertSplitParameters(new String[] { "param" }, "    param   ");
+		assertSplitParameters(new String[] { "param" }, "  \"param\"  ");
+		assertSplitParameters(new String[] {
+				"param1",
+				"param2",
+				"param3"
+		}, "param1  param2  param3");
+		assertSplitParameters(new String[] {
+				"par  am1",
+				"pa r a m 2",
+				"par\"am3"
+		}, "   par\\ \\ am1   \"pa r a m 2\"  \"par\\\"am3\"");
+	}
+	
+	@Test
 	public void testSplitStatements() {
 		assertSplitStatements(new String[] {}, null);
 		assertSplitStatements(new String[] {}, "");
@@ -54,14 +75,22 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 		}, "   command value    ; 1+1; command \"some ; value 1+1\" \\; 2+2");
 	}
 	
+	private final void assertLists(String[] expected, List<String> actual) {
+		Assert.assertEquals(expected.length, actual.size());
+		
+		for (int index = 0; index < expected.length; index++) {
+			Assert.assertEquals(expected[index], actual.get(index));
+		}
+	}
+	
+	private final void assertSplitParameters(String[] expected, String input) {
+		assertLists(expected, splitParameters(input));
+	}
+	
 	private final void assertSplitStatements(String[] expected, String input) {
 		List<String> actualList = new ArrayList<>();
 		splitStatements(input).forEach(actualList::add);
 		
-		Assert.assertEquals(expected.length, actualList.size());
-		
-		for (int index = 0; index < expected.length; index++) {
-			Assert.assertEquals(expected[index], actualList.get(index));
-		}
+		assertLists(expected, actualList);
 	}
 }

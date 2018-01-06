@@ -133,7 +133,9 @@ public abstract class AbstractPapersUi implements Ui {
 					break;
 				
 				case OPEN:
-					open(Paths.get(parameters[0]));
+					for (String parameter : parameters) {
+						open(Paths.get(parameter));
+					}
 					break;
 				
 				case PREVIOUS:
@@ -150,7 +152,9 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case SAVE:
 					if (parameters.length > 0) {
-						save(Paths.get(parameters[0]));
+						for (String parameter : parameters) {
+							save(Paths.get(parameter));
+						}
 					} else {
 						save();
 					}
@@ -158,7 +162,9 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case SAVE_AND_QUIT:
 					if (parameters.length > 0) {
-						save(Paths.get(parameters[0]));
+						for (String parameter : parameters) {
+							save(Paths.get(parameter));
+						}
 					} else {
 						save();
 					}
@@ -421,6 +427,50 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	/**
+	 * Splits the given {@String input} into single parameters.
+	 * 
+	 * @param input The {@link String input} to split.
+	 * @return The result of the split.
+	 */
+	protected List<String> splitParameters(String input) {
+		if (input == null || input.length() == 0) {
+			return Collections.emptyList();
+		}
+		
+		List<String> parameters = new ArrayList<>();
+		
+		StringBuilder currentParameter = new StringBuilder();
+		boolean insideQuotes = false;
+		boolean nextIsEscaped = false;
+		
+		for (int index = 0; index < input.length(); index++) {
+			char currentChar = input.charAt(index);
+			
+			if (!insideQuotes && !nextIsEscaped && Character.isWhitespace(currentChar)) {
+				if (currentParameter.length() > 0) {
+					parameters.add(currentParameter.toString());
+					
+					currentParameter.delete(0, currentParameter.length());
+				}
+			} else if (!nextIsEscaped && currentChar == '\\') {
+				nextIsEscaped = true;
+			} else if (!nextIsEscaped && currentChar == '"') {
+				insideQuotes = !insideQuotes;
+			} else {
+				currentParameter.append(currentChar);
+				
+				nextIsEscaped = false;
+			}
+		}
+		
+		if (currentParameter.length() > 0) {
+			parameters.add(currentParameter.toString());
+		}
+		
+		return parameters;
+	}
+	
+	/**
 	 * Splits the given {@link String input} into single, processable
 	 * statements.
 	 * 
@@ -500,20 +550,26 @@ public abstract class AbstractPapersUi implements Ui {
 			return false;
 		}
 		
-		String trimmedInput = input.trim();
-		String name = trimmedInput;
-		String parameters = "";
+		List<String> parameters = splitParameters(input);
 		
-		int spaceIndex = input.indexOf(' ');
-		if (spaceIndex >= 0) {
-			name = trimmedInput.substring(0, spaceIndex);
-			parameters = trimmedInput.substring(spaceIndex + 1);
+		if (parameters.isEmpty()) {
+			return false;
 		}
 		
-		Command command = Command.getCommand(name);
+		Command command = Command.getCommand(parameters.get(0));
 		
 		if (command != null) {
-			execute(command, parameters.split(" "));
+			parameters.remove(0);
+			
+			execute(
+					command,
+					parameters.toArray(new String[parameters.size() - 1]));
+			
+			return true;
+		}
+		
+		return false;
+	}
 			
 			return true;
 		}

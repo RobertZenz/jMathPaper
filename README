@@ -175,37 +175,50 @@ the following values:
 There are also commands which can be used to control the application, they can
 be entered instead of expressions:
 
-    Command     Description                           Aliases
+    Command     Description                            Aliases
     --------------------------------------------------------------------
-    clean       Cleans the current paper, removing    clean, clear
+    clean       Cleans the current paper, removing     clean, clear
                 all expressions from it.
     
-    close       Closes the current paper.             close, :bdelete,
-                                                      :bd
+    close       Closes the current paper.              close, :bdelete,
+                                                       :bd
     
-    new         Creates a new paper.                  new, :new
+    new         Creates a new paper.                   new, :new
     
-    next        Switches to the next paper in         next, right,
-                the list, if there is any.            :bnext, :bn
+    next        Switches to the next paper in          next, right,
+                the list, if there is any.             :bnext, :bn
     
-    open       Opens a paper from the given path.     open, :e
-               The path to open the files is expected
-               as argument to this command.
+    open        Opens a paper from the given path.     open, :e
+                The path to open the files is expected
+                as parameter to this command. If
+                multiple parameters are provided, all
+                are opened.
     
-    previous   Switches to the previous paper in      previous, left,
-               the list, if there is any.             :bprevious, :bp
+    previous    Switches to the previous paper in      previous, left,
+                the list, if there is any.              :bprevious, :bp
     
-    quit       Quits the application.                 quit, exit, :q,
-                                                      :q!
+    quit        Quits the application.                 quit, exit, :q,
+                                                       :q!
     
-    reload    Reloads the current paper, effectively  reload, reset
-              undoing all changes.
+    reload     Reloads the current paper, effectively  reload, reset
+               undoing all changes.
     
-    save      Saves the current paper, the location   save, store, :w
-              can be given as argument.
+    save       Saves the current paper, the location   save, store, :w
+               can be given as parameter. If multiple
+               parameters are provided, it is saved to
+               all provided locations.
     
-    save/quit Saves the current paper and quits,      :x
-              the location can be given as argument.
+    save/quit  Saves the current paper and quits,      :x
+               the location can be given as parameter.
+               If multiple parameters are provided, it
+               is saved to all provided locations.
+
+Parameters are to be provided space separated and can be quoted, some examples:
+
+    open /home/user/dir/somefile.jmathpaper
+    open "./relative path with spaces/file.jmathpaper"
+    open ./relative\ path\ with\ spaces/file.jmathpaper
+    open a.jmathpaper b.jmathpaper c.jmathpaper
 
 ### Chaining
 
