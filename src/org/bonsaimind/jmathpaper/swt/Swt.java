@@ -420,7 +420,7 @@ public class Swt extends AbstractPapersUi {
 	protected void updateTabItemText() {
 		CTabItem cTabItem = cTabFolder.getSelection();
 		
-		if (cTabItem != null && paper != null) {
+		if (cTabItem != null && paper != null && paper.getFile() != null) {
 			cTabItem.setText(paper.getFile().getFileName().toString());
 			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
 		}
