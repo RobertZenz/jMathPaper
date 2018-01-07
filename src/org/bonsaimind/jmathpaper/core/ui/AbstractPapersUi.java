@@ -528,8 +528,11 @@ public abstract class AbstractPapersUi implements Ui {
 		for (int index = 0; index < input.length(); index++) {
 			char currentChar = input.charAt(index);
 			
-			if (!insideQuotes && !nextIsEscaped && Character.isWhitespace(currentChar)) {
+			if (!insideQuotes
+					&& !nextIsEscaped
+					&& Character.isWhitespace(currentChar)) {
 				if (currentParameter.length() > 0) {
+					// Add the currently build parameter to the list.
 					parameters.add(currentParameter.toString());
 					
 					currentParameter.delete(0, currentParameter.length());
@@ -567,6 +570,12 @@ public abstract class AbstractPapersUi implements Ui {
 		List<String> statements = new ArrayList<>();
 		
 		StringBuilder currentStatement = new StringBuilder();
+		// We have to use a separate whitespace buffer to trim whitespace at
+		// the end of the statement. We can simply skip over whitespace at
+		// the beginning, but if we encounter whitespace inside the statement
+		// we do not know whether it is trailing or not. So we add it to
+		// this whitespace buffer and append it to the statement if we encounter
+		// something different than whitespace.
 		StringBuilder currentWhitespace = new StringBuilder();
 		boolean insideQuotes = false;
 		boolean nextIsEscaped = false;
@@ -576,20 +585,26 @@ public abstract class AbstractPapersUi implements Ui {
 			
 			if (Character.isWhitespace(currentChar)) {
 				if (currentStatement.length() > 0) {
+					// If we've already found something other than whitespace,
+					// then append the character to the whitespace buffer.
 					currentWhitespace.append(currentChar);
 				}
 				
 				nextIsEscaped = false;
 			} else if (currentChar == '\\') {
 				nextIsEscaped = true;
-			} else if (!nextIsEscaped && !insideQuotes && currentChar == ';') {
+			} else if (!nextIsEscaped
+					&& !insideQuotes
+					&& currentChar == ';') {
 				if (currentStatement.length() > 0) {
+					// Add the current statement to the list.
 					statements.add(currentStatement.toString());
 				}
 				
 				currentStatement.delete(0, currentStatement.length());
 				currentWhitespace.delete(0, currentWhitespace.length());
-			} else if (!nextIsEscaped && currentChar == '"'
+			} else if (!nextIsEscaped
+					&& currentChar == '"'
 					&& (currentWhitespace.length() > 0
 							|| currentStatement.length() == 0
 							|| insideQuotes)) {
@@ -599,6 +614,8 @@ public abstract class AbstractPapersUi implements Ui {
 					currentWhitespace.append(currentChar);
 				}
 			} else {
+				// If there is something in the whitespace buffer,
+				// append it.
 				if (currentWhitespace.length() > 0) {
 					currentStatement.append(currentWhitespace);
 				}
