@@ -31,6 +31,8 @@ import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpre
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
+import org.bonsaimind.jmathpaper.core.units.PrefixedUnit;
+import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
 import com.udojava.evalex.Expression;
 
@@ -45,13 +47,20 @@ public class Evaluator {
 	private static final Pattern ID = ResourceLoader.compileRegex("id");
 	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
+	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
 	private int expressionCounter = 0;
 	private String lastVariableAdded = null;
 	private MathContext mathContext = DEFAULT_MATH_CONTEXT;
 	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
+	private UnitConverter unitConverter = new UnitConverter();
 	
 	public Evaluator() {
 		super();
+		
+		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
 		
 		reset();
 	}
@@ -71,6 +80,8 @@ public class Evaluator {
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		String preProcessedExpression = preProcess(expression);
 		String processedExpression = stripComments(preProcessedExpression);
+		processedExpression = replaceAliases(processedExpression);
+		processedExpression = convertNumbers(processedExpression);
 		
 		Matcher functionMatcher = FUNCTION.matcher(processedExpression);
 		
@@ -99,10 +110,35 @@ public class Evaluator {
 			processedExpression = idMatcher.group("EXPRESSION");
 		}
 		
+		PrefixedUnit unitFrom = null;
+		PrefixedUnit unitTo = null;
+		
+		Matcher unitConversionMatcher = UNIT_CONVERSION.matcher(processedExpression);
+		
+		if (unitConversionMatcher.matches()) {
+			processedExpression = unitConversionMatcher.group("EXPRESSION");
+			
+			unitFrom = unitConverter.getPrefixedUnit(unitConversionMatcher.group("FROM"));
+			
+			if (unitFrom == null) {
+				throw new InvalidExpressionException("No such unit: " + unitConversionMatcher.group("FROM"));
+			}
+			
+			unitTo = unitConverter.getPrefixedUnit(unitConversionMatcher.group("TO"));
+			
+			if (unitTo == null) {
+				throw new InvalidExpressionException("No such unit: " + unitConversionMatcher.group("TO"));
+			}
+		}
+		
 		try {
 			Expression mathExpression = prepareExpression(processedExpression);
 			
 			BigDecimal result = mathExpression.eval();
+			
+			if (unitFrom != null && unitTo != null) {
+				result = unitConverter.convert(unitFrom, unitTo, result, mathContext).stripTrailingZeros();
+			}
 			
 			if (id == null) {
 				id = getNextId();
@@ -128,23 +164,6 @@ public class Evaluator {
 		if (expression == null || expression.length() == 0) {
 			return new Expression("0");
 		}
-		
-		expression = expression.replace(" and ", " && ");
-		expression = expression.replace(" or ", " || ");
-		expression = expression.replace(" equal ", " == ");
-		expression = expression.replace(" equals ", " == ");
-		expression = expression.replace(" notequal ", " != ");
-		expression = expression.replace(" notequals ", " != ");
-		expression = expression.replace(" greater ", " > ");
-		expression = expression.replace(" greaterequal ", " >= ");
-		expression = expression.replace(" greaterequals ", " >= ");
-		expression = expression.replace(" less ", " < ");
-		expression = expression.replace(" lessequal ", " <= ");
-		expression = expression.replace(" lessequals ", " <= ");
-		
-		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
-		expression = applyPattern(expression, OCTAL_NUMBER, Evaluator::convertFromOctal);
-		expression = applyPattern(expression, HEX_NUMBER, Evaluator::convertFromHex);
 		
 		String processedExpression = expression.replace('#', 'R');
 		
@@ -206,6 +225,14 @@ public class Evaluator {
 		return buffer.toString();
 	}
 	
+	private String convertNumbers(String expression) {
+		expression = applyPattern(expression, BINARY_NUMBER, Evaluator::convertFromBinary);
+		expression = applyPattern(expression, OCTAL_NUMBER, Evaluator::convertFromOctal);
+		expression = applyPattern(expression, HEX_NUMBER, Evaluator::convertFromHex);
+		
+		return expression;
+	}
+	
 	private String getNextId() {
 		expressionCounter = expressionCounter + 1;
 		
@@ -214,6 +241,23 @@ public class Evaluator {
 	
 	private String preProcess(String expression) {
 		return applyPattern(expression.trim(), LAST_REFERENCE, this::replaceLastReference);
+	}
+	
+	private String replaceAliases(String expression) {
+		expression = expression.replace(" and ", " && ");
+		expression = expression.replace(" or ", " || ");
+		expression = expression.replace(" equal ", " == ");
+		expression = expression.replace(" equals ", " == ");
+		expression = expression.replace(" notequal ", " != ");
+		expression = expression.replace(" notequals ", " != ");
+		expression = expression.replace(" greater ", " > ");
+		expression = expression.replace(" greaterequal ", " >= ");
+		expression = expression.replace(" greaterequals ", " >= ");
+		expression = expression.replace(" less ", " < ");
+		expression = expression.replace(" lessequal ", " <= ");
+		expression = expression.replace(" lessequals ", " <= ");
+		
+		return expression;
 	}
 	
 	private String replaceLastReference(String value) {

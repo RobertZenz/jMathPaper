@@ -42,6 +42,19 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testConversions() throws InvalidExpressionException {
+		assertResult("1", "1 m to m", new Evaluator());
+		assertResult("1", "1 km to km", new Evaluator());
+		assertResult("1", "1 meter to meter", new Evaluator());
+		assertResult("1", "1 kilometer to kilometer", new Evaluator());
+		
+		assertResult("1000", "1 km to m", new Evaluator());
+		assertResult("1000", "1 kilometer to meter", new Evaluator());
+		assertResult("1000", "1 km to meter", new Evaluator());
+		assertResult("1", "1000 m to kilometer", new Evaluator());
+	}
+	
+	@Test
 	public void testFunctions() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
@@ -68,7 +81,7 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("6", "funcB()", evaluator);
 		
 		// Boolean support
-		assertFunction("bool", "a and b", "bool(a, b)=a and b", evaluator);
+		assertFunction("bool", "a && b", "bool(a, b)=a and b", evaluator);
 		assertResult(false, "bool(true, false)", evaluator);
 		assertResult(true, "bool(true, true)", evaluator);
 	}

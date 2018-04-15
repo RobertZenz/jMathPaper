@@ -1,0 +1,84 @@
+# Metric volume
+litre	1cudm
+
+# Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
+thou	1/12000inch
+thou	0.0254mm
+inch	1000thou
+inch	25.4mm
+foot	12inches
+foot	304.8mm
+yard	3ft
+yard	914.4mm
+chain	22yards
+furlong	10chain
+mile	8furlongs
+league	3miles
+
+fathom			2.02667yards
+cable			100fathoms
+nauticalmile	10cables
+
+link	7.92inches
+rod		25links
+
+britishnauticalmile	6080feet
+
+# Imperial area, https://en.wikipedia.org/wiki/Imperial_units#Area
+perch	272.25sqft
+rood	10890sqft
+acre	43560sqft
+
+# Imperial volume, https://en.wikipedia.org/wiki/Imperial_units#Volume
+fluidounce	28.4130625ml
+gill		5floz
+pint		20floz
+quart		40floz
+gallon		160floz
+
+# Force https://en.wikipedia.org/wiki/Force#Units_of_measurement
+dyne			0.00001N
+kilogramforce	9.80665N
+poundforce		4.4482216152605N
+poundal			0.138254954376N
+
+# Power, https://en.wikipedia.org/wiki/Horsepower
+horsepower				735.49875W
+imperialhorsepower		745.69987158227022W
+electricalhorsepower	746W
+boilerhorsepower		9812.5W
+hydraulichorsepower		745.69987158227022W
+airhorsepower			745.69987158227022W
+
+# Digital
+byte	8bit
+
+# Temperature, https://en.wikipedia.org/wiki/Conversion_of_units_of_temperature
+celsius		(x * (9/5) + 32)°F
+fahrenheit	((x - 32) * (5/9))°C
+celsius		(x + 273.15)K
+kelvin		(x - 273.15)°C
+celsius		((x + 273.15) * (9/5))°R
+rankine		((x - 491.67) * (5/9))°C
+celsius		((100 - x) * (3/2))°De
+delisle		(100 - x * (2/3))°C
+celsius		(x * 33/100)°N
+newtonscale	(x * 100/33)°C
+celsius		(x * 4/5)°Re
+reaumur		(x * 5/4)°C
+celsius		(x * 21/40 + 7.5)°Ro
+romer		((x - 7.5) * 40/21)°C
+
+# Time
+minute		60seconds
+hour		60minutes
+day			24hours
+week		7days
+month		30.436875days
+year		12months
+decade		10years
+century		100years
+millennium	1000years
+
+# Aliases
+klick	1km

@@ -1,0 +1,98 @@
+# Metric length
+meter	1	Metre, metre, m
+
+# Metric force, https://en.wikipedia.org/wiki/Force#Units_of_measurement
+newton	1	N
+
+# Metric power
+watt	1	W
+
+# Metric volume
+litre	3	Liter, liter, l
+
+# Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
+thou			1	th, mil
+inch			1	Inches, inches, in
+foot			1	Feet, feet, ft
+yard			1	yd
+chain			1	ch
+furlong			1	Stade, stade
+mile			1	ml
+league			1	lea
+
+fathom			1	ftm
+cable			1
+nauticalmile	1
+link			1
+rod				1	Perch, perch, Pole, pole
+
+britishnauticalmile	1
+
+# Imperial area, https://en.wikipedia.org/wiki/Imperial_units#Area
+perch		2
+rood		2
+acre		2
+
+# Imperial volume, https://en.wikipedia.org/wiki/Imperial_units#Volume
+fluidounce	3	floz
+gill		3	gi
+pint		3	pt
+quart		3	qt
+gallon		3	gal
+
+# English
+poppyseed	1
+line		1
+barleycorn	1
+digit		1
+finger		1
+nail		1
+palm		1
+hand		1
+shaftment	1
+span		1
+cubit		1
+ell			1
+
+# Other force, https://en.wikipedia.org/wiki/Force#Units_of_measurement
+dyne			1	dyn
+kilogramforce	1	kilopond, kp
+poundforce		1	lbf
+poundal			1	pdl
+
+# Other power, https://en.wikipedia.org/wiki/Horsepower
+horsepower				1	hp,PS, cv, hk, pk, ks, ch
+imperialhorsepower		1	mechanicalhorsepower,hpI
+electricalhorsepower	1	hpE
+boilerhorsepower		1	hpS
+hydraulichorsepower		1	hpH
+airhorsepower			1	hpA
+
+# Digital
+bit			1	b
+byte		1	B
+
+# Temperature
+celsius		1	C,°C
+fahrenheit	1	F,°F
+kelvin		1	K
+rankine		1	R,°R
+delisle		1	De,°De
+newtonscale	1	°N
+reaumur		1	Re,°Re
+romer		1	Ro,°Ro
+
+#Time
+second		1	sec
+minute		1	min
+hour		1
+day			1
+week		1
+month		1
+year		1
+decade		1
+century		1
+millennium	1
+
+# Aliases
+klick		1

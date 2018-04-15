@@ -21,17 +21,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
  * {@link ResourceLoader} is a static utility for loading embedded resources.
  */
 public final class ResourceLoader {
-	/** The {@link String} with which a comment in a regex file starts. */
-	private static final String REGEX_COMMENT_START = "#";
+	/** The package which contains the resources. */
+	private static final String BASE_PACKAGE = "/" + ResourceLoader.class.getPackage().getName().replace(".", "/");
+	
+	/** The {@link String} with which a comment in a file starts. */
+	private static final String COMMENT_START = "#";
 	
 	/** The package which contains the regex files/resources. */
-	private static final String REGEX_PACKAGE = "/" + ResourceLoader.class.getPackage().getName().replace(".", "/") + "/regex";
+	private static final String REGEX_PACKAGE = "regex";
 	
 	/**
 	 * No instance required.
@@ -47,29 +51,62 @@ public final class ResourceLoader {
 	 * @return The {@link Pattern} compiled from the regex.
 	 */
 	public static final Pattern compileRegex(String name) {
-		return Pattern.compile(loadRegex(name));
+		return Pattern.compile(loadResource(REGEX_PACKAGE + "/" + name + ".regex", null));
 	}
 	
 	/**
-	 * Loads the regex content with the given name.
+	 * Loads the content of the given resource with the specified line endings.
+	 * <p>
+	 * This function will strip empty lines and also comments (see the
+	 * {@link #COMMENT_START} string.
 	 * 
-	 * @param name The name of the regex file, without path or extension.
-	 * @return The content of the regex file with the given name.
+	 * @param relativePath The path to the resource relative to this class.
+	 * @param lineEnding The string to use as line-ending.
+	 * @return The content of the given resource file.
 	 */
-	public static final String loadRegex(String name) {
-		String regexFile = REGEX_PACKAGE + "/" + name + ".regex";
+	public static final String loadResource(String relativePath, String lineEnding) {
+		StringBuilder content = new StringBuilder();
+		
+		processResource(relativePath, content::append, lineEnding);
+		
+		return content.toString();
+	}
+	
+	/**
+	 * Iterates over each line of the given resource.
+	 * <p>
+	 * This function will strip empty lines and also comments (see the
+	 * {@link #COMMENT_START} string.
+	 * 
+	 * @param relativePath The path to the resource relative to this class.
+	 * @param lineProcessor The function to execute for every line.
+	 */
+	public static final void processResource(String relativePath, Consumer<String> lineProcessor) {
+		processResource(relativePath, lineProcessor, null);
+	}
+	
+	/**
+	 * Iterates over each line of the given resource.
+	 * <p>
+	 * This function will strip empty lines and also comments (see the
+	 * {@link #COMMENT_START} string.
+	 * 
+	 * @param relativePath The path to the resource relative to this class.
+	 * @param lineProcessor The function to execute for every line.
+	 * @param lineEnding The line ending to append to each line.
+	 */
+	public static final void processResource(String relativePath, Consumer<String> lineProcessor, String lineEnding) {
+		String file = BASE_PACKAGE + "/" + relativePath;
 		
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(
-						ResourceLoader.class.getResourceAsStream(regexFile),
+						ResourceLoader.class.getResourceAsStream(file),
 						StandardCharsets.UTF_8))) {
-			
-			StringBuilder content = new StringBuilder();
 			
 			String line = reader.readLine();
 			
 			while (line != null) {
-				int commentIndex = line.indexOf(REGEX_COMMENT_START);
+				int commentIndex = line.indexOf(COMMENT_START);
 				
 				if (commentIndex >= 0) {
 					line = line.substring(0, commentIndex);
@@ -77,16 +114,20 @@ public final class ResourceLoader {
 				
 				line = line.trim();
 				
-				content.append(line);
+				if (line.length() > 0) {
+					if (lineEnding != null) {
+						line = line + lineEnding;
+					}
+					
+					lineProcessor.accept(line);
+				}
 				
 				line = reader.readLine();
 			}
-			
-			return content.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 			
-			return null;
+			return;
 		}
 	}
 }
