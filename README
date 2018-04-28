@@ -215,7 +215,7 @@ be entered instead of expressions:
                 multiple parameters are provided, all
                 are opened.
     
-    option      Set the given option with the given    option, opt,
+    option      Set the given option with the given    option, opt, set,
                 value. See the Options section for     setoption, setopt,
                 further information.                   :so, :setopt
     

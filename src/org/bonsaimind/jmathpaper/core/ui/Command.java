@@ -40,7 +40,7 @@ public enum Command {
 	OPEN("open", ":e"),
 	
 	/** Sets the given option to the given value. */
-	OPTION("option", "opt", "setoption", "setopt", ":so", ":setopt"),
+	OPTION("option", "opt", "set", "setoption", "setopt", ":so", ":setopt"),
 	
 	/** Switches to the previous paper, if there is any. */
 	PREVIOUS("previous", "left", ":bprevious", ":bp"),
