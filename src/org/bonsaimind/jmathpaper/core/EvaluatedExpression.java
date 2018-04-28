@@ -18,6 +18,7 @@
 package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 /**
  * {@link EvaluatedExpression} is the interface for defining a container for an
@@ -33,7 +34,7 @@ public interface EvaluatedExpression {
 	 * @param resultColumnWidth The width of the column for the result.
 	 * @return A well defined string representation.
 	 */
-	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth);
+	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth, NumberFormat numberFormat);
 	
 	/**
 	 * Gets the expression.
@@ -47,7 +48,7 @@ public interface EvaluatedExpression {
 	 * 
 	 * @return The formatted result.
 	 */
-	public String getFormattedResult();
+	public String getFormattedResult(NumberFormat numberFormat);
 	
 	/**
 	 * Gets the ID.

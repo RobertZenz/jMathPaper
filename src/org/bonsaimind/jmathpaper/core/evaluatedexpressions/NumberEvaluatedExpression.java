@@ -18,6 +18,8 @@
 package org.bonsaimind.jmathpaper.core.evaluatedexpressions;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 
@@ -30,9 +32,6 @@ import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 public class NumberEvaluatedExpression implements EvaluatedExpression {
 	/** The expression. */
 	protected String expression = null;
-	
-	/** The result, formatted for presentation. */
-	protected String formattedResult = null;
 	
 	/** The ID. */
 	protected String id = null;
@@ -119,7 +118,7 @@ public class NumberEvaluatedExpression implements EvaluatedExpression {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth) {
+	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth, NumberFormat numberFormat) {
 		StringBuilder builder = new StringBuilder();
 		
 		appendPadded(builder, id, 0, idColumnWidth);
@@ -127,7 +126,7 @@ public class NumberEvaluatedExpression implements EvaluatedExpression {
 		appendPadded(builder, expression, expressionColumnWidth, 0);
 		builder.append(" = ");
 		
-		appendPadded(builder, getFormattedResult(), resultColumnWidth, 0);
+		appendPadded(builder, getFormattedResult(numberFormat), resultColumnWidth, 0);
 		
 		return builder.toString();
 	}
@@ -144,12 +143,8 @@ public class NumberEvaluatedExpression implements EvaluatedExpression {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getFormattedResult() {
-		if (formattedResult == null) {
-			formattedResult = formatResult();
-		}
-		
-		return formattedResult;
+	public String getFormattedResult(NumberFormat numberFormat) {
+		return numberFormat.format(result);
 	}
 	
 	/**
@@ -189,20 +184,6 @@ public class NumberEvaluatedExpression implements EvaluatedExpression {
 	 */
 	@Override
 	public String toString() {
-		return format(0, 0, 0);
-	}
-	
-	/**
-	 * Formats the result for presentation.
-	 * <p>
-	 * Extending and overriding classes can safely assume that this function is
-	 * only called once, when the formatted value is requested. So the operation
-	 * of formatting the value can be a costly one, as it will only occur ones
-	 * for every expression.
-	 *
-	 * @return the formatted result.
-	 */
-	protected String formatResult() {
-		return result.toPlainString();
+		return format(0, 0, 0, DecimalFormat.getNumberInstance());
 	}
 }

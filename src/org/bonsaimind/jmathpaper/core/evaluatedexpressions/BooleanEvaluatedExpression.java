@@ -18,6 +18,7 @@
 package org.bonsaimind.jmathpaper.core.evaluatedexpressions;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 /**
  * {@link BooleanEvaluatedExpression} is an extension of
@@ -109,11 +110,8 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 		return booleanResult;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected String formatResult() {
+	public String getFormattedResult(NumberFormat numberFormat) {
 		return asBoolean(result).toString();
 	}
 }

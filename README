@@ -254,23 +254,41 @@ be set either through the GUI (if available) or with the `option` command.
 
 Will set `OPTION` to `VALUE`. The following options are available:
 
-    Option      Description                            Aliases
-    --------------------------------------------------------------------
-    precision   The precision of the calculations.     precision, prec,
-                The value is expected to be a number,  decimals, dec
-                with 0 meaning "endless". Negatives
-                are not allowed.
+    Option        Description                             Aliases
+    -----------------------------------------------------------------------
+    numberformat  The format in which the results         numberformat,
+                  should be displayed. The following      format, fmt
+                  symbols are supported:
+                   * 0 - Display either a number or
+                         zero.
+                   * # - Display either a number or
+                         nothing.
+                   * . - The decimal separator.
+                   * ? - Display as many decimal places
+                         as there are.
+                  Here are some examples of valid format
+                  strings:
+                   * 0.? - Display the number as usual.
+                   * 0.### - Display the number with
+                             three decimal places, if
+                             they are not zero.
+                   * 0.000 - Display the number with
+                             three decimal places.
+    precision     The precision of the calculations.      precision, prec,
+                  The value is expected to be a number,   decimals, dec
+                  with 0 meaning "endless". Negatives
+                  are not allowed.
     
-    rounding    The rounding method that is used.      rounding,
-                Allowed values are:                    rounding-mode
-                 * ceiling
-                 * down
-                 * floor
-                 * half-down
-                 * half-even
-                 * half-up
-                 * unnecessary
-                 * up
+    rounding      The rounding method that is used.       rounding,
+                  Allowed values are:                     rounding-mode
+                   * ceiling
+                   * down
+                   * floor
+                   * half-down
+                   * half-even
+                   * half-up
+                   * unnecessary
+                   * up
 
 Options only apply to the current paper.
 

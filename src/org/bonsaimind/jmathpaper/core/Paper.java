@@ -20,12 +20,15 @@ package org.bonsaimind.jmathpaper.core;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,11 +42,15 @@ public class Paper {
 	protected Path file = null;
 	protected int idColumnSize = 0;
 	protected String notes = "";
+	protected NumberFormat numberFormat = null;
+	protected String originalNumberFormat = null;
 	protected int resultColumnSize = 0;
 	private List<EvaluatedExpression> readonlyEvaluatedExpression = null;
 	
 	public Paper() {
 		super();
+		
+		setNumberFormat("0.?");
 	}
 	
 	public void clear() {
@@ -115,6 +122,10 @@ public class Paper {
 	
 	public String getNotes() {
 		return notes;
+	}
+	
+	public NumberFormat getNumberFormat() {
+		return numberFormat;
 	}
 	
 	public int getPrecision() {
@@ -207,10 +218,28 @@ public class Paper {
 		this.notes = notes;
 	}
 	
+	public void setNumberFormat(String format) {
+		originalNumberFormat = format;
+		
+		if (format.contains("?")) {
+			StringBuilder builder = new StringBuilder();
+			
+			for (int counter = 0; counter < evaluator.getMathContext().getPrecision(); counter++) {
+				builder.append("#");
+			}
+			
+			format = format.replaceFirst("\\?", builder.toString());
+		}
+		
+		numberFormat = new DecimalFormat(format);
+	}
+	
 	public void setPrecision(int precision) {
 		evaluator.setMathContext(new MathContext(
 				precision,
 				evaluator.getMathContext().getRoundingMode()));
+		
+		setNumberFormat(originalNumberFormat);
 	}
 	
 	public void setRoundingMode(RoundingMode roundingMode) {
@@ -227,7 +256,8 @@ public class Paper {
 			builder.append(evaluatedExpression.format(
 					idColumnSize,
 					expressionColumnSize,
-					resultColumnSize));
+					resultColumnSize,
+					numberFormat));
 			builder.append('\n');
 		}
 		
@@ -262,10 +292,14 @@ public class Paper {
 		return trimmedString;
 	}
 	
+	protected String format(BigDecimal value) {
+		return numberFormat.format(value);
+	}
+	
 	protected void measureExpression(EvaluatedExpression evaluatedExpression) {
 		idColumnSize = Math.max(idColumnSize, evaluatedExpression.getId().length());
 		expressionColumnSize = Math.max(expressionColumnSize, evaluatedExpression.getExpression().length());
-		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getFormattedResult().length());
+		resultColumnSize = Math.max(resultColumnSize, evaluatedExpression.getFormattedResult(numberFormat).length());
 		
 		if ((idColumnSize + expressionColumnSize + resultColumnSize + 4) < DEFAULT_WIDTH) {
 			expressionColumnSize = DEFAULT_WIDTH - 4 - idColumnSize - resultColumnSize;

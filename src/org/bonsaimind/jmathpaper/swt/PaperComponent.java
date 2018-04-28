@@ -137,6 +137,9 @@ public class PaperComponent extends SashForm {
 			
 			convertEvaluatedExpressionToTableItem(evaluatedExpression);
 		}
+		
+		stretchedColumnHelper.recalculateSizes();
+		stretchedColumnHelper.pack();
 	}
 	
 	public void updateNotes() {
@@ -148,7 +151,7 @@ public class PaperComponent extends SashForm {
 		item.setData(evaluatedExpression);
 		item.setText(0, evaluatedExpression.getId());
 		item.setText(1, evaluatedExpression.getExpression());
-		item.setText(2, evaluatedExpression.getFormattedResult());
+		item.setText(2, evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
 		
 		stretchedColumnHelper.pack();
 	}

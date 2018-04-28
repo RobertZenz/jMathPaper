@@ -371,6 +371,11 @@ public abstract class AbstractPapersUi implements Ui {
 		
 		try {
 			switch (option) {
+				case NUMBER_FORMAT:
+					getPaper().setNumberFormat(value);
+					reevaluate();
+					break;
+				
 				case PRECISION:
 					getPaper().setPrecision(Integer.parseInt(value));
 					reevaluate();

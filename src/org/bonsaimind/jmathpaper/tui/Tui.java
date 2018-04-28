@@ -96,7 +96,8 @@ public class Tui extends AbstractPapersUi {
 								writer.write(evaluatedExpression.format(
 										paper.getIdColumnSize(),
 										paper.getExpressionColumnSize(),
-										paper.getResultColumnSize()));
+										paper.getResultColumnSize(),
+										paper.getNumberFormat()));
 							} catch (InvalidExpressionException e) {
 								writer.write(e.getCause().getMessage());
 								
@@ -143,7 +144,8 @@ public class Tui extends AbstractPapersUi {
 				writer.write(evaluatedExpression.format(
 						paper.getIdColumnSize(),
 						paper.getExpressionColumnSize(),
-						paper.getResultColumnSize()));
+						paper.getResultColumnSize(),
+						paper.getNumberFormat()));
 				writer.write("\n");
 			}
 		}
