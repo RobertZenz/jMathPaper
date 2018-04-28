@@ -27,7 +27,7 @@ import com.udojava.evalex.Expression;
  * {@link EvaluatorAwareExpression} is an {@link Expression} extension which
  * knows what {@link Evaluator} it comes from.
  */
-public class EvaluatorAwareExpression extends Expression {
+class EvaluatorAwareExpression extends Expression {
 	/** The {@link Evaluator}. */
 	private Evaluator evaluator = null;
 	
