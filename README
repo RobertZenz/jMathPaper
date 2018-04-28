@@ -300,3 +300,8 @@ jMathPaper is a Java 8 application which uses SWT and EvalEx.
 The save format is a simple plain text format, with UTF-8 as encoding and UNIX
 line endings. Everything from the start of the file to the first empty line is
 treated as expression, everything below the first empty line is treated as note.
+
+### Custom UIs
+
+Custom UIs can be implemented by implementing the `Ui` interface and can be
+launched afterwards by specifying `--ui=UI` parameter with the full class name.

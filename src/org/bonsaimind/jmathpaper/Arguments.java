@@ -94,6 +94,10 @@ public class Arguments {
 		return filesPaths;
 	}
 	
+	public String getUi() {
+		return ui;
+	}
+	
 	public boolean hasFiles() {
 		return files != null && !files.isEmpty();
 	}
@@ -112,20 +116,5 @@ public class Arguments {
 	
 	public boolean isVersionRequested() {
 		return versionRequested;
-	}
-	
-	public boolean useCli() {
-		return "c".equalsIgnoreCase(ui)
-				|| "cli".equalsIgnoreCase(ui);
-	}
-	
-	public boolean useSwt() {
-		return "s".equalsIgnoreCase(ui)
-				|| "swt".equalsIgnoreCase(ui);
-	}
-	
-	public boolean useTui() {
-		return "t".equalsIgnoreCase(ui)
-				|| "tui".equalsIgnoreCase(ui);
 	}
 }
