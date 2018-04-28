@@ -190,7 +190,11 @@ public class PaperComponent extends SashForm {
 			if (inputText.getText().length() > 0) {
 				try {
 					ui.process(inputText.getText());
-					resetInput();
+					
+					// The input might have been a command which closed the UI.
+					if (!isDisposed()) {
+						resetInput();
+					}
 				} catch (CommandExecutionException | InvalidExpressionException e) {
 					if (e.getMessage() != null) {
 						errorLabel.setText(e.getMessage());
