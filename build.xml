@@ -56,6 +56,7 @@
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+			<fileset dir="${src}" includes="**/*"/>
 		</jar>
 		<jar jarfile="${dist}/${jar}-${version}-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
@@ -63,6 +64,7 @@
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+			<fileset dir="${src}" includes="**/*"/>
 		</jar>
 		<jar jarfile="${dist}/${jar}-${version}-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
@@ -70,6 +72,7 @@
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+			<fileset dir="${src}" includes="**/*"/>
 		</jar>
 	</target>
 
