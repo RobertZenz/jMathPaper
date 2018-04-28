@@ -152,6 +152,27 @@ surrounded by spaces, example:
     aliases                  aliases= true and false = false
     aliases                   aliases= true or false =  true
 
+
+### Unit conversions
+
+There is support for converting units, out-of-the-box the most basic units being
+possible to be converted. The conversion works by specifying a value and
+the units to convert from and to. The following ways to write the conversion is
+acceptable.
+
+    #1                            3feet to meter = 0.9144
+    #2                            3feet in meter = 0.9144
+    #3                               3feet meter = 0.9144
+
+Units can either be specified by name or by alias (for example `meter` and `m`).
+Additionally, they can also be specified in plural (`meters`).
+
+By default, SI and IEC prefixes are supported.
+
+    #1                              3km to meter = 3000
+    #2                             20yards to km = 0.018288
+    #3                          2decimeter to in = 7.874015...
+
 ### Different UIs
 
 jMathPaper supports three main mode of operations:
