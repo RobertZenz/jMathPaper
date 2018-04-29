@@ -31,7 +31,7 @@ public class TestEvaluator extends AbstractExpressionTest {
 	public void testBooleans() throws InvalidExpressionException {
 		assertResult(true, "1==1", new Evaluator());
 		assertResult(false, "1==2", new Evaluator());
-		assertResult(false, "true and false", new Evaluator());
+		assertResult(false, "true && false", new Evaluator());
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("6", "funcB()", evaluator);
 		
 		// Boolean support
-		assertFunction("bool", "a && b", "bool(a, b)=a and b", evaluator);
+		assertFunction("bool", "a && b", "bool(a, b)=a && b", evaluator);
 		assertResult(false, "bool(true, false)", evaluator);
 		assertResult(true, "bool(true, true)", evaluator);
 	}
