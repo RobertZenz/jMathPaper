@@ -61,7 +61,7 @@ public final class Main {
 			} catch (Exception e) {
 				System.out.println("Given UI \"" + arguments.getUi() + "\" could not be loaded, cause:");
 				System.out.println(e.toString());
-				System.exit(2);
+				System.exit(1);
 			}
 		} else {
 			if ((arguments.getExpression() == null || arguments.hasFiles())) {
@@ -89,7 +89,7 @@ public final class Main {
 				ui = DynamicLoader.getUi("cli");
 			} catch (Exception e) {
 				System.out.println("Failed to load any UI, please specify one with the --ui=UI parameter.");
-				System.exit(2);
+				System.exit(1);
 			}
 		}
 		
