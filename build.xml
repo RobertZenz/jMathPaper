@@ -13,7 +13,7 @@
 	<property name="jar" value="jmathpaper" />
 
 	<property name="evalex.version" value="1.18" />
-	<property name="jline.version" value="3.5.1" />
+	<property name="jline.version" value="3.7.0" />
 	<property name="lanterna.version" value="3.0.0" />
 	<property name="picocli.version" value="2.0.0-SNAPSHOT" />
 	<property name="swt.version" value="4.6.2" />
