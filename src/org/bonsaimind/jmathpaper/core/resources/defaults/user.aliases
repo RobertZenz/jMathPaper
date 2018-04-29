@@ -1,0 +1,16 @@
+# jMathPaper aliases file
+#
+# Here you can specify additional aliases which are automatically picked up
+# by jMathPaper every time a new paper is opened.
+#
+# Specifying a new alias requires the alias and the replacement. An alias is
+# only replaced inside an expression if it is surrounded by spaces.
+#
+# Here are some examples of alias definitions, if you haven't guessed by now,
+# "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# encountered.
+#
+# <alias> <replacement>
+# greater >
+# less <
+# multiply *

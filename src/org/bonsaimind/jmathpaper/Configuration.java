@@ -39,6 +39,7 @@ public final class Configuration {
 	
 	private static Path cachedConfigDirectory = null;
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
+	private static final String USER_ALIASES_NAME = "user.aliases";
 	private static final String USER_CONVERSIONS_NAME = "user.conversions";
 	private static final String USER_PREFIXES_NAME = "user.prefixes";
 	private static final String USER_UNITS_NAME = "user.units";
@@ -83,6 +84,10 @@ public final class Configuration {
 		}
 		
 		return globalPaperFile;
+	}
+	
+	public static final Path getUserAliasesFile() {
+		return cachedConfigDirectory.resolve(USER_ALIASES_NAME);
 	}
 	
 	public static final Path getUserConversionsFile() {
@@ -154,12 +159,10 @@ public final class Configuration {
 	 * 
 	 * @param file The {@link Path file} from which to read.
 	 * @param lineProcessor The function to execute for every line.
-	 * @param lineEnding The line ending to append to each line, can be
-	 *        {@code null} for nothing.
 	 */
-	public static final void processConfiguration(Path file, Consumer<String> lineProcessor, String lineEnding) {
+	public static final void processConfiguration(Path file, Consumer<String> lineProcessor) {
 		try {
-			processConfiguration(new FileInputStream(file.toFile()), lineProcessor, lineEnding);
+			processConfiguration(new FileInputStream(file.toFile()), lineProcessor, null);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,6 +199,7 @@ public final class Configuration {
 	 * Copies the default configuration files, if they do not exist.
 	 */
 	private static final void copyDefaultConfigFilesIfNeeded() {
+		copyDefaultConfigFileIfNeeded(USER_ALIASES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_CONVERSIONS_NAME);
 		copyDefaultConfigFileIfNeeded(USER_PREFIXES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_UNITS_NAME);

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
+import org.bonsaimind.jmathpaper.core.Evaluator;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
@@ -447,27 +448,37 @@ public abstract class AbstractPapersUi implements Ui {
 	protected Paper createNewPaper() {
 		Paper paper = new Paper();
 		
-		UnitConverter unitConverter = paper.getEvaluator().getUnitConverter();
+		Evaluator evaluator = paper.getEvaluator();
+		
+		ResourceLoader.processResource("other/default.aliases", evaluator::loadAlias);
+		
+		Configuration.processConfiguration(Configuration.getUserAliasesFile(), evaluator::loadAlias);
+		
+		for (Path aliasesFile : arguments.getAliasesFiles()) {
+			Configuration.processConfiguration(aliasesFile, evaluator::loadAlias);
+		}
+		
+		UnitConverter unitConverter = evaluator.getUnitConverter();
 		
 		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
 		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
 		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
 		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
 		
-		Configuration.processConfiguration(Configuration.getUserUnitsFile(), unitConverter::loadUnit, null);
-		Configuration.processConfiguration(Configuration.getUserPrefixesFile(), unitConverter::loadPrefix, null);
-		Configuration.processConfiguration(Configuration.getUserConversionsFile(), unitConverter::loadConversion, null);
+		Configuration.processConfiguration(Configuration.getUserUnitsFile(), unitConverter::loadUnit);
+		Configuration.processConfiguration(Configuration.getUserPrefixesFile(), unitConverter::loadPrefix);
+		Configuration.processConfiguration(Configuration.getUserConversionsFile(), unitConverter::loadConversion);
 		
 		for (Path unitsFile : arguments.getUnitsFiles()) {
-			Configuration.processConfiguration(unitsFile, unitConverter::loadUnit, null);
+			Configuration.processConfiguration(unitsFile, unitConverter::loadUnit);
 		}
 		
 		for (Path prefixesFile : arguments.getPrefixesFiles()) {
-			Configuration.processConfiguration(prefixesFile, unitConverter::loadPrefix, null);
+			Configuration.processConfiguration(prefixesFile, unitConverter::loadPrefix);
 		}
 		
 		for (Path conversionsFile : arguments.getConversionsFiles()) {
-			Configuration.processConfiguration(conversionsFile, unitConverter::loadConversion, null);
+			Configuration.processConfiguration(conversionsFile, unitConverter::loadConversion);
 		}
 		
 		return paper;

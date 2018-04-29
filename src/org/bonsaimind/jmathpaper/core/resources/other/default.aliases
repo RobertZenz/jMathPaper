@@ -1,0 +1,12 @@
+and				&&
+or				||
+equal			==
+equals			==
+notequal		!=
+notequals		!=
+greater			>
+greaterequal	>=
+greaterequals	>=
+less			<
+lessequal		<=
+lessequals		<=

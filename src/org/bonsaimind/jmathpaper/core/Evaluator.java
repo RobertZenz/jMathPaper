@@ -22,7 +22,10 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,6 +51,7 @@ public class Evaluator {
 	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
+	private Map<String, String> aliases = new HashMap<>();
 	private int expressionCounter = 0;
 	private String lastVariableAdded = null;
 	private MathContext mathContext = DEFAULT_MATH_CONTEXT;
@@ -159,6 +163,20 @@ public class Evaluator {
 		return unitConverter;
 	}
 	
+	public void loadAlias(String aliasDefinition) {
+		if (aliasDefinition == null || aliasDefinition.isEmpty()) {
+			return;
+		}
+		
+		String[] splittedDefinition = aliasDefinition.split("[ \t]+", 2);
+		
+		if (splittedDefinition.length != 2) {
+			return;
+		}
+		
+		registerAlias(splittedDefinition[0], splittedDefinition[1]);
+	}
+	
 	public Expression prepareExpression(String expression) {
 		if (expression == null || expression.length() == 0) {
 			return new Expression("0");
@@ -188,6 +206,10 @@ public class Evaluator {
 		}
 		
 		return mathExpression;
+	}
+	
+	public void registerAlias(String alias, String replacement) {
+		aliases.put("(^| )" + alias + "( |$)", replacement);
 	}
 	
 	public void reset() {
@@ -243,18 +265,9 @@ public class Evaluator {
 	}
 	
 	private String replaceAliases(String expression) {
-		expression = expression.replace(" and ", " && ");
-		expression = expression.replace(" or ", " || ");
-		expression = expression.replace(" equal ", " == ");
-		expression = expression.replace(" equals ", " == ");
-		expression = expression.replace(" notequal ", " != ");
-		expression = expression.replace(" notequals ", " != ");
-		expression = expression.replace(" greater ", " > ");
-		expression = expression.replace(" greaterequal ", " >= ");
-		expression = expression.replace(" greaterequals ", " >= ");
-		expression = expression.replace(" less ", " < ");
-		expression = expression.replace(" lessequal ", " <= ");
-		expression = expression.replace(" lessequals ", " <= ");
+		for (Entry<String, String> alias : aliases.entrySet()) {
+			expression = expression.replaceAll(alias.getKey(), alias.getValue());
+		}
 		
 		return expression;
 	}

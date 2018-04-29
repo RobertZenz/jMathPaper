@@ -27,6 +27,10 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 public class Arguments {
+	@Option(names = { "--aliases" }, paramLabel = "ALIASESFILE", description = "Load aliases from this file.")
+	private List<String> aliasesFiles = null;
+	
+	private List<Path> aliasesFilesPaths = null;
 	
 	@Option(names = { "-c", "--context" }, paramLabel = "FILE", arity = "1", description = "The paper to use as context for a given expression.")
 	private String context = null;
@@ -72,6 +76,14 @@ public class Arguments {
 	
 	@Option(names = { "--version" }, description = "Prints the version information.")
 	private boolean versionRequested = false;
+	
+	public List<Path> getAliasesFiles() {
+		if (aliasesFilesPaths == null) {
+			aliasesFilesPaths = convertStringsToPaths(aliasesFiles);
+		}
+		
+		return aliasesFilesPaths;
+	}
 	
 	public Path getContext() {
 		if (contextPath == null && context != null) {
