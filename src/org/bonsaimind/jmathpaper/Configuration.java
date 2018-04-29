@@ -17,12 +17,20 @@
 
 package org.bonsaimind.jmathpaper;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 
 public final class Configuration {
+	/** The {@link String} with which a comment in a file starts. */
+	public static final String COMMENT_START = "#";
+	
 	private static Path cachedConfigDirectory = null;
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
 	
@@ -70,6 +78,50 @@ public final class Configuration {
 	
 	public static final void init() {
 		migrateGlobalPaper();
+	}
+	
+	/**
+	 * Iterates over each line of the given {@link InputStream}.
+	 * <p>
+	 * This function will strip empty lines and also comments (see the
+	 * {@link #COMMENT_START} {@link String}.
+	 * 
+	 * @param inputStream The {@link InputStream} from which to read. Will be
+	 *        {@link InputStream#close() closed} when done.
+	 * @param lineProcessor The function to execute for every line.
+	 * @param lineEnding The line ending to append to each line, can be
+	 *        {@code null} for nothing.
+	 */
+	public static final void processConfiguration(InputStream inputStream, Consumer<String> lineProcessor, String lineEnding) {
+		try (BufferedReader reader = new BufferedReader(
+				new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+			
+			String line = reader.readLine();
+			
+			while (line != null) {
+				int commentIndex = line.indexOf(COMMENT_START);
+				
+				if (commentIndex >= 0) {
+					line = line.substring(0, commentIndex);
+				}
+				
+				line = line.trim();
+				
+				if (line.length() > 0) {
+					if (lineEnding != null) {
+						line = line + lineEnding;
+					}
+					
+					lineProcessor.accept(line);
+				}
+				
+				line = reader.readLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			
+			return;
+		}
 	}
 	
 	/**

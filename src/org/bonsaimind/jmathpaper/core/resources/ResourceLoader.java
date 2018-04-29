@@ -17,12 +17,10 @@
 
 package org.bonsaimind.jmathpaper.core.resources;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+
+import org.bonsaimind.jmathpaper.Configuration;
 
 /**
  * {@link ResourceLoader} is a static utility for loading embedded resources.
@@ -30,9 +28,6 @@ import java.util.regex.Pattern;
 public final class ResourceLoader {
 	/** The package which contains the resources. */
 	private static final String BASE_PACKAGE = "/" + ResourceLoader.class.getPackage().getName().replace(".", "/");
-	
-	/** The {@link String} with which a comment in a file starts. */
-	private static final String COMMENT_START = "#";
 	
 	/** The package which contains the regex files/resources. */
 	private static final String REGEX_PACKAGE = "regex";
@@ -51,32 +46,19 @@ public final class ResourceLoader {
 	 * @return The {@link Pattern} compiled from the regex.
 	 */
 	public static final Pattern compileRegex(String name) {
-		return Pattern.compile(loadResource(REGEX_PACKAGE + "/" + name + ".regex", null));
-	}
-	
-	/**
-	 * Loads the content of the given resource with the specified line endings.
-	 * <p>
-	 * This function will strip empty lines and also comments (see the
-	 * {@link #COMMENT_START} string.
-	 * 
-	 * @param relativePath The path to the resource relative to this class.
-	 * @param lineEnding The string to use as line-ending.
-	 * @return The content of the given resource file.
-	 */
-	public static final String loadResource(String relativePath, String lineEnding) {
-		StringBuilder content = new StringBuilder();
+		StringBuilder pattern = new StringBuilder();
 		
-		processResource(relativePath, content::append, lineEnding);
+		processResource(REGEX_PACKAGE + "/" + name + ".regex", pattern::append, null);
 		
-		return content.toString();
+		return Pattern.compile(pattern.toString());
 	}
 	
 	/**
 	 * Iterates over each line of the given resource.
 	 * <p>
-	 * This function will strip empty lines and also comments (see the
-	 * {@link #COMMENT_START} string.
+	 * This function will strip empty lines and also comments (see
+	 * {@link Configuration#processConfiguration(java.io.InputStream, Consumer, String)}
+	 * .
 	 * 
 	 * @param relativePath The path to the resource relative to this class.
 	 * @param lineProcessor The function to execute for every line.
@@ -95,39 +77,10 @@ public final class ResourceLoader {
 	 * @param lineProcessor The function to execute for every line.
 	 * @param lineEnding The line ending to append to each line.
 	 */
-	public static final void processResource(String relativePath, Consumer<String> lineProcessor, String lineEnding) {
-		String file = BASE_PACKAGE + "/" + relativePath;
-		
-		try (BufferedReader reader = new BufferedReader(
-				new InputStreamReader(
-						ResourceLoader.class.getResourceAsStream(file),
-						StandardCharsets.UTF_8))) {
-			
-			String line = reader.readLine();
-			
-			while (line != null) {
-				int commentIndex = line.indexOf(COMMENT_START);
-				
-				if (commentIndex >= 0) {
-					line = line.substring(0, commentIndex);
-				}
-				
-				line = line.trim();
-				
-				if (line.length() > 0) {
-					if (lineEnding != null) {
-						line = line + lineEnding;
-					}
-					
-					lineProcessor.accept(line);
-				}
-				
-				line = reader.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-			return;
-		}
+	private static final void processResource(String relativePath, Consumer<String> lineProcessor, String lineEnding) {
+		Configuration.processConfiguration(
+				ResourceLoader.class.getResourceAsStream(BASE_PACKAGE + "/" + relativePath),
+				lineProcessor,
+				lineEnding);
 	}
 }
