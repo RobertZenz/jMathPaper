@@ -38,6 +38,13 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
+	public void clear() {
+		super.clear();
+		
+		printPaper();
+	}
+	
+	@Override
 	public void close() {
 		super.close();
 		
