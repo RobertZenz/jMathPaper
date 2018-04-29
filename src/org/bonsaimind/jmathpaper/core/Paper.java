@@ -232,6 +232,7 @@ public class Paper {
 		}
 		
 		numberFormat = new DecimalFormat(format);
+		numberFormat.setRoundingMode(evaluator.getMathContext().getRoundingMode());
 	}
 	
 	public void setPrecision(int precision) {
@@ -246,6 +247,8 @@ public class Paper {
 		evaluator.setMathContext(new MathContext(
 				evaluator.getMathContext().getPrecision(),
 				roundingMode));
+		
+		numberFormat.setRoundingMode(evaluator.getMathContext().getRoundingMode());
 	}
 	
 	@Override
