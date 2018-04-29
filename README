@@ -401,6 +401,16 @@ The save format is a simple plain text format, with UTF-8 as encoding and UNIX
 line endings. Everything from the start of the file to the first empty line is
 treated as expression, everything below the first empty line is treated as note.
 
+### Jars
+
+There are multiple jars available for download:
+
+ * CLI, only containing the command line interface.
+ * CLI-TUI, only containing the command line interface and the simple text user
+   interface.
+ * Full, the full builds, containing all user interfaces. As SWT uses native
+   components, these must be built for every platform.
+
 ### Custom UIs
 
 Custom UIs can be implemented by implementing the `Ui` interface and can be
