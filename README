@@ -339,8 +339,8 @@ Will set `OPTION` to `VALUE`. The following options are available:
     Option        Description                             Aliases
     -----------------------------------------------------------------------
     numberformat  The format in which the results         numberformat,
-                  should be displayed. The following      format, fmt
-                  symbols are supported:
+                  should be displayed. The following      number-format,
+                  symbols are supported:                  format, fmt
                    * 0 - Display either a number or
                          zero.
                    * # - Display either a number or

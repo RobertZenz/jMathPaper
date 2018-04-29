@@ -23,7 +23,7 @@ import java.math.RoundingMode;
  * An {@link Option} allows to change the way the {@link Ui} behaves.
  */
 public enum Option {
-	NUMBER_FORMAT("numberformat", "format", "fmt"),
+	NUMBER_FORMAT("numberformat", "number-format", "format", "fmt"),
 	
 	/**
 	 * Sets the precision to the given value.
