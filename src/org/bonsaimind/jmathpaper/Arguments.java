@@ -20,6 +20,7 @@ package org.bonsaimind.jmathpaper;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import picocli.CommandLine.Option;
@@ -31,6 +32,11 @@ public class Arguments {
 	private String context = null;
 	
 	private Path contextPath = null;
+	
+	@Option(names = { "--conversions" }, paramLabel = "CONVERSIONSFILE", description = "Load unit conversions from this file.")
+	private List<String> conversionsFiles = null;
+	
+	private List<Path> conversionsFilesPaths = null;
 	
 	private String expression = null;
 	
@@ -48,11 +54,21 @@ public class Arguments {
 	@Option(names = { "-n", "--no-newline" }, description = "Omit a trailing new line when printing things.")
 	private boolean noNewline = false;
 	
+	@Option(names = { "--prefixes" }, paramLabel = "PREFIXESFILE", description = "Load prefixes from this file.")
+	private List<String> prefixesFiles = null;
+	
+	private List<Path> prefixesFilesPaths = null;
+	
 	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
 	private boolean printResultOnly = false;
 	
 	@Option(names = { "-u", "--ui" }, arity = "1", description = "Define what user interface (UI) to start.")
 	private String ui = null;
+	
+	@Option(names = { "--units" }, paramLabel = "UNITSFILE", description = "Load units from this file.")
+	private List<String> unitsFiles = null;
+	
+	private List<Path> unitsFilesPaths = null;
 	
 	@Option(names = { "--version" }, description = "Prints the version information.")
 	private boolean versionRequested = false;
@@ -63,6 +79,14 @@ public class Arguments {
 		}
 		
 		return contextPath;
+	}
+	
+	public List<Path> getConversionsFiles() {
+		if (conversionsFilesPaths == null) {
+			conversionsFilesPaths = convertStringsToPaths(conversionsFiles);
+		}
+		
+		return conversionsFilesPaths;
 	}
 	
 	public String getExpression() {
@@ -84,18 +108,30 @@ public class Arguments {
 	
 	public List<Path> getFiles() {
 		if (filesPaths == null && hasFiles()) {
-			filesPaths = new ArrayList<>();
-			
-			for (String file : files) {
-				filesPaths.add(Paths.get(file));
-			}
+			filesPaths = convertStringsToPaths(files);
 		}
 		
 		return filesPaths;
 	}
 	
+	public List<Path> getPrefixesFiles() {
+		if (prefixesFilesPaths == null) {
+			prefixesFilesPaths = convertStringsToPaths(prefixesFiles);
+		}
+		
+		return prefixesFilesPaths;
+	}
+	
 	public String getUi() {
 		return ui;
+	}
+	
+	public List<Path> getUnitsFiles() {
+		if (unitsFilesPaths == null) {
+			unitsFilesPaths = convertStringsToPaths(unitsFiles);
+		}
+		
+		return unitsFilesPaths;
 	}
 	
 	public boolean hasFiles() {
@@ -116,5 +152,19 @@ public class Arguments {
 	
 	public boolean isVersionRequested() {
 		return versionRequested;
+	}
+	
+	protected List<Path> convertStringsToPaths(List<String> strings) {
+		if (strings == null || strings.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<Path> paths = new ArrayList<>();
+		
+		for (String item : strings) {
+			paths.add(Paths.get(item));
+		}
+		
+		return Collections.unmodifiableList(paths);
 	}
 }

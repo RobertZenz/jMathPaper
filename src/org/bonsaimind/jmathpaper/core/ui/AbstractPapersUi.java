@@ -17,6 +17,8 @@
 
 package org.bonsaimind.jmathpaper.core.ui;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.nio.file.Path;
@@ -453,6 +455,30 @@ public abstract class AbstractPapersUi implements Ui {
 		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
 		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
 		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
+		
+		for (Path unitsFile : arguments.getUnitsFiles()) {
+			try {
+				Configuration.processConfiguration(new FileInputStream(unitsFile.toFile()), unitConverter::loadUnit, null);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for (Path prefixesFile : arguments.getPrefixesFiles()) {
+			try {
+				Configuration.processConfiguration(new FileInputStream(prefixesFile.toFile()), unitConverter::loadPrefix, null);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		for (Path conversionsFile : arguments.getConversionsFiles()) {
+			try {
+				Configuration.processConfiguration(new FileInputStream(conversionsFile.toFile()), unitConverter::loadConversion, null);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		return paper;
 	}
