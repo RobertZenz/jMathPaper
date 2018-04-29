@@ -37,6 +37,20 @@ public class TestUnitConversion extends AbstractRegexTest {
 		
 		assertNoMatch("a=5");
 		
+		assertMatch("1", "1", "1", "1 1 to 1");
+		assertMatch("1", "1", "1", "1 1 in 1");
+		assertMatch("1", "1", "1", "1 1 1");
+		assertMatch("1", "k1", "1", "1 k1 to 1");
+		assertMatch("1", "k1", "1", "1 k1 in 1");
+		assertMatch("1", "k1", "1", "1 k1 1");
+		assertMatch("1", "1", "k1", "1 1 to k1");
+		assertMatch("1", "1", "k1", "1 1 in k1");
+		assertMatch("1", "1", "k1", "1 1 k1");
+		
+		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 to 1");
+		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 in 1");
+		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 1");
+		
 		assertMatch("1", "km", "m", "1 km to m");
 		assertMatch("1+1", "km", "m", "1+1 km to m");
 		assertMatch("(a*5) + b - test", "km", "m", "(a*5) + b - test km to m");
