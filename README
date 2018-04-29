@@ -173,6 +173,12 @@ By default, SI and IEC prefixes are supported.
     #2                             20yards to km = 0.018288
     #3                          2decimeter to in = 7.874015...
 
+Not just plain values but whole expressions are supported.
+
+    a                                          a = 5
+    b                                          b = 10
+    c                  c=a*sqrt(b) meter to inch = 622.4956...
+
 ### Different UIs
 
 jMathPaper supports three main mode of operations:
