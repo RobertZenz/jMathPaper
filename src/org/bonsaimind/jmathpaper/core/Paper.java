@@ -107,6 +107,10 @@ public class Paper {
 		return readonlyEvaluatedExpression;
 	}
 	
+	public Evaluator getEvaluator() {
+		return evaluator;
+	}
+	
 	public int getExpressionColumnSize() {
 		return expressionColumnSize;
 	}

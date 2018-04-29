@@ -17,6 +17,7 @@
 
 package org.bonsaimind.jmathpaper.core;
 
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.junit.Test;
 
 public class TestEvaluator extends AbstractExpressionTest {
@@ -39,19 +40,6 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("0", "/* Another empty. */", new Evaluator());
 		assertResult("2", "1 /* Inlined */ + 1", new Evaluator());
 		assertResult("2", "1 + /* Nested // */ 1", new Evaluator());
-	}
-	
-	@Test
-	public void testConversions() throws InvalidExpressionException {
-		assertResult("1", "1 m to m", new Evaluator());
-		assertResult("1", "1 km to km", new Evaluator());
-		assertResult("1", "1 meter to meter", new Evaluator());
-		assertResult("1", "1 kilometer to kilometer", new Evaluator());
-		
-		assertResult("1000", "1 km to m", new Evaluator());
-		assertResult("1000", "1 kilometer to meter", new Evaluator());
-		assertResult("1000", "1 km to meter", new Evaluator());
-		assertResult("1", "1000 m to kilometer", new Evaluator());
 	}
 	
 	@Test
@@ -112,23 +100,41 @@ public class TestEvaluator extends AbstractExpressionTest {
 	
 	@Test
 	public void testUnitConversions() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		// Load the defaults
+		ResourceLoader.processResource("units/iec.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/default.units", evaluator.getUnitConverter()::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", evaluator.getUnitConverter()::loadConversion);
+		
 		// Basic support
-		assertResult("2.54", "1inch to centimeter", new Evaluator());
-		assertResult("2.54", "1in to cm", new Evaluator());
-		assertResult("2.54", "1in in cm", new Evaluator());
-		assertResult("2.54", "1in cm", new Evaluator());
+		assertResult("2.54", "1inch to centimeter", evaluator);
+		assertResult("2.54", "1in to cm", evaluator);
+		assertResult("2.54", "1in in cm", evaluator);
+		assertResult("2.54", "1in cm", evaluator);
+		
+		assertResult("1", "1 m to m", evaluator);
+		assertResult("1", "1 km to km", evaluator);
+		assertResult("1", "1 meter to meter", evaluator);
+		assertResult("1", "1 kilometer to kilometer", evaluator);
+		
+		assertResult("1000", "1 km to m", evaluator);
+		assertResult("1000", "1 kilometer to meter", evaluator);
+		assertResult("1000", "1 km to meter", evaluator);
+		assertResult("1", "1000 m to kilometer", evaluator);
 		
 		// No unit
-		assertResult("1", "1 1 to 1", new Evaluator());
-		assertResult("1000", "1 k1 to 1", new Evaluator());
-		assertResult("0.001", "1 1 to k1", new Evaluator());
+		assertResult("1", "1 1 to 1", evaluator);
+		assertResult("1000", "1 k1 to 1", evaluator);
+		assertResult("0.001", "1 1 to k1", evaluator);
 		
 		// Expression support
-		assertResult("0.0175", "5*5*70 centimeter to kilometer", new Evaluator());
-		assertResult("2.7432", "30/10 * sqrt(9) ft to meter", new Evaluator());
+		assertResult("0.0175", "5*5*70 centimeter to kilometer", evaluator);
+		assertResult("2.7432", "30/10 * sqrt(9) ft to meter", evaluator);
 		
 		// Plural
-		assertResult("1", "1000meters to kilometers", new Evaluator());
+		assertResult("1", "1000meters to kilometers", evaluator);
 	}
 	
 	@Test

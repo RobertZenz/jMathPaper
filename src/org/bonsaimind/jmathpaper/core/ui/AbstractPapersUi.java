@@ -29,6 +29,8 @@ import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Configuration;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
+import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
 /**
  * {@link AbstractPapersUi} is an {@link Ui} implementation which implements the
@@ -217,7 +219,7 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	@Override
 	public void new_() {
-		Paper newPaper = new Paper();
+		Paper newPaper = createNewPaper();
 		
 		papers.add(newPaper);
 		setPaper(newPaper);
@@ -257,7 +259,7 @@ public abstract class AbstractPapersUi implements Ui {
 			}
 		}
 		
-		Paper loadedPaper = new Paper();
+		Paper loadedPaper = createNewPaper();
 		loadedPaper.setFile(file);
 		loadedPaper.loadFrom(file);
 		
@@ -435,6 +437,24 @@ public abstract class AbstractPapersUi implements Ui {
 		if (paper == null) {
 			throw new IllegalStateException("This operation can only be performed with a paper open.");
 		}
+	}
+	
+	/**
+	 * Creates a new {@link Paper} instance.
+	 * 
+	 * @return A new {@link Paper} instance.
+	 */
+	protected Paper createNewPaper() {
+		Paper paper = new Paper();
+		
+		UnitConverter unitConverter = paper.getEvaluator().getUnitConverter();
+		
+		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
+		
+		return paper;
 	}
 	
 	/**

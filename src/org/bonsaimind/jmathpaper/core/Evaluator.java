@@ -57,11 +57,6 @@ public class Evaluator {
 	public Evaluator() {
 		super();
 		
-		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
-		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
-		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
-		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
-		
 		reset();
 	}
 	
@@ -158,6 +153,10 @@ public class Evaluator {
 	
 	public MathContext getMathContext() {
 		return mathContext;
+	}
+	
+	public UnitConverter getUnitConverter() {
+		return unitConverter;
 	}
 	
 	public Expression prepareExpression(String expression) {
