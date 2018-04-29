@@ -28,7 +28,7 @@ import org.jline.utils.InfoCmp.Capability;
  * The {@link ClearingLineReader} is a {@link LineReaderImpl} extension which
  * clears the input line.
  */
-public class ClearingLineReader extends LineReaderImpl {
+class ClearingLineReader extends LineReaderImpl {
 	public ClearingLineReader(Terminal terminal) throws IOException {
 		super(terminal);
 	}
