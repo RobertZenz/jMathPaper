@@ -1,0 +1,16 @@
+# jMathPaper prefixes files
+#
+# Here you can specify additional prefixes which are automatically picked up
+# by jMathPaper every time a new paper is opened.
+#
+# Specifying a new prefix requires the name, the prefix, the base and
+# the exponent.
+#
+# Here are some examples of prefix definitions, if you haven't guessed by now,
+# "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# encountered.
+#
+# <name> <prefix> <base> <exponent>
+# kilo k 10 3
+# milli m 10 -3
+# mebi Mi 1024 2

@@ -18,14 +18,20 @@
 package org.bonsaimind.jmathpaper;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
+
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
 public final class Configuration {
 	/** The {@link String} with which a comment in a file starts. */
@@ -33,6 +39,9 @@ public final class Configuration {
 	
 	private static Path cachedConfigDirectory = null;
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
+	private static final String USER_CONVERSIONS_NAME = "user.conversions";
+	private static final String USER_PREFIXES_NAME = "user.prefixes";
+	private static final String USER_UNITS_NAME = "user.units";
 	
 	private Configuration() {
 		// No instancing required.
@@ -76,8 +85,21 @@ public final class Configuration {
 		return globalPaperFile;
 	}
 	
+	public static final Path getUserConversionsFile() {
+		return cachedConfigDirectory.resolve(USER_CONVERSIONS_NAME);
+	}
+	
+	public static final Path getUserPrefixesFile() {
+		return cachedConfigDirectory.resolve(USER_PREFIXES_NAME);
+	}
+	
+	public static final Path getUserUnitsFile() {
+		return cachedConfigDirectory.resolve(USER_UNITS_NAME);
+	}
+	
 	public static final void init() {
 		migrateGlobalPaper();
+		copyDefaultConfigFilesIfNeeded();
 	}
 	
 	/**
@@ -122,6 +144,61 @@ public final class Configuration {
 			
 			return;
 		}
+	}
+	
+	/**
+	 * Iterates over each line of the given {@link InputStream}.
+	 * <p>
+	 * This function will strip empty lines and also comments (see the
+	 * {@link #COMMENT_START} {@link String}.
+	 * 
+	 * @param file The {@link Path file} from which to read.
+	 * @param lineProcessor The function to execute for every line.
+	 * @param lineEnding The line ending to append to each line, can be
+	 *        {@code null} for nothing.
+	 */
+	public static final void processConfiguration(Path file, Consumer<String> lineProcessor, String lineEnding) {
+		try {
+			processConfiguration(new FileInputStream(file.toFile()), lineProcessor, lineEnding);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Copies the given default configuration file, if it does not already
+	 * exist.
+	 * 
+	 * @param configFileName The name of the configuration file.
+	 */
+	private static final void copyDefaultConfigFileIfNeeded(String configFileName) {
+		Path configFile = cachedConfigDirectory.resolve(configFileName);
+		
+		if (!Files.exists(configFile)) {
+			try (OutputStream outputStream = new FileOutputStream(configFile.toFile())) {
+				try (InputStream inputStream = ResourceLoader.class.getResourceAsStream("defaults/" + configFileName)) {
+					byte[] buffer = new byte[4096];
+					int read = 0;
+					
+					while ((read = inputStream.read(buffer)) > 0) {
+						outputStream.write(buffer, 0, read);
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Copies the default configuration files, if they do not exist.
+	 */
+	private static final void copyDefaultConfigFilesIfNeeded() {
+		copyDefaultConfigFileIfNeeded(USER_CONVERSIONS_NAME);
+		copyDefaultConfigFileIfNeeded(USER_PREFIXES_NAME);
+		copyDefaultConfigFileIfNeeded(USER_UNITS_NAME);
 	}
 	
 	/**

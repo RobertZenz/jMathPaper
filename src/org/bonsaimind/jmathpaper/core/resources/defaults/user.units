@@ -1,0 +1,16 @@
+# jMathPaper units files
+#
+# Here you can specify additional units which are automatically picked up
+# by jMathPaper every time a new paper is opened.
+#
+# Specifying a new unit requires the name, the exponent and aliases, each line
+# can only contain one definition.
+#
+# Here are some examples of unit definitions, if you haven't guessed by now,
+# "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# encountered.
+#
+# <name> <exponent> [<alias,alias,alias,...>]
+# meter 1 m
+# foot 1 feet,ft
+# post 1

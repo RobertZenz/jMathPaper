@@ -182,7 +182,9 @@ Not just plain values but whole expressions are supported.
 #### Custom units files
 
 Additional units can be specified in a file and passed to jMathPaper with the
-`--units=UNITSFILE` parameter.
+`--units=UNITSFILE` parameter or in the user configuration file located in
+the jMathPaper configuration directory (most likely
+`~/.local/share/jmathpaper/`).
 
 A well-formed units file has one unit per line, looking like this:
 
@@ -205,7 +207,9 @@ Comments can be specified with a leading `#` character.
 #### Custom prefixes files
 
 Additional prefixes can be specified in a file and passd to jMathPaper with the
-`--prefixes=PREFIXESFILE` parameter.
+`--prefixes=PREFIXESFILE` parameter or in the user configuration file located in
+the jMathPaper configuration directory (most likely
+`~/.local/share/jmathpaper/`).
 
 A well-formed prefixes file has one prefix per line, looking like this:
 
@@ -227,7 +231,9 @@ Comments can be specified with a leading `#` character.
 #### Custom conversions files
 
 Additional conversions can be specified in a file and passed to jMathPaper with
-the `--conversions=CONVERSIONSFILE` parameter.
+the `--conversions=CONVERSIONSFILE` parameter or in the user configuration file
+located in the jMathPaper configuration directory (most likely
+`~/.local/share/jmathpaper/`).
 
 A well-formed conversions file has one conversion per line, looking like this:
 

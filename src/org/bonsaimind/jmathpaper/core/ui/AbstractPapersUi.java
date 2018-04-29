@@ -17,8 +17,6 @@
 
 package org.bonsaimind.jmathpaper.core.ui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.nio.file.Path;
@@ -456,28 +454,20 @@ public abstract class AbstractPapersUi implements Ui {
 		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
 		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
 		
+		Configuration.processConfiguration(Configuration.getUserUnitsFile(), unitConverter::loadUnit, null);
+		Configuration.processConfiguration(Configuration.getUserPrefixesFile(), unitConverter::loadPrefix, null);
+		Configuration.processConfiguration(Configuration.getUserConversionsFile(), unitConverter::loadConversion, null);
+		
 		for (Path unitsFile : arguments.getUnitsFiles()) {
-			try {
-				Configuration.processConfiguration(new FileInputStream(unitsFile.toFile()), unitConverter::loadUnit, null);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			Configuration.processConfiguration(unitsFile, unitConverter::loadUnit, null);
 		}
 		
 		for (Path prefixesFile : arguments.getPrefixesFiles()) {
-			try {
-				Configuration.processConfiguration(new FileInputStream(prefixesFile.toFile()), unitConverter::loadPrefix, null);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			Configuration.processConfiguration(prefixesFile, unitConverter::loadPrefix, null);
 		}
 		
 		for (Path conversionsFile : arguments.getConversionsFiles()) {
-			try {
-				Configuration.processConfiguration(new FileInputStream(conversionsFile.toFile()), unitConverter::loadConversion, null);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			Configuration.processConfiguration(conversionsFile, unitConverter::loadConversion, null);
 		}
 		
 		return paper;

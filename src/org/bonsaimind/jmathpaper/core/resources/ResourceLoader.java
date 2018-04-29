@@ -26,9 +26,6 @@ import org.bonsaimind.jmathpaper.Configuration;
  * {@link ResourceLoader} is a static utility for loading embedded resources.
  */
 public final class ResourceLoader {
-	/** The package which contains the resources. */
-	private static final String BASE_PACKAGE = "/" + ResourceLoader.class.getPackage().getName().replace(".", "/");
-	
 	/** The package which contains the regex files/resources. */
 	private static final String REGEX_PACKAGE = "regex";
 	
@@ -70,8 +67,9 @@ public final class ResourceLoader {
 	/**
 	 * Iterates over each line of the given resource.
 	 * <p>
-	 * This function will strip empty lines and also comments (see the
-	 * {@link #COMMENT_START} string.
+	 * This function will strip empty lines and also comments (see
+	 * {@link Configuration#processConfiguration(java.io.InputStream, Consumer, String)}
+	 * .
 	 * 
 	 * @param relativePath The path to the resource relative to this class.
 	 * @param lineProcessor The function to execute for every line.
@@ -79,7 +77,7 @@ public final class ResourceLoader {
 	 */
 	private static final void processResource(String relativePath, Consumer<String> lineProcessor, String lineEnding) {
 		Configuration.processConfiguration(
-				ResourceLoader.class.getResourceAsStream(BASE_PACKAGE + "/" + relativePath),
+				ResourceLoader.class.getResourceAsStream(relativePath),
 				lineProcessor,
 				lineEnding);
 	}
