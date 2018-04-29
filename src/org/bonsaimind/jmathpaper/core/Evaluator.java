@@ -217,10 +217,6 @@ public class Evaluator {
 		previousEvaluatedExpressions.clear();
 	}
 	
-	public void setExpressionCounter(int counter) {
-		expressionCounter = counter;
-	}
-	
 	public void setMathContext(MathContext mathContext) {
 		this.mathContext = mathContext;
 	}

@@ -94,8 +94,6 @@ public class Paper {
 		
 		notes = notesBuilder.toString().trim();
 		
-		evaluator.setExpressionCounter(evaluatedExpressions.size());
-		
 		remeasureColumnSizes();
 	}
 	
