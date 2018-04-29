@@ -20,7 +20,6 @@ package org.bonsaimind.jmathpaper.core;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -293,10 +292,6 @@ public class Paper {
 		trimmedString = trimmedString.trim();
 		
 		return trimmedString;
-	}
-	
-	protected String format(BigDecimal value) {
-		return numberFormat.format(value);
 	}
 	
 	protected void measureExpression(EvaluatedExpression evaluatedExpression) {
