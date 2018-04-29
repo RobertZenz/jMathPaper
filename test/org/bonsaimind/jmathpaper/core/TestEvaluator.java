@@ -111,6 +111,27 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testUnitConversions() throws InvalidExpressionException {
+		// Basic support
+		assertResult("2.54", "1inch to centimeter", new Evaluator());
+		assertResult("2.54", "1in to cm", new Evaluator());
+		assertResult("2.54", "1in in cm", new Evaluator());
+		assertResult("2.54", "1in cm", new Evaluator());
+		
+		// No unit
+		assertResult("1", "1 1 to 1", new Evaluator());
+		assertResult("1000", "1 k1 to 1", new Evaluator());
+		assertResult("0.001", "1 1 to k1", new Evaluator());
+		
+		// Expression support
+		assertResult("0.0175", "5*5*70 centimeter to kilometer", new Evaluator());
+		assertResult("2.7432", "30/10 * sqrt(9) ft to meter", new Evaluator());
+		
+		// Plural
+		assertResult("1", "1000meters to kilometers", new Evaluator());
+	}
+	
+	@Test
 	public void testVariables() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
