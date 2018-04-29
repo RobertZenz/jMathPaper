@@ -45,6 +45,8 @@ public class UnitConverter {
 	
 	public UnitConverter() {
 		super();
+		
+		registerUnit(Unit.ONE);
 	}
 	
 	public BigDecimal convert(PrefixedUnit from, PrefixedUnit to, BigDecimal value, MathContext mathContext) {
