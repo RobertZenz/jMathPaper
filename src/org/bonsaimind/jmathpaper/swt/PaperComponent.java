@@ -89,6 +89,7 @@ public class PaperComponent extends SashForm {
 		
 		notesText = new Text(notesComposite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
 		notesText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		notesText.addListener(SWT.CHANGED, this::onNotesTextChanged);
 	}
 	
 	public void clearExpressions() {
@@ -227,6 +228,10 @@ public class PaperComponent extends SashForm {
 			
 			event.doit = false;
 		}
+	}
+	
+	private void onNotesTextChanged(Event event) {
+		paper.setNotes(notesText.getText());
 	}
 	
 	private void resetInput() {
