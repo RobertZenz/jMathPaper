@@ -57,8 +57,22 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
+	public void next() {
+		super.next();
+		
+		printPaper();
+	}
+	
+	@Override
 	public void open(Path file) throws IOException {
 		super.open(file);
+		
+		printPaper();
+	}
+	
+	@Override
+	public void previous() {
+		super.previous();
 		
 		printPaper();
 	}
