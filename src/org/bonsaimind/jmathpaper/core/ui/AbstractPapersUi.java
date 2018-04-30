@@ -111,6 +111,8 @@ public abstract class AbstractPapersUi implements Ui {
 		checkCurrentPaper();
 		
 		paper.evaluate(expression);
+		
+		currentPaperHasChanged();
 	}
 	
 	/**
@@ -306,6 +308,8 @@ public abstract class AbstractPapersUi implements Ui {
 		checkCurrentPaper();
 		
 		paper.load();
+		
+		currentPaperHasReset();
 	}
 	
 	/**
@@ -353,6 +357,8 @@ public abstract class AbstractPapersUi implements Ui {
 		checkCurrentPaper();
 		
 		paper.save();
+		
+		currentPaperHasReset();
 	}
 	
 	/**
@@ -482,6 +488,26 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		return paper;
+	}
+	
+	/**
+	 * Invoked whenever the current {@link Paper} has changed.
+	 * <p>
+	 * Overriding classes can safely assume that there is a current
+	 * {@link Paper}.
+	 */
+	protected void currentPaperHasChanged() {
+		// For overriding classes.
+	}
+	
+	/**
+	 * Invoked whenever the current {@link Paper} has been reset.
+	 * <p>
+	 * Overriding classes can safely assume that there is a current
+	 * {@link Paper}.
+	 */
+	protected void currentPaperHasReset() {
+		// For overriding classes.
 	}
 	
 	/**

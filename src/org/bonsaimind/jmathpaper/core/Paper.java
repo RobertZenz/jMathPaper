@@ -32,9 +32,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Paper {
 	private static final int DEFAULT_WIDTH = 50;
+	protected boolean changed = true;
 	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
 	protected int expressionColumnSize = 0;
@@ -55,6 +57,8 @@ public class Paper {
 	public void clear() {
 		evaluatedExpressions.clear();
 		evaluator.reset();
+		
+		changed = true;
 	}
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
@@ -63,6 +67,8 @@ public class Paper {
 		evaluatedExpressions.add(evaluatedExpression);
 		
 		measureExpression(evaluatedExpression);
+		
+		changed = true;
 		
 		return evaluatedExpression;
 	}
@@ -141,6 +147,10 @@ public class Paper {
 		return evaluator.getMathContext().getRoundingMode();
 	}
 	
+	public boolean isChanged() {
+		return changed;
+	}
+	
 	public void load() throws IOException {
 		loadFrom(file);
 	}
@@ -157,6 +167,8 @@ public class Paper {
 		clear();
 		
 		evaluateLines(Files.readAllLines(file, StandardCharsets.UTF_8));
+		
+		changed = false;
 	}
 	
 	/**
@@ -209,6 +221,8 @@ public class Paper {
 				StandardOpenOption.TRUNCATE_EXISTING)) {
 			writer.write(toString());
 		}
+		
+		changed = false;
 	}
 	
 	public void setFile(Path file) {
@@ -216,6 +230,8 @@ public class Paper {
 	}
 	
 	public void setNotes(String notes) {
+		changed = changed || Objects.equals(this.notes, notes);
+		
 		this.notes = notes;
 	}
 	

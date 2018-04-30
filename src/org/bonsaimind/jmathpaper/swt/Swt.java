@@ -100,7 +100,6 @@ public class Swt extends AbstractPapersUi {
 		super.evaluate(expression);
 		
 		updateCurrentTabItem();
-		markChanged();
 	}
 	
 	@Override
@@ -270,8 +269,6 @@ public class Swt extends AbstractPapersUi {
 				paperComponent.clearExpressions();
 				paperComponent.updateExpressions();
 			}
-			
-			updateTabItemText();
 		}
 	}
 	
@@ -302,8 +299,6 @@ public class Swt extends AbstractPapersUi {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			updateTabItemText();
 		}
 	}
 	
@@ -313,8 +308,6 @@ public class Swt extends AbstractPapersUi {
 			paper.setNotes(getCurrentPaperComponent().getNotes());
 			
 			super.save(file);
-			
-			updateTabItemText();
 		}
 	}
 	
@@ -337,15 +330,10 @@ public class Swt extends AbstractPapersUi {
 		return cTabItem;
 	}
 	
-	protected PaperComponent getCurrentPaperComponent() {
-		if (cTabFolder.getSelection() != null) {
-			return (PaperComponent)cTabFolder.getSelection().getControl();
-		}
+	@Override
+	protected void currentPaperHasChanged() {
+		super.currentPaperHasChanged();
 		
-		return null;
-	}
-	
-	protected void markChanged() {
 		if (cTabFolder.getSelection() != null) {
 			CTabItem cTabItem = cTabFolder.getSelection();
 			
@@ -353,6 +341,24 @@ public class Swt extends AbstractPapersUi {
 				cTabItem.setText("*" + cTabItem.getText());
 			}
 		}
+	}
+	
+	@Override
+	protected void currentPaperHasReset() {
+		CTabItem cTabItem = cTabFolder.getSelection();
+		
+		if (cTabItem != null && paper != null && paper.getFile() != null) {
+			cTabItem.setText(paper.getFile().getFileName().toString());
+			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
+		}
+	}
+	
+	protected PaperComponent getCurrentPaperComponent() {
+		if (cTabFolder.getSelection() != null) {
+			return (PaperComponent)cTabFolder.getSelection().getControl();
+		}
+		
+		return null;
 	}
 	
 	@Override
@@ -374,8 +380,6 @@ public class Swt extends AbstractPapersUi {
 			paperComponent.clearExpressions();
 			paperComponent.updateExpressions();
 		}
-		
-		updateTabItemText();
 	}
 	
 	@Override
@@ -429,15 +433,6 @@ public class Swt extends AbstractPapersUi {
 		
 		nextPaperMenuItem.setEnabled(hasManyItems);
 		previousPaperMenuItem.setEnabled(hasManyItems);
-	}
-	
-	protected void updateTabItemText() {
-		CTabItem cTabItem = cTabFolder.getSelection();
-		
-		if (cTabItem != null && paper != null && paper.getFile() != null) {
-			cTabItem.setText(paper.getFile().getFileName().toString());
-			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
-		}
 	}
 	
 	private void onOpenPushed(Event event) {

@@ -30,6 +30,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 public class Tui extends AbstractPapersUi {
+	protected boolean paperHasChanged = false;
 	protected boolean running = true;
 	protected PrintWriter writer = null;
 	
@@ -90,7 +91,13 @@ public class Tui extends AbstractPapersUi {
 			
 			while (running) {
 				try {
-					String input = reader.readLine("> ", null, previousValue);
+					String prompt = "> ";
+					
+					if (paper.isChanged()) {
+						prompt = "*" + prompt;
+					}
+					
+					String input = reader.readLine(prompt, null, previousValue);
 					previousValue = null;
 					
 					if (input.trim().length() > 0) {
