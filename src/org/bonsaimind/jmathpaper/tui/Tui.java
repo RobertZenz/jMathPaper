@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
+import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.jline.reader.UserInterruptException;
 import org.jline.terminal.Terminal;
@@ -51,9 +52,9 @@ public class Tui extends AbstractPapersUi {
 		
 		if (paper == null) {
 			new_();
-		} else {
-			printPaper();
 		}
+		
+		printPaper();
 	}
 	
 	@Override
@@ -148,33 +149,44 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	protected void printPaper() {
-		if (writer != null && paper != null) {
-			int paperWidth = paper.getIdColumnSize() + paper.getExpressionColumnSize() + paper.getResultColumnSize() + 4;
+		if (writer != null) {
+			writer.write("------------------------------------------------------------\n");
 			
-			for (int counter = 0; counter < paperWidth; counter++) {
-				writer.write("-");
+			for (Paper paper : papers) {
+				if (paper == this.paper) {
+					writer.write("> ");
+				}
+				
+				if (paper.isChanged()) {
+					writer.write("*");
+				}
+				
+				if (paper.getFile() != null) {
+					writer.write(paper.getFile().toAbsolutePath().toString());
+				} else {
+					writer.write("(unsaved)");
+				}
+				
+				writer.write("\n");
 			}
+			
 			writer.write("\n");
 			
-			if (paper.getFile() != null) {
-				writer.write(paper.getFile().toAbsolutePath().toString());
-				writer.write("\n");
-				writer.write("\n");
-			}
-			
-			if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
-				writer.write(paper.getNotes());
-				writer.write("\n");
-				writer.write("\n");
-			}
-			
-			for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
-				writer.write(evaluatedExpression.format(
-						paper.getIdColumnSize(),
-						paper.getExpressionColumnSize(),
-						paper.getResultColumnSize(),
-						paper.getNumberFormat()));
-				writer.write("\n");
+			if (paper != null) {
+				if (paper.getNotes() != null && paper.getNotes().trim().length() > 0) {
+					writer.write(paper.getNotes());
+					writer.write("\n");
+					writer.write("\n");
+				}
+				
+				for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+					writer.write(evaluatedExpression.format(
+							paper.getIdColumnSize(),
+							paper.getExpressionColumnSize(),
+							paper.getResultColumnSize(),
+							paper.getNumberFormat()));
+					writer.write("\n");
+				}
 			}
 		}
 	}
