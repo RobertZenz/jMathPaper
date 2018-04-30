@@ -64,6 +64,14 @@ public class Evaluator {
 		reset();
 	}
 	
+	public Evaluator(Evaluator evaluator) {
+		this();
+		
+		aliases = evaluator.aliases;
+		mathContext = evaluator.mathContext;
+		unitConverter = evaluator.unitConverter;
+	}
+	
 	private static final String convertFromBinary(String value) {
 		return Long.toString(Long.parseLong(value, 2));
 	}

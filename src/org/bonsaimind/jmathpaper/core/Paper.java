@@ -188,7 +188,7 @@ public class Paper {
 			return;
 		}
 		
-		Evaluator newEvaluator = new Evaluator();
+		Evaluator newEvaluator = new Evaluator(evaluator);
 		newEvaluator.setMathContext(evaluator.getMathContext());
 		
 		List<EvaluatedExpression> newEvaluatedExpressions = new ArrayList<>();
