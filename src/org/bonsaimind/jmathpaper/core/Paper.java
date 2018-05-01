@@ -73,22 +73,18 @@ public class Paper {
 		return evaluatedExpression;
 	}
 	
-	public void evaluateFromText(String text) {
+	public void evaluateFromText(String text) throws InvalidExpressionException {
 		evaluateLines(Arrays.asList(text.split("\\n")));
 	}
 	
-	public void evaluateLines(List<String> lines) {
+	public void evaluateLines(List<String> lines) throws InvalidExpressionException {
 		StringBuilder notesBuilder = new StringBuilder();
 		boolean notesReached = false;
 		
 		for (String line : lines) {
 			if (!notesReached) {
 				if (!line.trim().isEmpty()) {
-					try {
-						evaluate(extractExpression(line));
-					} catch (InvalidExpressionException e) {
-						e.printStackTrace();
-					}
+					evaluate(extractExpression(line));
 				} else {
 					notesReached = true;
 				}
@@ -151,11 +147,11 @@ public class Paper {
 		return changed;
 	}
 	
-	public void load() throws IOException {
+	public void load() throws InvalidExpressionException, IOException {
 		loadFrom(file);
 	}
 	
-	public void loadFrom(Path file) throws IOException {
+	public void loadFrom(Path file) throws InvalidExpressionException, IOException {
 		if (file == null) {
 			throw new IllegalArgumentException("file cannot be null.");
 		}

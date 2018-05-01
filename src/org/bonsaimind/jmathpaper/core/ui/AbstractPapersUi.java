@@ -250,7 +250,7 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void open(Path file) throws IOException {
+	public void open(Path file) throws InvalidExpressionException, IOException {
 		if (file == null) {
 			throw new IllegalArgumentException("file cannot be null.");
 		}
@@ -304,7 +304,7 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void reload() throws IOException {
+	public void reload() throws InvalidExpressionException, IOException {
 		checkCurrentPaper();
 		
 		paper.load();
@@ -551,7 +551,7 @@ public abstract class AbstractPapersUi implements Ui {
 	 * 
 	 * @throws IOException If accessing the file failed.
 	 */
-	protected void openDefaultPaper() throws IOException {
+	protected void openDefaultPaper() throws InvalidExpressionException, IOException {
 		open(Configuration.getGlobalPaperFile());
 	}
 	

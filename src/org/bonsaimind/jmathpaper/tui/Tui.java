@@ -65,7 +65,7 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void open(Path file) throws IOException {
+	public void open(Path file) throws InvalidExpressionException, IOException {
 		super.open(file);
 		
 		printPaper();
@@ -84,7 +84,7 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void reload() throws IOException {
+	public void reload() throws InvalidExpressionException, IOException {
 		super.reload();
 		
 		printPaper();

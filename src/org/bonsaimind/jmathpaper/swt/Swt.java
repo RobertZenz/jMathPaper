@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -50,6 +51,7 @@ public class Swt extends AbstractPapersUi {
 	private MenuItem closeAllMenuItem = null;
 	private MenuItem closeMenuItem = null;
 	private CTabFolder cTabFolder = null;
+	private Label errorLabel = null;
 	private FileDialog fileOpenDialog = null;
 	private FileDialog fileSaveDialog = null;
 	private MenuItem nextPaperMenuItem = null;
@@ -214,6 +216,9 @@ public class Swt extends AbstractPapersUi {
 		cTabFolder.addSelectionListener(new ForwardingSelectionListener(this::updateCurrentTabItem));
 		cTabFolder.addSelectionListener(new ForwardingSelectionListener(this::updateMenuItems));
 		
+		errorLabel = new Label(composite, SWT.RIGHT);
+		errorLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false, 1, 1));
+		
 		composite.getDisplay().addFilter(SWT.Traverse, this::onTraverse);
 		
 		composite.setVisible(true);
@@ -230,13 +235,15 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void open(Path file) throws IOException {
+	public void open(Path file) throws InvalidExpressionException, IOException {
+		Paper paperToBeClosed = null;
+		
 		if (papers.size() == 1
 				&& paper != null
 				&& paper.getEvaluatedExpressions().isEmpty()
 				&& paper.getFile() == null) {
 			// Seems like a new and empty paper, let's close it.
-			close();
+			paperToBeClosed = paper;
 		}
 		
 		super.open(file);
@@ -247,6 +254,9 @@ public class Swt extends AbstractPapersUi {
 				return;
 			}
 		}
+		
+		setPaper(paperToBeClosed);
+		close();
 		
 		// Otherwise we will create a new one.
 		cTabFolder.setSelection(attachNewTabItem(paper));
@@ -259,7 +269,7 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void reload() throws IOException {
+	public void reload() throws InvalidExpressionException, IOException {
 		if (paper != null) {
 			super.reload();
 			
@@ -362,7 +372,7 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	protected void openDefaultPaper() throws IOException {
+	protected void openDefaultPaper() throws InvalidExpressionException, IOException {
 		if (arguments.getExpression() != null) {
 			open(Configuration.getGlobalPaperFile());
 		} else {
@@ -395,6 +405,8 @@ public class Swt extends AbstractPapersUi {
 					break;
 				}
 			}
+			
+			errorLabel.setText("");
 		}
 		
 		updateMenuItems();
@@ -503,9 +515,8 @@ public class Swt extends AbstractPapersUi {
 			if (Files.isRegularFile(file)) {
 				try {
 					open(file);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (InvalidExpressionException | IOException e) {
+					errorLabel.setText(e.toString());
 				}
 			}
 		}

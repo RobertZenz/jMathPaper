@@ -131,9 +131,11 @@ public interface Ui {
 	 * @param file The {@link Path} to the file which to open.
 	 * @throws IllegalArgumentException If the given {@link Path} is
 	 *         {@code null}.
+	 * @throws InvalidExpressionException If any of the expressions could not be
+	 *         {@link #evaluate(String) evaluated}.
 	 * @throws IOException If accessing the {@link Path} failed.
 	 */
-	public void open(Path file) throws IllegalArgumentException, IOException;
+	public void open(Path file) throws IllegalArgumentException, InvalidExpressionException, IOException;
 	
 	/**
 	 * Selects the previous {@link Paper} in the list.
@@ -174,9 +176,11 @@ public interface Ui {
 	 * this function does nothing.
 	 * 
 	 * @throws IllegalStateException If there is no current {@link Paper}.
+	 * @throws InvalidExpressionException If any of the expressions could not be
+	 *         {@link #evaluate(String) evaluated}.
 	 * @throws IOException If accessing the file failed.
 	 */
-	public void reload() throws IllegalStateException, IOException;
+	public void reload() throws IllegalStateException, InvalidExpressionException, IOException;
 	
 	/**
 	 * Runs the UI.
