@@ -152,7 +152,6 @@ surrounded by spaces, example:
     aliases                  aliases= true and false = false
     aliases                   aliases= true or false =  true
 
-
 ### Unit conversions
 
 There is support for converting units, out-of-the-box the most basic units being
