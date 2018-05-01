@@ -62,8 +62,8 @@ public class UnitConverter {
 				throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
 			} else if (conversions.isEmpty()) {
 				return value
-						.multiply(from.getPrefix().getFactor(), mathContext)
-						.divide(to.getPrefix().getFactor(), mathContext);
+						.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), mathContext), mathContext)
+						.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), mathContext), mathContext);
 			} else {
 				BigDecimal convertedValue = value;
 				convertedValue = convertedValue.multiply(from.getPrefix().getFactor(), mathContext);
@@ -327,19 +327,19 @@ public class UnitConverter {
 				from.getUnit(),
 				to.getUnit(),
 				conversionFactor
-						.divide(from.getPrefix().getFactor(), DEFAULT_MATH_CONTEXT)
-						.multiply(to.getPrefix().getFactor(), DEFAULT_MATH_CONTEXT));
+						.divide(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), DEFAULT_MATH_CONTEXT), DEFAULT_MATH_CONTEXT)
+						.multiply(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), DEFAULT_MATH_CONTEXT), DEFAULT_MATH_CONTEXT));
 	}
 	
 	public UnitConverter registerConversion(PrefixedUnit from, PrefixedUnit to, String conversion) {
 		String expressionString = conversion;
 		
 		if (from.getPrefix() != Prefix.BASE) {
-			expressionString = expressionString.replace("x", "(x*" + from.getPrefix().getFactor().toString() + ")");
+			expressionString = expressionString.replace("x", "(x*" + from.getPrefix().getFactor().pow(from.getUnit().getExponent(), DEFAULT_MATH_CONTEXT).toString() + ")");
 		}
 		
 		if (from.getPrefix() != Prefix.BASE) {
-			expressionString = "(" + expressionString + ")*" + to.getPrefix().getFactor().toString() + "";
+			expressionString = "(" + expressionString + ")*" + to.getPrefix().getFactor().pow(to.getUnit().getExponent(), DEFAULT_MATH_CONTEXT).toString() + "";
 		}
 		
 		registerConversionInternal(
@@ -418,8 +418,8 @@ public class UnitConverter {
 		
 		if (conversionFactor != null) {
 			conversionFactor = conversionFactor
-					.multiply(from.getPrefix().getFactor(), mathContext)
-					.divide(to.getPrefix().getFactor(), mathContext);
+					.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), mathContext), mathContext)
+					.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), mathContext), mathContext);
 		}
 		
 		return conversionFactor;
