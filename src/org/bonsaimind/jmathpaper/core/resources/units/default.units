@@ -60,13 +60,17 @@ kilogramforce	1	kilopond, kp
 poundforce		1	lbf
 poundal			1	pdl
 
+# Energy
+joule		1	J
+calorie		1	cal
+
 # Other power, https://en.wikipedia.org/wiki/Horsepower
-horsepower				1	hp,PS, cv, hk, pk, ks, ch
-imperialhorsepower		1	mechanicalhorsepower,hpI
-electricalhorsepower	1	hpE
-boilerhorsepower		1	hpS
-hydraulichorsepower		1	hpH
-airhorsepower			1	hpA
+horsepower				1	hp, PS, cv, hk, pk, ks, ch
+imperialhorsepower		1	mechanicalhorsepower, mechanicalhp, imperialhp, Ihp, hpI
+electricalhorsepower	1	eletricalhp, Ehp, hpE
+boilerhorsepower		1	boilerhp, Shp, hpS
+hydraulichorsepower		1	hydraulichhp, Hhp, hpH
+airhorsepower			1	airhp, Ahp, hpA
 
 # Digital
 bit			1	b
@@ -82,7 +86,7 @@ newtonscale	1	°N
 reaumur		1	Re,°Re
 romer		1	Ro,°Ro
 
-#Time
+# Time
 second		1	sec
 minute		1	min
 hour		1
@@ -96,3 +100,6 @@ millennium	1
 
 # Aliases
 klick		1
+olympicswimmingpool			3
+olympicswimmingpoollength	1
+olympicswimmingpoolwidth	1

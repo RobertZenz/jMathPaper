@@ -1,5 +1,5 @@
 # Metric volume
-litre	1cudm
+litre	1dm^3
 
 # Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
 thou	1/12000inch
@@ -56,6 +56,9 @@ kilogramforce	9.80665N
 poundforce		4.4482216152605N
 poundal			0.138254954376N
 
+# Energy
+calorie		4190J # Assuming mean calorie.
+
 # Power, https://en.wikipedia.org/wiki/Horsepower
 horsepower				735.49875W
 imperialhorsepower		745.69987158227022W
@@ -96,3 +99,6 @@ millennium	1000years
 
 # Aliases
 klick	1km
+olympicswimmingpool			2500000l
+olympicswimmingpoollength	50m
+olympicswimmingpoolwidth	25m
