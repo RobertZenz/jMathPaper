@@ -341,8 +341,8 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	protected void currentPaperHasChanged() {
-		super.currentPaperHasChanged();
+	protected void currentPaperHasBeenModified() {
+		super.currentPaperHasBeenModified();
 		
 		if (cTabFolder.getSelection() != null) {
 			CTabItem cTabItem = cTabFolder.getSelection();
@@ -354,7 +354,7 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	protected void currentPaperHasReset() {
+	protected void currentPaperHasBeenReset() {
 		CTabItem cTabItem = cTabFolder.getSelection();
 		
 		if (cTabItem != null && paper != null && paper.getFile() != null) {
