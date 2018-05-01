@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Robert 'Bobby' Zenz
+ * Copyright 2018, Robert 'Bobby' Zenz
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
