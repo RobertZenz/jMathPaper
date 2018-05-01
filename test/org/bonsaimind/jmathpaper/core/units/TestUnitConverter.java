@@ -56,6 +56,21 @@ public class TestUnitConverter {
 	}
 	
 	@Test
+	public void testConversionHigherDimensions() {
+		UnitConverter unitConverter = new UnitConverter();
+		
+		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
+		
+		assertEquals(new BigDecimal("1"), unitConverter.convert("1", "1", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("0.001"), unitConverter.convert("1", "k1", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("1000"), unitConverter.convert("k1", "1", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("0.000001"), unitConverter.convert("1^2", "k1^2", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("1000000"), unitConverter.convert("k1^2", "1^2", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("0.000000001"), unitConverter.convert("1^3", "k1^3", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("1000000000"), unitConverter.convert("k1^3", "1^3", new BigDecimal("1"), MathContext.DECIMAL128));
+	}
+	
+	@Test
 	public void testConversionOverMultipleSteps() {
 		Unit unitA = new Unit("a", 1);
 		Unit unitB = new Unit("b", 1);
