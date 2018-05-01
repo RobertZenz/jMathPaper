@@ -205,8 +205,6 @@ public class PaperComponent extends SashForm {
 					} else {
 						errorLabel.setText("No details available: " + e.getClass().getSimpleName());
 					}
-					
-					errorLabel.setVisible(true);
 				}
 			} else {
 				resetInput();
