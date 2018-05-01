@@ -65,6 +65,13 @@ public final class Configuration {
 			
 			cachedConfigDirectory = cachedConfigDirectory.resolve("jmathpaper");
 			cachedConfigDirectory = cachedConfigDirectory.normalize().toAbsolutePath();
+			
+			try {
+				Files.createDirectories(cachedConfigDirectory);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		return cachedConfigDirectory;
