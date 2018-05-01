@@ -32,6 +32,7 @@ public interface EvaluatedExpression {
 	 * @param idColumnWidth The width of the column for the ID.
 	 * @param expressionColumnWidth The width of the column for the expression.
 	 * @param resultColumnWidth The width of the column for the result.
+	 * @param numberFormat The {@link NumberFormat} to use for formatting.
 	 * @return A well defined string representation.
 	 */
 	public String format(int idColumnWidth, int expressionColumnWidth, int resultColumnWidth, NumberFormat numberFormat);
@@ -46,6 +47,7 @@ public interface EvaluatedExpression {
 	/**
 	 * Gets the formatted result.
 	 * 
+	 * @param numberFormat The {@link NumberFormat} to use for formatting.
 	 * @return The formatted result.
 	 */
 	public String getFormattedResult(NumberFormat numberFormat);
