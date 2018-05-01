@@ -2,6 +2,32 @@ Changes
 =======
 
 
+1.2
+---
+
+ * #13, added support for unit conversions.
+ * #19, added support for setting the formatting of results.
+ * #22, all expressions are now evaluated when a paper is loaded.
+ * #24, added support for defining functions on the fly.
+ * #26, the configuration has moved to ~/.local/share/jmathpaper/.
+ * #28, the default precision has been upped to 32 digits.
+ * #29, invalid command line arguments are now correctly handled.
+ * #31, added aliases "greaterequal", and "lessequal".
+ * #32, added support for setting the precision and rounding method.
+ * #33, aliases are now loaded from a file.
+ * #34, different jars are now available.
+ * The source is now included in the jars.
+ * There are now "globally loaded files" in the configuration directory.
+ * The TUI is now showing a list of open papers.
+ * The TUI is now showing a marker when the paper as changed.
+ * The TUI is now printing the current paper when the next/previous is
+   selected.
+ * The SWT UI is now displaying errors in a statusbar.
+ * Errors which are occurring during the loading of a paper are now being
+   displayed.
+ * Various additional bug-fixes
+
+
 1.1
 ---
 
