@@ -22,6 +22,26 @@ import org.junit.Test;
 
 public class TestEvaluator extends AbstractExpressionTest {
 	@Test
+	public void testAliases() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		// Test error behavior (should do nothing)
+		evaluator.loadAlias(null);
+		evaluator.loadAlias("");
+		evaluator.loadAlias("   \t\t  ");
+		evaluator.loadAlias("something");
+		
+		// Actual
+		evaluator.loadAlias("alias *450");
+		evaluator.loadAlias("and &&");
+		evaluator.loadAlias("value 8 + 8 + 5");
+		
+		assertResult("900", "2 alias", evaluator);
+		assertResult(true, "true and true", evaluator);
+		assertResult("93", "10 * value", evaluator);
+	}
+	
+	@Test
 	public void testBasicExpression() throws InvalidExpressionException {
 		assertResult("2", "1+1", new Evaluator());
 		assertResult("680", "5*8*(8+9)", new Evaluator());
