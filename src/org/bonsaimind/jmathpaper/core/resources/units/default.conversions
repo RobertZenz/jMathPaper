@@ -24,6 +24,20 @@ rod		25links
 
 britishnauticalmile	6080feet
 
+# English
+poppyseed	1/5barleycorn # Wikipedia says 1/4 or 1/5, opted for 1/5.
+line		1/4barleycorn
+barleycorn	1/3in
+digit		3/4in
+finger		7/8in
+nail		3digits
+palm		3in
+hand		4in
+shaftment	6in
+span		3palms
+cubit		18in
+ell			20nails
+
 # Imperial area, https://en.wikipedia.org/wiki/Imperial_units#Area
 perch	272.25sqft
 rood	10890sqft
