@@ -51,7 +51,7 @@ public class Paper {
 	public Paper() {
 		super();
 		
-		setNumberFormat("0.?");
+		setNumberFormat(",##0.?");
 	}
 	
 	public void clear() {
