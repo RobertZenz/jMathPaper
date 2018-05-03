@@ -94,19 +94,19 @@ public final class Configuration {
 	}
 	
 	public static final Path getUserAliasesFile() {
-		return cachedConfigDirectory.resolve(USER_ALIASES_NAME);
+		return getConfigDirectory().resolve(USER_ALIASES_NAME);
 	}
 	
 	public static final Path getUserConversionsFile() {
-		return cachedConfigDirectory.resolve(USER_CONVERSIONS_NAME);
+		return getConfigDirectory().resolve(USER_CONVERSIONS_NAME);
 	}
 	
 	public static final Path getUserPrefixesFile() {
-		return cachedConfigDirectory.resolve(USER_PREFIXES_NAME);
+		return getConfigDirectory().resolve(USER_PREFIXES_NAME);
 	}
 	
 	public static final Path getUserUnitsFile() {
-		return cachedConfigDirectory.resolve(USER_UNITS_NAME);
+		return getConfigDirectory().resolve(USER_UNITS_NAME);
 	}
 	
 	public static final void init() {
@@ -183,7 +183,7 @@ public final class Configuration {
 	 * @param configFileName The name of the configuration file.
 	 */
 	private static final void copyDefaultConfigFileIfNeeded(String configFileName) {
-		Path configFile = cachedConfigDirectory.resolve(configFileName);
+		Path configFile = getConfigDirectory().resolve(configFileName);
 		
 		if (!Files.exists(configFile)) {
 			try (OutputStream outputStream = new FileOutputStream(configFile.toFile())) {
