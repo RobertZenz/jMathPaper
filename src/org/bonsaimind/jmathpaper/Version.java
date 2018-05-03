@@ -18,5 +18,5 @@
 package org.bonsaimind.jmathpaper;
 
 public class Version {
-	public static final String CURRENT = "1.2";
+	public static final String CURRENT = "1.2.1";
 }

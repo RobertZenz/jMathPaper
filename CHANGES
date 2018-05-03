@@ -2,6 +2,12 @@ Changes
 =======
 
 
+1.2.1
+-----
+
+ * Fixed that the configuration directory would not be created.
+
+
 1.2
 ---
 
