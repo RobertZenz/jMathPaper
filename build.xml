@@ -29,7 +29,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="Compiles all source files.">
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false" source="1.8" debug="true" debuglevel="lines,source">
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false" target="1.8" source="1.8" debug="true" debuglevel="lines,source">
 			<classpath>
 				<fileset dir="${libs}" includes="**/*.jar" />
 			</classpath>
