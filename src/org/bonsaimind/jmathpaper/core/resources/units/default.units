@@ -15,6 +15,9 @@ gram			1	g
 tonne			1	t,ton,metricton,metrictonne
 atomicmassunit	1	u
 
+# Metric pressure
+pascal	1	Pa
+
 # Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
 thou			1	th, mil
 inch			1	Inches, inches, in
@@ -48,6 +51,9 @@ gallon		3	gal
 
 # Imperial mass
 pound		1	lb
+
+# Imperial pressure
+poundspersquareinch	1	psi
 
 # English
 poppyseed	1
@@ -88,6 +94,14 @@ poundal			1	pdl
 planckmass	1
 earthmass	1
 solarmass	1
+
+# Other pressure
+bar					1
+standardatmosphere	1	atm, atmosphere
+technicalatmosphere	1	at
+torr				1
+millimeterofmercury	1	mmHg, millimetersofmercury, millimetreofmercury, millimetresofmercury
+inchofmercury		1	inHg
 
 # Energy
 joule		1	J

@@ -58,6 +58,9 @@ gallon		160floz
 # Imperial mass
 pound	0.45359237kg
 
+# Imperial pressure
+poundspersquareinch	6.894757kPa
+
 # Astronomy length
 earthradius			6371km
 lunardistance		384402km
@@ -77,6 +80,14 @@ xunit		0.1pm
 planckmass	21.76470μg
 earthmass	5972.2yg
 solarmass	332946earthmass
+
+# Other pressure
+bar					100kPa
+standardatmosphere	101325Pa
+technicalatmosphere	98.0665kPa
+torr				101325/760Pa
+millimeterofmercury	1torr
+inchofmercury		25.4mmHg
 
 # Force https://en.wikipedia.org/wiki/Force#Units_of_measurement
 dyne			0.00001N
