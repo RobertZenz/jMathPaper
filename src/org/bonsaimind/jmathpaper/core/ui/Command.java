@@ -32,6 +32,12 @@ public enum Command {
 	 */
 	CLOSE("close", ":bdelete", ":bd"),
 	
+	/**
+	 * The current paper will be copied to the clipboard in its text
+	 * representation.
+	 */
+	COPY("copy", "cp", "y"),
+	
 	/** Start a new paper. */
 	NEW("new", ":new"),
 	

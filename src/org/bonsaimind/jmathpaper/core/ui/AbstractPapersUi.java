@@ -19,6 +19,8 @@
 
 package org.bonsaimind.jmathpaper.core.ui;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.nio.file.Path;
@@ -131,6 +133,10 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case CLOSE:
 					close();
+					break;
+				
+				case COPY:
+					copy();
 					break;
 				
 				case NEXT:
@@ -447,6 +453,19 @@ public abstract class AbstractPapersUi implements Ui {
 		if (paper == null) {
 			throw new IllegalStateException("This operation can only be performed with a paper open.");
 		}
+	}
+	
+	/**
+	 * Copies the current {@link #paper} to the clipboard of the system.
+	 * 
+	 * @throws IllegalStateException If there is no current {@link #paper}.
+	 */
+	protected void copy() throws IllegalStateException {
+		checkCurrentPaper();
+		
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+				new StringSelection(paper.toString()),
+				null);
 	}
 	
 	/**
