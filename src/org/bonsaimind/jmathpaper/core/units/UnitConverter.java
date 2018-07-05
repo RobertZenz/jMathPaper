@@ -247,7 +247,8 @@ public class UnitConverter {
 						|| toDefinition.charAt(unitIndex) == '-'
 						|| toDefinition.charAt(unitIndex) == '*'
 						|| toDefinition.charAt(unitIndex) == '/'
-						|| toDefinition.charAt(unitIndex) == '.') {
+						|| toDefinition.charAt(unitIndex) == '.'
+						|| toDefinition.charAt(unitIndex) == '^') {
 					unitIndex++;
 				}
 			} else {
