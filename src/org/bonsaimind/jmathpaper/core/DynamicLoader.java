@@ -63,7 +63,7 @@ public final class DynamicLoader {
 			String packageName = uiClassName.trim().toLowerCase();
 			String className = packageName.substring(0, 1).toUpperCase() + packageName.substring(1);
 			
-			clazz = Class.forName("org.bonsaimind.jmathpaper." + packageName + "." + className);
+			clazz = Class.forName("org.bonsaimind.jmathpaper.uis." + packageName + "." + className);
 		}
 		
 		if (Ui.class.isAssignableFrom(clazz)) {

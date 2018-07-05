@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.cli;
+package org.bonsaimind.jmathpaper.uis.cli;
 
 import java.io.IOException;
 

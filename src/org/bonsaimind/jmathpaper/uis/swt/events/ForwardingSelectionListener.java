@@ -17,22 +17,27 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.swt.events;
+package org.bonsaimind.jmathpaper.uis.swt.events;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 
-public class EventForwarder implements Listener {
+public class ForwardingSelectionListener implements SelectionListener {
 	private Runnable target = null;
 	
-	public EventForwarder(Runnable target) {
+	public ForwardingSelectionListener(Runnable target) {
 		super();
 		
 		this.target = target;
 	}
 	
 	@Override
-	public void handleEvent(Event event) {
+	public void widgetDefaultSelected(SelectionEvent e) {
+		target.run();
+	}
+	
+	@Override
+	public void widgetSelected(SelectionEvent e) {
 		target.run();
 	}
 }

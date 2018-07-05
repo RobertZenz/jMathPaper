@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.tui;
+package org.bonsaimind.jmathpaper.uis.tui;
 
 import java.io.IOException;
 import java.time.Instant;

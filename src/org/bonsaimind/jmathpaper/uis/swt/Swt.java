@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.swt;
+package org.bonsaimind.jmathpaper.uis.swt;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,8 +30,8 @@ import org.bonsaimind.jmathpaper.Version;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
-import org.bonsaimind.jmathpaper.swt.events.EventForwarder;
-import org.bonsaimind.jmathpaper.swt.events.ForwardingSelectionListener;
+import org.bonsaimind.jmathpaper.uis.swt.events.EventForwarder;
+import org.bonsaimind.jmathpaper.uis.swt.events.ForwardingSelectionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
