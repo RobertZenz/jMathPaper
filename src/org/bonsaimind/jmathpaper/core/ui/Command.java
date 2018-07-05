@@ -32,6 +32,7 @@ public enum Command {
 	 */
 	CLOSE("close", ":bdelete", ":bd"),
 	
+	/** Adds the given conversion to the current paper. */
 	CONVERSION("conversion"),
 	
 	/**
@@ -52,6 +53,7 @@ public enum Command {
 	/** Sets the given option to the given value. */
 	OPTION("option", "opt", "set", "setoption", "setopt", ":so", ":setopt"),
 	
+	/** Adds the given prefix to the current paper. */
 	PREFIX("prefix"),
 	
 	/** Switches to the previous paper, if there is any. */
@@ -72,6 +74,7 @@ public enum Command {
 	 */
 	SAVE_AND_QUIT(":x"),
 	
+	/** Adds the given unit to the current paper. */
 	UNIT("unit");
 	
 	private String[] aliases = null;
