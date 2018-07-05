@@ -83,9 +83,9 @@ calorie		1	cal
 # Other power, https://en.wikipedia.org/wiki/Horsepower
 horsepower				1	hp, PS, cv, hk, pk, ks, ch
 imperialhorsepower		1	mechanicalhorsepower, mechanicalhp, imperialhp, Ihp, hpI
-electricalhorsepower	1	eletricalhp, Ehp, hpE
+electricalhorsepower	1	electricalhp, Ehp, hpE
 boilerhorsepower		1	boilerhp, Shp, hpS
-hydraulichorsepower		1	hydraulichhp, Hhp, hpH
+hydraulichorsepower		1	hydraulichp, Hhp, hpH
 airhorsepower			1	airhp, Ahp, hpA
 
 # Digital
