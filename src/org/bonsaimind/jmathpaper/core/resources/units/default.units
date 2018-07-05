@@ -10,6 +10,11 @@ watt	1	W
 # Metric volume
 litre	3	Liter, liter, l
 
+# Metric mass
+gram			1	g
+tonne			1	t,ton,metricton,metrictonne
+atomicmassunit	1	u
+
 # Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
 thou			1	th, mil
 inch			1	Inches, inches, in
@@ -40,6 +45,9 @@ gill		3	gi
 pint		3	pt
 quart		3	qt
 gallon		3	gal
+
+# Imperial mass
+pound		1	lb
 
 # English
 poppyseed	1
@@ -75,6 +83,11 @@ dyne			1	dyn
 kilogramforce	1	kilopond, kp
 poundforce		1	lbf
 poundal			1	pdl
+
+# Other mass
+planckmass	1
+earthmass	1
+solarmass	1
 
 # Energy
 joule		1	J

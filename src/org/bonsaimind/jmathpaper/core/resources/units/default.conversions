@@ -1,6 +1,10 @@
 # Metric volume
 litre	1dm^3
 
+# Metric Mass
+tonne			1000kg
+atomicmassunit	1.66053904020yg
+
 # Imperial length, https://en.wikipedia.org/wiki/Imperial_units#Length
 thou	1/12000inch
 thou	0.0254mm
@@ -51,6 +55,9 @@ pint		20floz
 quart		40floz
 gallon		160floz
 
+# Imperial mass
+pound	0.45359237kg
+
 # Astronomy length
 earthradius			6371km
 lunardistance		384402km
@@ -65,6 +72,11 @@ angstrom	100pm
 micron		1microm
 myriametre	10km
 xunit		0.1pm
+
+# Other mass
+planckmass	21.76470μg
+earthmass	5972.2yg
+solarmass	332946earthmass
 
 # Force https://en.wikipedia.org/wiki/Force#Units_of_measurement
 dyne			0.00001N
