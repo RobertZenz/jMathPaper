@@ -57,7 +57,7 @@ public class Arguments {
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
 	
-	@Option(names = { "-n", "--no-newline" }, description = "Omit a trailing new line when printing things.")
+	@Option(names = { "-n", "--no-newline" }, description = "Omit a trailing new line when printing things. Only applicable for the CLI or Service TUI.")
 	private boolean noNewline = false;
 	
 	@Option(names = { "--prefixes" }, paramLabel = "PREFIXESFILE", description = "Load prefixes from this file.")
@@ -65,7 +65,7 @@ public class Arguments {
 	
 	private List<Path> prefixesFilesPaths = null;
 	
-	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression.")
+	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression. Only applicable for the CLI or Service TUI.")
 	private boolean printResultOnly = false;
 	
 	@Option(names = { "-u", "--ui" }, arity = "1", description = "Define what user interface (UI) to start.")

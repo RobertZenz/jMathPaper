@@ -258,11 +258,12 @@ Comments can be specified with a leading `#` character.
 
 ### Different UIs
 
-jMathPaper supports three main mode of operations:
+jMathPaper supports three main modes of operations:
 
  1. CLI, only processing arguments given.
  2. TUI, a simple text interface.
  3. SWT, a GUI based on SWT.
+ 4. Service, a UI to use jMathPaper as a service.
 
 By default with no arguments given the SWT UI is started, if an expression is
 given the CLI UI will be used instead.
@@ -270,9 +271,10 @@ given the CLI UI will be used instead.
 One can also force one UI to use by specifying `-t` as argument and one of
 the following values:
 
- * `c` or `cli`
- * `t` or `tui`
- * `s` or `swt`
+ * `cli`
+ * `tui`
+ * `swt`
+ * `service`
 
 ### Commands
 
@@ -389,13 +391,41 @@ the following input:
 
 Turns into this:
 
-   #1                                         1+1 =  2
-   #2                                         2+3 =  5
-   #3                                         5+5 = 10
-   a                                          a=5 =  5
-   #4                                         a+5 = 10
+    #1                                         1+1 =  2
+    #2                                         2+3 =  5
+    #3                                         5+5 = 10
+    a                                          a=5 =  5
+    #4                                         a+5 = 10
 
 Of course one can also chain commands and expressions.
+
+### Service
+
+With the Service UI, jMathPaper can be used as a "service" to answer requests.
+The Service UI will read expressions from stdin and will output the expression
+or result to stdout. This allows to start jMathPaper once and keep it running
+while being used from external applications, mitigating the cost of starting of
+starting a JVM everytime an expression should be evaluated.
+
+Here is an example script which starts jMathPaper as service:
+
+    #usr/bin/env sh
+    
+    jmathpaper="jmathpaper.jar"
+    input="/tmp/mathpipe-input"
+    output="/tmp/mathpipe-output"
+    
+    mkfifo "$input"
+    mkfifo "$output"
+    
+    tail -f "$input" \
+        | java -jar $jmathpaper --ui=service > "$output"
+    
+    rm "$input"
+    rm "$output"
+
+Now a process could write into `/tmp/mathpipe-input` and retrieve the result
+from `/tmp/mathpipe-output`.
 
 
 Technical information
@@ -411,9 +441,9 @@ treated as expression, everything below the first empty line is treated as note.
 
 There are multiple jars available for download:
 
- * CLI, only containing the command line interface.
- * CLI-TUI, only containing the command line interface and the simple text user
-   interface.
+ * CLI, only containing the command line and service interface.
+ * CLI-TUI, only containing the command line and service interface and the
+   simple text user interface.
  * Full, the full builds, containing all user interfaces. As SWT uses native
    components, these must be built for every platform.
 
