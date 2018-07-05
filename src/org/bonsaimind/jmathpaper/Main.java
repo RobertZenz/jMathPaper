@@ -80,10 +80,17 @@ public final class Main {
 					// in the jar that we run.
 					
 					try {
-						ui = UiLoader.getUi("tui");
+						ui = UiLoader.getUi("tui2");
 					} catch (Exception e2) {
 						// Ignore the exception, as the SWT UI might not be
 						// included in the jar that we run.
+						
+						try {
+							ui = UiLoader.getUi("tui");
+						} catch (Exception e3) {
+							// Ignore the exception, as the SWT UI might not be
+							// included in the jar that we run.
+						}
 					}
 				}
 				
@@ -127,7 +134,7 @@ public final class Main {
 			ui.run(arguments.getUiParameters());
 		} catch (Exception e) {
 			System.out.println("Failed to run UI.");
-			System.out.println(e.toString());
+			e.printStackTrace(System.out);
 			System.exit(1);
 		}
 	}
