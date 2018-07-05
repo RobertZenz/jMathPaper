@@ -63,7 +63,7 @@ earthradius			6371km
 lunardistance		384402km
 astronomicalunit	149597870700m
 lightyear			9460730472580.8km
-parsec				30856775814671.9 km
+parsec				30856775814671.9km
 hubblelength		14.4gigaly
 
 # Other length
