@@ -23,6 +23,7 @@ league			1	lea
 fathom			1	ftm
 cable			1
 nauticalmile	1
+terrestrialmile	1
 link			1
 rod				1	Perch, perch, Pole, pole
 
@@ -53,6 +54,21 @@ shaftment	1
 span		1
 cubit		1
 ell			1
+
+# Astronomy length
+earthradius			1	RE
+lunardistance		1	LD
+astronomicalunit	1	AU
+lightyear			1	ly
+parsec				1	pc
+hubblelength		1
+
+# Other length
+fermi		1
+angstrom	1
+micron		1
+myriametre	1
+xunit		1
 
 # Other force, https://en.wikipedia.org/wiki/Force#Units_of_measurement
 dyne			1	dyn

@@ -18,6 +18,7 @@ league	3miles
 fathom			2.02667yards
 cable			100fathoms
 nauticalmile	10cables
+terrestrialmile	5280ft
 
 link	7.92inches
 rod		25links
@@ -49,6 +50,21 @@ gill		5floz
 pint		20floz
 quart		40floz
 gallon		160floz
+
+# Astronomy length
+earthradius			6371km
+lunardistance		384402km
+astronomicalunit	149597870700m
+lightyear			9460730472580.8km
+parsec				30856775814671.9 km
+hubblelength		14.4gigaly
+
+# Other length
+fermi		1fm
+angstrom	100pm
+micron		1microm
+myriametre	10km
+xunit		0.1pm
 
 # Force https://en.wikipedia.org/wiki/Force#Units_of_measurement
 dyne			0.00001N
