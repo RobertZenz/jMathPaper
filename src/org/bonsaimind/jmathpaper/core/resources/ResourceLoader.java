@@ -22,7 +22,7 @@ package org.bonsaimind.jmathpaper.core.resources;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.bonsaimind.jmathpaper.Configuration;
+import org.bonsaimind.jmathpaper.core.ConfigurationProcessor;
 
 /**
  * {@link ResourceLoader} is a static utility for loading embedded resources.
@@ -56,7 +56,7 @@ public final class ResourceLoader {
 	 * Iterates over each line of the given resource.
 	 * <p>
 	 * This function will strip empty lines and also comments (see
-	 * {@link Configuration#processConfiguration(java.io.InputStream, Consumer, String)}
+	 * {@link ConfigurationProcessor#process(java.io.InputStream, Consumer, String)}
 	 * .
 	 * 
 	 * @param relativePath The path to the resource relative to this class.
@@ -70,7 +70,7 @@ public final class ResourceLoader {
 	 * Iterates over each line of the given resource.
 	 * <p>
 	 * This function will strip empty lines and also comments (see
-	 * {@link Configuration#processConfiguration(java.io.InputStream, Consumer, String)}
+	 * {@link ConfigurationProcessor#process(java.io.InputStream, Consumer, String)}
 	 * .
 	 * 
 	 * @param relativePath The path to the resource relative to this class.
@@ -78,7 +78,7 @@ public final class ResourceLoader {
 	 * @param lineEnding The line ending to append to each line.
 	 */
 	private static final void processResource(String relativePath, Consumer<String> lineProcessor, String lineEnding) {
-		Configuration.processConfiguration(
+		ConfigurationProcessor.process(
 				ResourceLoader.class.getResourceAsStream(relativePath),
 				lineProcessor,
 				lineEnding);

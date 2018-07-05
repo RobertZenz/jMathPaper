@@ -19,26 +19,17 @@
 
 package org.bonsaimind.jmathpaper;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.function.Consumer;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
 public final class Configuration {
-	/** The {@link String} with which a comment in a file starts. */
-	public static final String COMMENT_START = "#";
-	
 	private static Path cachedConfigDirectory = null;
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
 	private static final String USER_ALIASES_NAME = "user.aliases";
@@ -114,68 +105,6 @@ public final class Configuration {
 	public static final void init() {
 		migrateGlobalPaper();
 		copyDefaultConfigFilesIfNeeded();
-	}
-	
-	/**
-	 * Iterates over each line of the given {@link InputStream}.
-	 * <p>
-	 * This function will strip empty lines and also comments (see the
-	 * {@link #COMMENT_START} {@link String}.
-	 * 
-	 * @param inputStream The {@link InputStream} from which to read. Will be
-	 *        {@link InputStream#close() closed} when done.
-	 * @param lineProcessor The function to execute for every line.
-	 * @param lineEnding The line ending to append to each line, can be
-	 *        {@code null} for nothing.
-	 */
-	public static final void processConfiguration(InputStream inputStream, Consumer<String> lineProcessor, String lineEnding) {
-		try (BufferedReader reader = new BufferedReader(
-				new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-			
-			String line = reader.readLine();
-			
-			while (line != null) {
-				int commentIndex = line.indexOf(COMMENT_START);
-				
-				if (commentIndex >= 0) {
-					line = line.substring(0, commentIndex);
-				}
-				
-				line = line.trim();
-				
-				if (line.length() > 0) {
-					if (lineEnding != null) {
-						line = line + lineEnding;
-					}
-					
-					lineProcessor.accept(line);
-				}
-				
-				line = reader.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			
-			return;
-		}
-	}
-	
-	/**
-	 * Iterates over each line of the given {@link InputStream}.
-	 * <p>
-	 * This function will strip empty lines and also comments (see the
-	 * {@link #COMMENT_START} {@link String}.
-	 * 
-	 * @param file The {@link Path file} from which to read.
-	 * @param lineProcessor The function to execute for every line.
-	 */
-	public static final void processConfiguration(Path file, Consumer<String> lineProcessor) {
-		try {
-			processConfiguration(new FileInputStream(file.toFile()), lineProcessor, null);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	/**
