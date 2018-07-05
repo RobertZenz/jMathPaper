@@ -288,7 +288,8 @@ be entered instead of expressions:
     
     close       Closes the current paper.              close, :bdelete,
                                                        :bd
-    
+    copy        Copies the current paper to            copy, cp, y
+                the clipboard.
     new         Creates a new paper.                   new, :new
     
     next        Switches to the next paper in          next, right,
