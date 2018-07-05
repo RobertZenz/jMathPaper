@@ -167,7 +167,7 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case PREFIX:
 					if (parameters != null && parameters.length > 0) {
-						addConversion(String.join(" ", parameters));
+						addPrefix(String.join(" ", parameters));
 					} else {
 						throw new CommandExecutionException("No arguments provided: prefix PREFIXNAME PREFIX BASE EXPONENT");
 					}
