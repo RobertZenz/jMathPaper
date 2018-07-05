@@ -242,15 +242,17 @@ Or with values:
 
     foot 30cm
     byte 8bit
+    torr 101325/760Pa
     some (x + 6)other
     other (x - 6)some
 
 The target unit is the unit to which is converted.
 
-The value can either be a fixed factor (read: a decimal number) or a
-mathematical expression in parentheses, with `x` denoting the source value.
-If a mathematical expression is specified, the reverse conversion must also be
-added.
+The value can either be a fixed factor (read: a decimal number), a mathematical
+expression which evaluates to a fixed factor or a mathematical expression in
+parentheses, with `x` denoting the source value. If a mathematical expression
+which does not evaluate to a fixed factor is specified, the reverse conversion
+must also be added.
 
 Comments can be specified with a leading `#` character.
 
