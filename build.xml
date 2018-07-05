@@ -14,7 +14,7 @@
 
 	<property name="evalex.version" value="2.0" />
 	<property name="jline.version" value="3.8.0" />
-	<property name="lanterna.version" value="3.0.0" />
+	<property name="lanterna.version" value="3.0.1" />
 	<property name="picocli.version" value="3.5.2" />
 	<property name="swt.version" value="4.6.2" />
 
@@ -81,6 +81,7 @@
 			<fileset dir="${build}">
 				<exclude name="org/bonsaimind/jmathpaper/uis/swt/**/*" />
 				<exclude name="org/bonsaimind/jmathpaper/uis/tui/**/*" />
+				<exclude name="org/bonsaimind/jmathpaper/uis/tui2/**/*" />
 			</fileset>
 		</jar>
 		<tar destfile="${dist}/${jar}-${version}-cli.tar.bz2" compression="bzip2">
@@ -109,6 +110,7 @@
 		<jar jarfile="${dist}/${jar}-${version}-cli-tui.jar" manifest="MANIFEST.MF">
 			<fileset dir="${build}">
 				<exclude name="org/bonsaimind/jmathpaper/uis/swt/**/*" />
+				<exclude name="org/bonsaimind/jmathpaper/uis/tui2/**/*" />
 			</fileset>
 		</jar>
 		<tar destfile="${dist}/${jar}-${version}-cli-tui.tar.bz2" compression="bzip2">
@@ -163,6 +165,7 @@
 		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
@@ -193,6 +196,7 @@
 		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
@@ -200,6 +204,7 @@
 		<jar jarfile="${dist}/${jar}-${version}-full-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
