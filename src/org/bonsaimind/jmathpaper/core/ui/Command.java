@@ -32,6 +32,8 @@ public enum Command {
 	 */
 	CLOSE("close", ":bdelete", ":bd"),
 	
+	CONVERSION("conversion"),
+	
 	/**
 	 * The current paper will be copied to the clipboard in its text
 	 * representation.
@@ -50,6 +52,8 @@ public enum Command {
 	/** Sets the given option to the given value. */
 	OPTION("option", "opt", "set", "setoption", "setopt", ":so", ":setopt"),
 	
+	PREFIX("prefix"),
+	
 	/** Switches to the previous paper, if there is any. */
 	PREVIOUS("previous", "left", ":bprevious", ":bp"),
 	
@@ -66,7 +70,9 @@ public enum Command {
 	 * Save the current paper, if a name is given, at that location and then
 	 * exit.
 	 */
-	SAVE_AND_QUIT(":x");
+	SAVE_AND_QUIT(":x"),
+	
+	UNIT("unit");
 	
 	private String[] aliases = null;
 	

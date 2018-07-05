@@ -283,46 +283,62 @@ be entered instead of expressions:
 
     Command     Description                            Aliases
     --------------------------------------------------------------------
-    clean       Cleans the current paper, removing     clean, clear
+    clean       Cleans the current paper, removing      clean, clear
                 all expressions from it.
     
-    close       Closes the current paper.              close, :bdelete,
-                                                       :bd
-    copy        Copies the current paper to            copy, cp, y
+    close       Closes the current paper.               close, :bdelete,
+                                                        :bd
+    conversion  Adds a unit conversion on the fly to
+                the current paper, the added
+                conversion will not be saved. A valid
+                conversion string is expected as
+                parameter.
+    
+    copy        Copies the current paper to             copy, cp, y
                 the clipboard.
-    new         Creates a new paper.                   new, :new
+    new         Creates a new paper.                    new, :new
     
-    next        Switches to the next paper in          next, right,
-                the list, if there is any.             :bnext, :bn
+    next        Switches to the next paper in           next, right,
+                the list, if there is any.              :bnext, :bn
     
-    open        Opens a paper from the given path.     open, :e
+    open        Opens a paper from the given path.      open, :e
                 The path to open the files is expected
                 as parameter to this command. If
                 multiple parameters are provided, all
                 are opened.
     
-    option      Set the given option with the given    option, opt, set,
-                value. See the Options section for     setoption, setopt,
-                further information.                   :so, :setopt
+    option      Set the given option with the given     option, opt, set,
+                value. See the Options section for      setoption, setopt,
+                further information.                    :so, :setopt
     
-    previous    Switches to the previous paper in      previous, left,
+    prefix      Adds a prefix on the fly to the current
+                paper, the added prefix will not be
+                saved. A valid prefix string is
+                expected as parameter.
+    
+    previous    Switches to the previous paper in       previous, left,
                 the list, if there is any.              :bprevious, :bp
     
-    quit        Quits the application.                 quit, exit, :q,
-                                                       :q!
+    quit        Quits the application.                  quit, exit, :q,
+                                                        :q!
     
-    reload     Reloads the current paper, effectively  reload, reset
-               undoing all changes.
+    reload      Reloads the current paper, effectively  reload, reset
+                undoing all changes.
     
-    save       Saves the current paper, the location   save, store, :w
-               can be given as parameter. If multiple
-               parameters are provided, it is saved to
-               all provided locations.
+    save        Saves the current paper, the location   save, store, :w
+                can be given as parameter. If multiple
+                parameters are provided, it is saved to
+                all provided locations.
     
-    save/quit  Saves the current paper and quits,      :x
-               the location can be given as parameter.
-               If multiple parameters are provided, it
-               is saved to all provided locations.
+    save/quit   Saves the current paper and quits,      :x
+                the location can be given as parameter.
+                If multiple parameters are provided, it
+                is saved to all provided locations.
+    
+    unit        Adds a unit on the fly to the current
+                paper, the added unit will not be saved.
+                A valid unit string is expected as
+                parameter.
 
 Parameters are to be provided space separated and can be quoted, some examples:
 

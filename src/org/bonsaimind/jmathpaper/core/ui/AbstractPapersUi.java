@@ -135,6 +135,14 @@ public abstract class AbstractPapersUi implements Ui {
 					close();
 					break;
 				
+				case CONVERSION:
+					if (parameters != null && parameters.length > 0) {
+						addConversion(String.join(" ", parameters));
+					} else {
+						throw new CommandExecutionException("No arguments provided: conversion TARGETUNIT VALUE SOURCEUNIT");
+					}
+					break;
+				
 				case COPY:
 					copy();
 					break;
@@ -157,6 +165,14 @@ public abstract class AbstractPapersUi implements Ui {
 					tryAsOption(parameters);
 					break;
 				
+				case PREFIX:
+					if (parameters != null && parameters.length > 0) {
+						addConversion(String.join(" ", parameters));
+					} else {
+						throw new CommandExecutionException("No arguments provided: prefix PREFIXNAME PREFIX BASE EXPONENT");
+					}
+					break;
+				
 				case PREVIOUS:
 					previous();
 					break;
@@ -170,7 +186,7 @@ public abstract class AbstractPapersUi implements Ui {
 					break;
 				
 				case SAVE:
-					if (parameters.length > 0) {
+					if (parameters != null && parameters.length > 0) {
 						for (String parameter : parameters) {
 							save(Paths.get(parameter));
 						}
@@ -180,7 +196,7 @@ public abstract class AbstractPapersUi implements Ui {
 					break;
 				
 				case SAVE_AND_QUIT:
-					if (parameters.length > 0) {
+					if (parameters != null && parameters.length > 0) {
 						for (String parameter : parameters) {
 							save(Paths.get(parameter));
 						}
@@ -188,6 +204,14 @@ public abstract class AbstractPapersUi implements Ui {
 						save();
 					}
 					quit();
+					break;
+				
+				case UNIT:
+					if (parameters != null && parameters.length > 0) {
+						addUnit(String.join(" ", parameters));
+					} else {
+						throw new CommandExecutionException("No arguments provided: unit UNITNAME EXPONENT [ALIAS,ALIAS,...]");
+					}
 					break;
 				
 			}
@@ -442,6 +466,24 @@ public abstract class AbstractPapersUi implements Ui {
 		value.append("]");
 		
 		return value.toString();
+	}
+	
+	protected void addConversion(String conversion) {
+		checkCurrentPaper();
+		
+		paper.getEvaluator().getUnitConverter().loadConversion(conversion);
+	}
+	
+	protected void addPrefix(String prefix) {
+		checkCurrentPaper();
+		
+		paper.getEvaluator().getUnitConverter().loadPrefix(prefix);
+	}
+	
+	protected void addUnit(String unit) {
+		checkCurrentPaper();
+		
+		paper.getEvaluator().getUnitConverter().loadUnit(unit);
 	}
 	
 	/**
