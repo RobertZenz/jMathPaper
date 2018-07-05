@@ -283,12 +283,17 @@ be entered instead of expressions:
 
     Command     Description                            Aliases
     --------------------------------------------------------------------
+    alias       Adds an alias on the fly to the current alias
+                paper, the added alias will not be
+                saved. A valid alias string is expected
+                as parameter.
+    
     clean       Cleans the current paper, removing      clean, clear
                 all expressions from it.
     
     close       Closes the current paper.               close, :bdelete,
                                                         :bd
-    conversion  Adds a unit conversion on the fly to
+    conversion  Adds a unit conversion on the fly to    conversion
                 the current paper, the added
                 conversion will not be saved. A valid
                 conversion string is expected as
@@ -311,7 +316,7 @@ be entered instead of expressions:
                 value. See the Options section for      setoption, setopt,
                 further information.                    :so, :setopt
     
-    prefix      Adds a prefix on the fly to the current
+    prefix      Adds a prefix on the fly to the current prefix
                 paper, the added prefix will not be
                 saved. A valid prefix string is
                 expected as parameter.
@@ -335,7 +340,7 @@ be entered instead of expressions:
                 If multiple parameters are provided, it
                 is saved to all provided locations.
     
-    unit        Adds a unit on the fly to the current
+    unit        Adds a unit on the fly to the current   unit
                 paper, the added unit will not be saved.
                 A valid unit string is expected as
                 parameter.

@@ -23,6 +23,9 @@ package org.bonsaimind.jmathpaper.core.ui;
  * A {@link Command} can be executed on an {@link Ui}.
  */
 public enum Command {
+	/** Adds the given alias to the current paper. */
+	ALIAS("alias"),
+	
 	/** The paper should be cleared. */
 	CLEAR("clean", "clear"),
 	

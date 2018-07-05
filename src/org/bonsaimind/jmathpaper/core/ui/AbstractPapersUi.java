@@ -127,6 +127,14 @@ public abstract class AbstractPapersUi implements Ui {
 	public void execute(Command command, String... parameters) throws CommandExecutionException {
 		try {
 			switch (command) {
+				case ALIAS:
+					if (parameters != null && parameters.length > 0) {
+						addAlias(String.join(" ", parameters));
+					} else {
+						throw new CommandExecutionException("No arguments provided: alias ALIAS REPLACEMENT");
+					}
+					break;
+				
 				case CLEAR:
 					clear();
 					break;
@@ -466,6 +474,12 @@ public abstract class AbstractPapersUi implements Ui {
 		value.append("]");
 		
 		return value.toString();
+	}
+	
+	protected void addAlias(String alias) {
+		checkCurrentPaper();
+		
+		paper.getEvaluator().loadAlias(alias);
 	}
 	
 	protected void addConversion(String conversion) {
