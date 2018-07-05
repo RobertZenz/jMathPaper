@@ -1,6 +1,8 @@
 # SI prefixes
 # See https://en.wikipedia.org/wiki/Metric_prefix
 
+yocto	y	10	-24
+zepto	z	10	-21
 atto	a	10	-18
 femto	f	10	-15
 pico	p	10	-12
@@ -17,3 +19,5 @@ giga	G	10	9
 tera	T	10	12
 peta	P	10	15
 exa		E	10	18
+zetta	Z	10	21
+yotta	Y	10	24
