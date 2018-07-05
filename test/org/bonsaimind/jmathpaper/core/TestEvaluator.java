@@ -103,6 +103,13 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("25", "00 + 5*5", evaluator);
 		assertResult("30", "00+5", evaluator);
 		assertResult("150", "5*00", evaluator);
+		
+		// Inside functions.
+		evaluator.evaluate("add(a, b)=a+b");
+		evaluator.evaluate("25");
+		
+		assertResult("50", "add(00, 25)", evaluator);
+		assertResult("75", "add(25, 00)", evaluator);
 	}
 	
 	@Test

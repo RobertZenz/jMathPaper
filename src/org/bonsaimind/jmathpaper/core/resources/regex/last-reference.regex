@@ -22,9 +22,9 @@
 #
 # The reference will be in the group VALUE.
 
-(^|[^0-9a-zA-Z,.])	# Must start with the string start or not a number nor
+(^|[^0-9a-zA-Z.])	# Must start with the string start or not a number nor
 					# letter nor comma nor point.
 (?<VALUE>			# Start of the main group.
 	00				# The expected placeholder.
 )
-($|[^0-9.,])		# Must end with not a number.
+($|[^0-9.])		# Must end with not a number.
