@@ -101,6 +101,14 @@ public class Paper {
 		remeasureColumnSizes();
 	}
 	
+	public String format(EvaluatedExpression evaluatedExpression) {
+		return evaluatedExpression.format(
+				idColumnSize,
+				expressionColumnSize,
+				resultColumnSize,
+				numberFormat);
+	}
+	
 	public List<EvaluatedExpression> getEvaluatedExpressions() {
 		if (readonlyEvaluatedExpression == null) {
 			readonlyEvaluatedExpression = Collections.unmodifiableList(evaluatedExpressions);
@@ -271,11 +279,7 @@ public class Paper {
 		StringBuilder builder = new StringBuilder();
 		
 		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
-			builder.append(evaluatedExpression.format(
-					idColumnSize,
-					expressionColumnSize,
-					resultColumnSize,
-					numberFormat));
+			builder.append(format(evaluatedExpression));
 			builder.append('\n');
 		}
 		
