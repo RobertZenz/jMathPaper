@@ -103,6 +103,7 @@ public class Tui extends AbstractPapersUi {
 			writer = terminal.writer();
 			
 			printPaper();
+			terminal.flush();
 			
 			LineReader reader = LineReaderBuilder.builder()
 					.history(new PaperBasedHistory(this))
