@@ -23,6 +23,9 @@ package org.bonsaimind.jmathpaper.core.ui;
  * A {@link Command} can be executed on an {@link Ui}.
  */
 public enum Command {
+	/** Add a new unit, conversion or prefix to the current paper. */
+	ADD("add"),
+	
 	/** Adds the given alias to the current paper. */
 	ALIAS("alias"),
 	
@@ -34,9 +37,6 @@ public enum Command {
 	 * that the application exits.
 	 */
 	CLOSE("close", ":bdelete", ":bd"),
-	
-	/** Adds the given conversion to the current paper. */
-	CONVERSION("conversion"),
 	
 	/**
 	 * The current paper will be copied to the clipboard in its text
@@ -56,9 +56,6 @@ public enum Command {
 	/** Sets the given option to the given value. */
 	OPTION("option", "opt", "set", "setoption", "setopt", ":so", ":setopt"),
 	
-	/** Adds the given prefix to the current paper. */
-	PREFIX("prefix"),
-	
 	/** Switches to the previous paper, if there is any. */
 	PREVIOUS("previous", "left", ":bprevious", ":bp"),
 	
@@ -75,10 +72,7 @@ public enum Command {
 	 * Save the current paper, if a name is given, at that location and then
 	 * exit.
 	 */
-	SAVE_AND_QUIT(":x"),
-	
-	/** Adds the given unit to the current paper. */
-	UNIT("unit");
+	SAVE_AND_QUIT(":x");
 	
 	private String[] aliases = null;
 	

@@ -283,6 +283,15 @@ be entered instead of expressions:
 
     Command     Description                            Aliases
     --------------------------------------------------------------------
+    add         Adds an unit, prefix or conversion on   add
+                the fly to the current paper. The added
+                item will not be saved in any way and
+                will only be usable in the current
+                paper.
+                The first parameter must either be
+                "unit", "prefix" or "conversion"
+                followed by a valid definition.
+    
     alias       Adds an alias on the fly to the current alias
                 paper, the added alias will not be
                 saved. A valid alias string is expected
@@ -293,11 +302,6 @@ be entered instead of expressions:
     
     close       Closes the current paper.               close, :bdelete,
                                                         :bd
-    conversion  Adds a unit conversion on the fly to    conversion
-                the current paper, the added
-                conversion will not be saved. A valid
-                conversion string is expected as
-                parameter.
     
     copy        Copies the current paper to             copy, cp, y
                 the clipboard.
@@ -315,11 +319,6 @@ be entered instead of expressions:
     option      Set the given option with the given     option, opt, set,
                 value. See the Options section for      setoption, setopt,
                 further information.                    :so, :setopt
-    
-    prefix      Adds a prefix on the fly to the current prefix
-                paper, the added prefix will not be
-                saved. A valid prefix string is
-                expected as parameter.
     
     previous    Switches to the previous paper in       previous, left,
                 the list, if there is any.              :bprevious, :bp
@@ -339,11 +338,6 @@ be entered instead of expressions:
                 the location can be given as parameter.
                 If multiple parameters are provided, it
                 is saved to all provided locations.
-    
-    unit        Adds a unit on the fly to the current   unit
-                paper, the added unit will not be saved.
-                A valid unit string is expected as
-                parameter.
 
 Parameters are to be provided space separated and can be quoted, some examples:
 

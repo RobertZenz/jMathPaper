@@ -26,6 +26,7 @@ import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -127,6 +128,39 @@ public abstract class AbstractPapersUi implements Ui {
 	public void execute(Command command, String... parameters) throws CommandExecutionException {
 		try {
 			switch (command) {
+				case ADD:
+					if (parameters != null && parameters.length > 0) {
+						if (parameters.length > 1) {
+							List<String> remainingParameters = new ArrayList<>(Arrays.asList(parameters));
+							remainingParameters.remove(0);
+							
+							String arguments = String.join(" ", remainingParameters);
+							
+							switch (parameters[0]) {
+								case "conversion":
+									addConversion(arguments);
+									break;
+								
+								case "prefix":
+									addPrefix(arguments);
+									break;
+								
+								case "unit":
+									addUnit(arguments);
+									break;
+								
+								default:
+									throw new CommandExecutionException("No arguments provided: add unit/prefix/conversion");
+									
+							}
+						} else {
+							throw new CommandExecutionException("No arguments provided, valid definition expected.");
+						}
+					} else {
+						throw new CommandExecutionException("No arguments provided: add unit/prefix/conversion");
+					}
+					break;
+				
 				case ALIAS:
 					if (parameters != null && parameters.length > 0) {
 						addAlias(String.join(" ", parameters));
@@ -141,14 +175,6 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case CLOSE:
 					close();
-					break;
-				
-				case CONVERSION:
-					if (parameters != null && parameters.length > 0) {
-						addConversion(String.join(" ", parameters));
-					} else {
-						throw new CommandExecutionException("No arguments provided: conversion TARGETUNIT VALUE SOURCEUNIT");
-					}
 					break;
 				
 				case COPY:
@@ -171,14 +197,6 @@ public abstract class AbstractPapersUi implements Ui {
 				
 				case OPTION:
 					tryAsOption(parameters);
-					break;
-				
-				case PREFIX:
-					if (parameters != null && parameters.length > 0) {
-						addPrefix(String.join(" ", parameters));
-					} else {
-						throw new CommandExecutionException("No arguments provided: prefix PREFIXNAME PREFIX BASE EXPONENT");
-					}
 					break;
 				
 				case PREVIOUS:
@@ -212,14 +230,6 @@ public abstract class AbstractPapersUi implements Ui {
 						save();
 					}
 					quit();
-					break;
-				
-				case UNIT:
-					if (parameters != null && parameters.length > 0) {
-						addUnit(String.join(" ", parameters));
-					} else {
-						throw new CommandExecutionException("No arguments provided: unit UNITNAME EXPONENT [ALIAS,ALIAS,...]");
-					}
 					break;
 				
 			}
