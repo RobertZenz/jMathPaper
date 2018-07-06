@@ -76,7 +76,12 @@ public final class ConfigurationProcessor {
 				int commentIndex = line.indexOf(COMMENT_START);
 				
 				if (commentIndex >= 0) {
-					line = line.substring(0, commentIndex);
+					// Test if the comment char might have been escaped.
+					if (commentIndex == 0 || line.charAt(commentIndex - 1) != '\\') {
+						line = line.substring(0, commentIndex);
+					} else {
+						line = line.substring(0, commentIndex - 1) + line.substring(commentIndex);
+					}
 				}
 				
 				line = line.trim();

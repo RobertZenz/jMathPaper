@@ -28,6 +28,10 @@ import org.junit.Test;
 public class TestConfigurationProcessor {
 	@Test
 	public void testComments() {
+		assertProcess("", "# Comment only", null);
+		assertProcess("# Escaped comment", "\\# Escaped comment", null);
+		assertProcess("Inlined # escaped comment", "Inlined \\# escaped comment", null);
+		assertProcess("Inlined \\# escaped comment", "Inlined \\\\# escaped comment", null);
 		assertProcess("First line\nSecond line\n", "# This is a comment\n"
 				+ "First line # with a comment\n"
 				+ "# Another comment line\n"
