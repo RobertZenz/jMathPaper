@@ -19,14 +19,20 @@
 
 package org.bonsaimind.jmathpaper.core;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bonsaimind.jmathpaper.Arguments;
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
+import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestAbstractPapersUi extends AbstractPapersUi {
+	private volatile boolean quitCalled = false;
 	
 	public TestAbstractPapersUi() {
 		super();
@@ -34,6 +40,44 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	
 	@Override
 	public void quit() {
+		quitCalled = true;
+	}
+	
+	@Before
+	public void setup() throws Exception {
+		init();
+		run(new Arguments());
+		
+		new_();
+	}
+	
+	@Test
+	public void testCommandAdd() throws CommandExecutionException, InvalidExpressionException {
+		process("add unit unittest 1");
+		process("add prefix much m 3 3");
+		process("add conversion unittest 5 meter");
+		
+		process("5muchunittest m");
+		
+		assertLastResult("675");
+	}
+	
+	@Test
+	public void testCommandAlias() throws CommandExecutionException, InvalidExpressionException {
+		process("alias noway !=");
+		
+		process("true noway false");
+		assertLastResult(true);
+		
+		process("true noway true");
+		assertLastResult(false);
+	}
+	
+	@Test
+	public void testCommandQuit() throws CommandExecutionException, InvalidExpressionException {
+		process("quit");
+		
+		Assert.assertTrue(quitCalled);
 	}
 	
 	@Test
@@ -75,6 +119,24 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 				"1+1",
 				"command \"some ; value 1+1\" ; 2+2"
 		}, "   command value    ; 1+1; command \"some ; value 1+1\" \\; 2+2");
+	}
+	
+	private final void assertLastResult(boolean expected) {
+		EvaluatedExpression lastEvaluatedExpression = paper.evaluatedExpressions.get(paper.evaluatedExpressions.size() - 1);
+		
+		if (lastEvaluatedExpression instanceof BooleanEvaluatedExpression) {
+			Assert.assertEquals(
+					Boolean.valueOf(expected),
+					((BooleanEvaluatedExpression)lastEvaluatedExpression).getBooleanResult());
+		}
+	}
+	
+	private final void assertLastResult(String expected) {
+		EvaluatedExpression lastEvaluatedExpression = paper.evaluatedExpressions.get(paper.evaluatedExpressions.size() - 1);
+		
+		Assert.assertEquals(
+				new BigDecimal(expected).stripTrailingZeros(),
+				lastEvaluatedExpression.getResult().stripTrailingZeros());
 	}
 	
 	private final void assertLists(String[] expected, List<String> actual) {
