@@ -57,6 +57,7 @@ gallon		160floz
 
 # Imperial mass
 pound	0.45359237kg
+ounce	28.349523125g
 
 # Imperial pressure
 poundspersquareinch	6.894757kPa

@@ -51,6 +51,7 @@ gallon		3	gal
 
 # Imperial mass
 pound		1	lb
+ounce		1	oz
 
 # Imperial pressure
 poundspersquareinch	1	psi
