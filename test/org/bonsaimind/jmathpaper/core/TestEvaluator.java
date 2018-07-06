@@ -97,7 +97,7 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
-	public void testlastResultReference() throws InvalidExpressionException {
+	public void testLastResultReference() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
 		assertResult("25", "00 + 5*5", evaluator);
