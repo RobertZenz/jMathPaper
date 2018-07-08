@@ -19,6 +19,9 @@
 
 package org.bonsaimind.jmathpaper.core.resources;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
@@ -68,6 +71,28 @@ public final class ResourceLoader {
 	 */
 	public static final void processResource(String relativePath, Consumer<String> lineProcessor) {
 		processResource(relativePath, lineProcessor, null);
+	}
+	
+	public static final String readResource(String relativePath) {
+		StringBuilder content = new StringBuilder();
+		
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+				ResourceLoader.class.getResourceAsStream(relativePath)))) {
+			
+			String line = reader.readLine();
+			
+			while (line != null) {
+				content.append(line);
+				content.append("\n");
+				
+				line = reader.readLine();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return content.toString();
 	}
 	
 	/**
