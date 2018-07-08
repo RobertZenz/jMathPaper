@@ -41,6 +41,8 @@ public enum Command {
 	/** The specified part will be copied to the clipboard. */
 	COPY("copy", "cp", "y"),
 	
+	HELP("help", "man", "manual"),
+	
 	/** Start a new paper. */
 	NEW("new", ":new"),
 	

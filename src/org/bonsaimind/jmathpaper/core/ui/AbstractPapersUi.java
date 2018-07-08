@@ -36,6 +36,7 @@ import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
+import org.bonsaimind.jmathpaper.core.support.Topic;
 
 /**
  * {@link AbstractPapersUi} is an {@link Ui} implementation which implements the
@@ -45,6 +46,8 @@ import org.bonsaimind.jmathpaper.core.configuration.Definitions;
 public abstract class AbstractPapersUi implements Ui {
 	/** The {@link Definitions} to use by default. */
 	protected Definitions defaultDefinitions = null;
+	
+	protected Topic help = null;
 	
 	/** The currently selected {@link Paper}. */
 	protected Paper paper = null;
@@ -212,6 +215,22 @@ public abstract class AbstractPapersUi implements Ui {
 					}
 					break;
 				
+				case HELP:
+					String topicName = null;
+					
+					if (parameters != null && parameters.length > 0) {
+						topicName = String.join(" ", parameters).trim();
+					}
+					
+					Topic topic = help.getTopic(topicName);
+					
+					if (topic != null) {
+						showHelp(topic);
+					} else {
+						throw new CommandExecutionException("No such help topic: " + topicName);
+					}
+					break;
+				
 				case NEXT:
 					next();
 					break;
@@ -311,6 +330,8 @@ public abstract class AbstractPapersUi implements Ui {
 	@Override
 	public void init(UiParameters uiParameters) throws Exception {
 		this.uiParameters = uiParameters;
+		
+		help = Topic.buildFrom("help");
 	}
 	
 	/**
@@ -1005,6 +1026,16 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 	}
 	
+	protected void showHelp(Topic topic) {
+		System.out.println(topic.getContent());
+		
+		if (topic == help) {
+			System.out.println();
+			System.out.println("All available help topics:");
+			printHelpTopics(topic, "  ");
+		}
+	}
+	
 	/**
 	 * Splits the given {@String input} into single parameters.
 	 * 
@@ -1192,5 +1223,13 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		return false;
+	}
+	
+	private void printHelpTopics(Topic topic, String indentation) {
+		for (Topic childTopic : topic.getTopics()) {
+			System.out.println(indentation + childTopic.getName() + ": " + childTopic.getTitle());
+			
+			printHelpTopics(childTopic, indentation + "  ");
+		}
 	}
 }
