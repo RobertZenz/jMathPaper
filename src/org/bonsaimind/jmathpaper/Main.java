@@ -99,8 +99,9 @@ public final class Main {
 			ui.init();
 			ui.run(arguments);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Failed to run UI.");
+			System.out.println(e.toString());
+			System.exit(1);
 		}
 	}
 }
