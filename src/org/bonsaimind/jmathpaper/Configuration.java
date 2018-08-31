@@ -31,6 +31,7 @@ import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
 public final class Configuration {
 	private static Path cachedConfigDirectory = null;
+	private static final String DIRECTORY_NAME = "jmathpaper";
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
 	private static final String USER_ALIASES_NAME = "user.aliases";
 	private static final String USER_CONVERSIONS_NAME = "user.conversions";
@@ -43,9 +44,9 @@ public final class Configuration {
 	
 	public static final Path getConfigDirectory() {
 		if (cachedConfigDirectory == null) {
-			String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
+			String xdgDataHome = System.getenv("XDG_DATA_HOME");
 			
-			if (xdgConfigHome == null || xdgConfigHome.trim().length() == 0) {
+			if (xdgDataHome == null || xdgDataHome.trim().length() == 0) {
 				String userHome = System.getenv("HOME");
 				
 				if (userHome == null || userHome.trim().length() == 0) {
@@ -56,15 +57,8 @@ public final class Configuration {
 				cachedConfigDirectory = Paths.get(userHome, ".local", "share");
 			}
 			
-			cachedConfigDirectory = cachedConfigDirectory.resolve("jmathpaper");
+			cachedConfigDirectory = cachedConfigDirectory.resolve(DIRECTORY_NAME);
 			cachedConfigDirectory = cachedConfigDirectory.normalize().toAbsolutePath();
-			
-			try {
-				Files.createDirectories(cachedConfigDirectory);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		
 		return cachedConfigDirectory;
@@ -104,6 +98,8 @@ public final class Configuration {
 	
 	public static final void init() {
 		migrateGlobalPaper();
+		migrateFromConfigToData();
+		createConfigDirectoryIfNeeded();
 		copyDefaultConfigFilesIfNeeded();
 	}
 	
@@ -141,6 +137,45 @@ public final class Configuration {
 		copyDefaultConfigFileIfNeeded(USER_CONVERSIONS_NAME);
 		copyDefaultConfigFileIfNeeded(USER_PREFIXES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_UNITS_NAME);
+	}
+	
+	/**
+	 * Creates the configuration directory if it does not exist.
+	 */
+	private static final void createConfigDirectoryIfNeeded() {
+		try {
+			if (!Files.exists(getConfigDirectory())) {
+				Files.createDirectories(getConfigDirectory());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Migrates the configuration from XDG_CONFIG_HOME (1.2.* and below) to the
+	 * correct location.
+	 */
+	private static final void migrateFromConfigToData() {
+		String xdgConfigHome = System.getenv("XDG_CONFIG_HOME");
+		
+		if (xdgConfigHome != null && xdgConfigHome.trim().length() > 0) {
+			Path oldConfigDirectory = Paths.get(xdgConfigHome, DIRECTORY_NAME);
+			
+			try {
+				if (Files.isDirectory(oldConfigDirectory)) {
+					Path configDirectory = getConfigDirectory();
+					
+					if (!Files.exists(configDirectory)) {
+						Files.move(oldConfigDirectory, configDirectory);
+					}
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
