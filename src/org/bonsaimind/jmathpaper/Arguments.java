@@ -34,11 +34,6 @@ public class Arguments {
 	
 	private List<Path> aliasesFilesPaths = null;
 	
-	@Option(names = { "-c", "--context" }, paramLabel = "FILE", arity = "1", description = "The paper to use as context for a given expression.")
-	private String context = null;
-	
-	private Path contextPath = null;
-	
 	@Option(names = { "--conversions" }, paramLabel = "CONVERSIONSFILE", description = "Load unit conversions from this file.")
 	private List<String> conversionsFiles = null;
 	
@@ -85,14 +80,6 @@ public class Arguments {
 		}
 		
 		return aliasesFilesPaths;
-	}
-	
-	public Path getContext() {
-		if (contextPath == null && context != null) {
-			contextPath = Paths.get(context);
-		}
-		
-		return contextPath;
 	}
 	
 	public List<Path> getConversionsFiles() {

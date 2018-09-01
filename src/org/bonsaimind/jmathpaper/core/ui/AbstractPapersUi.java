@@ -376,21 +376,6 @@ public abstract class AbstractPapersUi implements Ui {
 			}
 		}
 		
-		if (arguments.getContext() != null) {
-			boolean contextFound = false;
-			
-			for (Paper paper : papers) {
-				if (arguments.getContext().equals(paper.getFile())) {
-					setPaper(paper);
-					contextFound = true;
-				}
-			}
-			
-			if (!contextFound) {
-				open(arguments.getContext());
-			}
-		}
-		
 		if (paper == null) {
 			openDefaultPaper();
 		}
