@@ -17,16 +17,14 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.core;
-
-import org.bonsaimind.jmathpaper.core.ui.Ui;
+package org.bonsaimind.jmathpaper.core.ui;
 
 /**
- * The {@link DynamicLoader} is a helper class to dynamically load {@link Class}
+ * The {@link UiLoader} is a helper class to dynamically load {@link Class}
  * es.
  */
-public final class DynamicLoader {
-	private DynamicLoader() {
+public final class UiLoader {
+	private UiLoader() {
 	}
 	
 	/**

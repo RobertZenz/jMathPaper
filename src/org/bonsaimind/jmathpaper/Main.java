@@ -19,8 +19,8 @@
 
 package org.bonsaimind.jmathpaper;
 
-import org.bonsaimind.jmathpaper.core.DynamicLoader;
 import org.bonsaimind.jmathpaper.core.ui.Ui;
+import org.bonsaimind.jmathpaper.core.ui.UiLoader;
 
 import picocli.CommandLine;
 import picocli.CommandLine.ParameterException;
@@ -59,7 +59,7 @@ public final class Main {
 		
 		if (arguments.getUi() != null) {
 			try {
-				ui = DynamicLoader.getUi(arguments.getUi());
+				ui = UiLoader.getUi(arguments.getUi());
 			} catch (Exception e) {
 				System.out.println("Given UI \"" + arguments.getUi() + "\" could not be loaded, cause:");
 				System.out.println(e.toString());
@@ -68,13 +68,13 @@ public final class Main {
 		} else {
 			if ((arguments.getExpression() == null || arguments.hasFiles())) {
 				try {
-					ui = DynamicLoader.getUi("swt");
+					ui = UiLoader.getUi("swt");
 				} catch (Exception e) {
 					// Ignore the exception, as the SWT UI might not be included
 					// in the jar that we run.
 					
 					try {
-						ui = DynamicLoader.getUi("tui");
+						ui = UiLoader.getUi("tui");
 					} catch (Exception e2) {
 						// Ignore the exception, as the SWT UI might not be
 						// included in the jar that we run.
@@ -88,7 +88,7 @@ public final class Main {
 		
 		if (ui == null) {
 			try {
-				ui = DynamicLoader.getUi("cli");
+				ui = UiLoader.getUi("cli");
 			} catch (Exception e) {
 				System.out.println("Failed to load any UI, please specify one with the --ui=UI parameter.");
 				System.exit(1);
