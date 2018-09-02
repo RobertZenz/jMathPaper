@@ -214,5 +214,12 @@ public interface Ui {
 	 */
 	public void save(Path file) throws IllegalArgumentException, IllegalStateException, IOException;
 	
+	/**
+	 * Sets the given {@link Option}.
+	 * 
+	 * @param option The {@link Option} to set.
+	 * @param value The value to use as parameter.
+	 * @throws CommandExecutionException If the {@link Option} could not be set.
+	 */
 	public void setOption(Option option, String value) throws CommandExecutionException;
 }
