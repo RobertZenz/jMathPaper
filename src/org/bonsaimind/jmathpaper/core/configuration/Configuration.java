@@ -29,6 +29,10 @@ import java.nio.file.Paths;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 
+/**
+ * The {@link Configuration} is a static utility class which allows to access
+ * the configuration which is stored on the filesystem.
+ */
 public final class Configuration {
 	private static Path cachedConfigDirectory = null;
 	private static final String DIRECTORY_NAME = "jmathpaper";
@@ -42,6 +46,12 @@ public final class Configuration {
 		// No instancing required.
 	}
 	
+	/**
+	 * Gets the {@link Path configuration directory} in which all the
+	 * configuration resides.
+	 * 
+	 * @return The {@link Path configuration directory}.
+	 */
 	public static final Path getConfigDirectory() {
 		if (cachedConfigDirectory == null) {
 			String xdgDataHome = System.getenv("XDG_DATA_HOME");
@@ -64,6 +74,11 @@ public final class Configuration {
 		return cachedConfigDirectory;
 	}
 	
+	/**
+	 * Gets the {@link Path} for the global paper.
+	 * 
+	 * @return The {@link Path} for the global paper.
+	 */
 	public static final Path getGlobalPaperFile() {
 		Path globalPaperFile = getConfigDirectory().resolve(GLOBAL_PAPER_NAME);
 		
@@ -96,6 +111,9 @@ public final class Configuration {
 		return getConfigDirectory().resolve(USER_UNITS_NAME);
 	}
 	
+	/**
+	 * Initializes the configuration.
+	 */
 	public static final void init() {
 		migrateGlobalPaper();
 		migrateFromConfigToData();
