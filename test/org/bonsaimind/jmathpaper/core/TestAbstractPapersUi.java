@@ -53,6 +53,7 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	
 	@Test
 	public void testCommandAdd() throws CommandExecutionException, InvalidExpressionException {
+		process("add unit meter 1 m");
 		process("add unit unittest 1");
 		process("add prefix much m 3 3");
 		process("add conversion unittest 5 meter");
