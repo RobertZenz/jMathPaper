@@ -31,13 +31,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bonsaimind.jmathpaper.Arguments;
-import org.bonsaimind.jmathpaper.Configuration;
-import org.bonsaimind.jmathpaper.core.ConfigurationProcessor;
-import org.bonsaimind.jmathpaper.core.Evaluator;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
-import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
-import org.bonsaimind.jmathpaper.core.units.UnitConverter;
+import org.bonsaimind.jmathpaper.core.configuration.Configuration;
+import org.bonsaimind.jmathpaper.core.configuration.Definitions;
 
 /**
  * {@link AbstractPapersUi} is an {@link Ui} implementation which implements the
@@ -47,6 +44,8 @@ import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 public abstract class AbstractPapersUi implements Ui {
 	/** The {@link Arguments} with which this has been run. */
 	protected Arguments arguments = null;
+	
+	protected Definitions defaultDefinitions = null;
 	
 	/** The currently selected {@link Paper}. */
 	protected Paper paper = null;
@@ -411,6 +410,14 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setDefaultDefinitions(Definitions definitions) {
+		defaultDefinitions = definitions;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setOption(Option option, String value) throws CommandExecutionException {
 		checkCurrentPaper();
 		
@@ -527,37 +534,8 @@ public abstract class AbstractPapersUi implements Ui {
 	protected Paper createNewPaper() {
 		Paper paper = new Paper();
 		
-		Evaluator evaluator = paper.getEvaluator();
-		
-		ResourceLoader.processResource("other/default.aliases", evaluator::loadAlias);
-		
-		ConfigurationProcessor.process(Configuration.getUserAliasesFile(), evaluator::loadAlias);
-		
-		for (Path aliasesFile : arguments.getAliasesFiles()) {
-			ConfigurationProcessor.process(aliasesFile, evaluator::loadAlias);
-		}
-		
-		UnitConverter unitConverter = evaluator.getUnitConverter();
-		
-		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
-		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
-		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
-		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
-		
-		ConfigurationProcessor.process(Configuration.getUserUnitsFile(), unitConverter::loadUnit);
-		ConfigurationProcessor.process(Configuration.getUserPrefixesFile(), unitConverter::loadPrefix);
-		ConfigurationProcessor.process(Configuration.getUserConversionsFile(), unitConverter::loadConversion);
-		
-		for (Path unitsFile : arguments.getUnitsFiles()) {
-			ConfigurationProcessor.process(unitsFile, unitConverter::loadUnit);
-		}
-		
-		for (Path prefixesFile : arguments.getPrefixesFiles()) {
-			ConfigurationProcessor.process(prefixesFile, unitConverter::loadPrefix);
-		}
-		
-		for (Path conversionsFile : arguments.getConversionsFiles()) {
-			ConfigurationProcessor.process(conversionsFile, unitConverter::loadConversion);
+		if (defaultDefinitions != null) {
+			defaultDefinitions.apply(paper);
 		}
 		
 		return paper;

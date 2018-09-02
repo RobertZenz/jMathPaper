@@ -19,6 +19,12 @@
 
 package org.bonsaimind.jmathpaper;
 
+import java.nio.file.Path;
+
+import org.bonsaimind.jmathpaper.core.ConfigurationProcessor;
+import org.bonsaimind.jmathpaper.core.configuration.Configuration;
+import org.bonsaimind.jmathpaper.core.configuration.Definitions;
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.bonsaimind.jmathpaper.core.ui.Ui;
 import org.bonsaimind.jmathpaper.core.ui.UiLoader;
 
@@ -96,6 +102,8 @@ public final class Main {
 		}
 		
 		try {
+			ui.setDefaultDefinitions(createDefaultDefinitions(arguments));
+			
 			ui.init();
 			ui.run(arguments);
 		} catch (Exception e) {
@@ -103,5 +111,48 @@ public final class Main {
 			System.out.println(e.toString());
 			System.exit(1);
 		}
+	}
+	
+	/**
+	 * Creates the default {@link Definitions} file from {@link Configuration}
+	 * and {@link Arguments}.
+	 * 
+	 * @param arguments The {@link Arguments} to use.
+	 * @return The {@link Definitions} file created from the
+	 *         {@link Configuration} and {@link Arguments}.
+	 */
+	private static final Definitions createDefaultDefinitions(Arguments arguments) {
+		Definitions definitions = new Definitions();
+		
+		// Aliases
+		ResourceLoader.processResource("other/default.aliases", definitions::addAliasDefinition);
+		ConfigurationProcessor.process(Configuration.getUserAliasesFile(), definitions::addAliasDefinition);
+		for (Path aliasesFile : arguments.getAliasesFiles()) {
+			ConfigurationProcessor.process(aliasesFile, definitions::addAliasDefinition);
+		}
+		
+		// Prefixes
+		ResourceLoader.processResource("units/si.prefixes", definitions::addPrefixDefinition);
+		ResourceLoader.processResource("units/iec.prefixes", definitions::addPrefixDefinition);
+		ConfigurationProcessor.process(Configuration.getUserPrefixesFile(), definitions::addPrefixDefinition);
+		for (Path prefixesFile : arguments.getPrefixesFiles()) {
+			ConfigurationProcessor.process(prefixesFile, definitions::addPrefixDefinition);
+		}
+		
+		// Units
+		ResourceLoader.processResource("units/default.units", definitions::addUnitDefinition);
+		ConfigurationProcessor.process(Configuration.getUserUnitsFile(), definitions::addUnitDefinition);
+		for (Path unitsFile : arguments.getUnitsFiles()) {
+			ConfigurationProcessor.process(unitsFile, definitions::addUnitDefinition);
+		}
+		
+		// Conversions
+		ResourceLoader.processResource("units/default.conversions", definitions::addConversionDefinition);
+		ConfigurationProcessor.process(Configuration.getUserConversionsFile(), definitions::addConversionDefinition);
+		for (Path conversionsFile : arguments.getConversionsFiles()) {
+			ConfigurationProcessor.process(conversionsFile, definitions::addConversionDefinition);
+		}
+		
+		return definitions;
 	}
 }

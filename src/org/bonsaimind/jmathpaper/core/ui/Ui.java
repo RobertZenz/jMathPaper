@@ -26,6 +26,7 @@ import java.util.List;
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
+import org.bonsaimind.jmathpaper.core.configuration.Definitions;
 
 /**
  * {@link Ui} is the interface for defining the functionality of a jMathPaper
@@ -213,6 +214,15 @@ public interface Ui {
 	 * @throws IOException If accessing the file failed.
 	 */
 	public void save(Path file) throws IllegalArgumentException, IllegalStateException, IOException;
+	
+	/**
+	 * Sets the default {@link Definitions} which will be loaded into every
+	 * newly created {@link Paper}.
+	 * 
+	 * @param definitions The {@link Definitions} to use by default, can be
+	 *        {@code null} to use none.
+	 */
+	public void setDefaultDefinitions(Definitions definitions);
 	
 	/**
 	 * Sets the given {@link Option}.
