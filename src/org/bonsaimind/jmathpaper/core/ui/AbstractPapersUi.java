@@ -33,7 +33,6 @@ import java.util.List;
 import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
-import org.bonsaimind.jmathpaper.core.configuration.Configuration;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
 
 /**
@@ -368,20 +367,6 @@ public abstract class AbstractPapersUi implements Ui {
 	@Override
 	public void run(Arguments arguments) throws Exception {
 		this.arguments = arguments;
-		
-		if (arguments.hasFiles()) {
-			for (Path file : arguments.getFiles()) {
-				open(file);
-			}
-		}
-		
-		if (paper == null) {
-			openDefaultPaper();
-		}
-		
-		if (arguments.getExpression() != null) {
-			process(arguments.getExpression());
-		}
 	}
 	
 	/**
@@ -592,18 +577,6 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		throw new IllegalArgumentException("\"" + name + "\" is not a value of " + enumClass.getSimpleName() + ".");
-	}
-	
-	/**
-	 * Opens the "default" {@link Paper}.
-	 * <p>
-	 * The default is used during startup when no {@link Paper}s have been
-	 * opened because of arguments.
-	 * 
-	 * @throws IOException If accessing the file failed.
-	 */
-	protected void openDefaultPaper() throws InvalidExpressionException, IOException {
-		open(Configuration.getGlobalPaperFile());
 	}
 	
 	/**

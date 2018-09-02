@@ -28,7 +28,6 @@ import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Version;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
-import org.bonsaimind.jmathpaper.core.configuration.Configuration;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.uis.swt.events.EventForwarder;
 import org.bonsaimind.jmathpaper.uis.swt.events.ForwardingSelectionListener;
@@ -371,15 +370,6 @@ public class Swt extends AbstractPapersUi {
 		}
 		
 		return null;
-	}
-	
-	@Override
-	protected void openDefaultPaper() throws InvalidExpressionException, IOException {
-		if (arguments.getExpression() != null) {
-			open(Configuration.getGlobalPaperFile());
-		} else {
-			new_();
-		}
 	}
 	
 	@Override

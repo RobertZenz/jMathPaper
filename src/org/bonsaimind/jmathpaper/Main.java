@@ -102,9 +102,28 @@ public final class Main {
 		}
 		
 		try {
+			ui.init();
+			
 			ui.setDefaultDefinitions(createDefaultDefinitions(arguments));
 			
-			ui.init();
+			if (arguments.hasFiles()) {
+				for (Path file : arguments.getFiles()) {
+					ui.open(file);
+				}
+			}
+			
+			if (ui.getPaper() == null) {
+				if (arguments.getExpression() != null) {
+					ui.open(Configuration.getGlobalPaperFile());
+				} else {
+					ui.new_();
+				}
+			}
+			
+			if (arguments.getExpression() != null) {
+				ui.process(arguments.getExpression());
+			}
+			
 			ui.run(arguments);
 		} catch (Exception e) {
 			System.out.println("Failed to run UI.");
