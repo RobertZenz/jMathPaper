@@ -19,6 +19,7 @@
 
 package org.bonsaimind.jmathpaper.core.resources.regex;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
@@ -34,9 +35,25 @@ public abstract class AbstractRegexTest {
 	}
 	
 	protected void assertNoMatch(String value) {
-		Assert.assertFalse(
-				"No match expected for: <" + value + "> but did match.",
-				pattern.matcher(value).find());
+		Matcher matcher = pattern.matcher(value);
+		
+		if (matcher.find()) {
+			StringBuilder message = new StringBuilder();
+			
+			message.append("No match expected for <");
+			message.append(value);
+			message.append("> but did match.");
+			
+			for (int index = 0; index < matcher.groupCount(); index++) {
+				message.append("\n  [");
+				message.append(index);
+				message.append("]: <");
+				message.append(matcher.group(index));
+				message.append(">");
+			}
+			
+			Assert.fail(message.toString());
+		}
 	}
 	
 	protected abstract String getRegexName();
