@@ -138,6 +138,14 @@ public class UnitConverter {
 			}
 		}
 		
+		// No prefixed unit found, let's try with just a prefix.
+		prefix = getPrefix(prefixedUnit);
+		
+		if (prefix != null) {
+			return new PrefixedUnit(prefix, Unit.ONE);
+		}
+		
+		// No luck.
 		return null;
 	}
 	

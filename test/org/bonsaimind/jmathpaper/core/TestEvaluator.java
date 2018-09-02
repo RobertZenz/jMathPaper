@@ -164,6 +164,15 @@ public class TestEvaluator extends AbstractExpressionTest {
 		
 		// Plural
 		assertResult("1", "1000meters to kilometers", evaluator);
+		
+		// Prefix only
+		assertResult("1000", "1kilo to 1", evaluator);
+		assertResult("1000", "1k to 1", evaluator);
+		assertResult("1000000", "1mega to 1", evaluator);
+		assertResult("1000000", "1MEGA to 1", evaluator);
+		assertResult("0.001", "1milli to 1", evaluator);
+		assertResult("0.000001", "1milli to k", evaluator);
+		assertResult("0.000001", "1milli to kilo", evaluator);
 	}
 	
 	@Test
