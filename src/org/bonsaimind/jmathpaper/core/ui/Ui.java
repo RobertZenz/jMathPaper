@@ -109,7 +109,7 @@ public interface Ui {
 	/**
 	 * Creates a new {@link Paper}.
 	 * <p>
-	 * The created {@link Paper} as is set as current.
+	 * The created {@link Paper} is being set as current.
 	 */
 	public void new_();
 	
