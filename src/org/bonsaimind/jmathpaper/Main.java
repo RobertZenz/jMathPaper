@@ -151,6 +151,7 @@ public final class Main {
 		}
 		
 		// Prefixes
+		ResourceLoader.processResource("units/english.prefixes", definitions::addPrefixDefinition);
 		ResourceLoader.processResource("units/si.prefixes", definitions::addPrefixDefinition);
 		ResourceLoader.processResource("units/iec.prefixes", definitions::addPrefixDefinition);
 		ConfigurationProcessor.process(Configuration.getUserPrefixesFile(), definitions::addPrefixDefinition);
