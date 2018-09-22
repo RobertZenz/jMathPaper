@@ -159,8 +159,6 @@
 			<fileset dir="${libs}">
 				<include name="evalex/EvalEx-${evalex.version}.jar" />
 				<include name="evalex/LICENSE" />
-				<include name="jline/jline-${jline.version}.jar" />
-				<include name="jline/LICENSE" />
 				<include name="lanterna/lanterna-${lanterna.version}.jar" />
 				<include name="lanterna/LICENSE" />
 				<include name="picocli/picocli-${picocli.version}.jar" />
@@ -169,7 +167,6 @@
 		</tar>
 		<jar jarfile="${dist}/${jar}-${version}-cli-tui2.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
-			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/lanterna/lanterna-${lanterna.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 		</jar>
