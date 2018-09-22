@@ -35,6 +35,9 @@ There are multiple download options available:
  * CLI: Only contains the command line and service interface.
  * CLI-TUI: Only contains the command line and service interface and the simple
    text user interface.
+ * CLI-TUI2: Only contains the command line and service interface and
+   the extended text user interface. This interface has to be considered
+   experimental and might not work correctly.
  * Full: The full build, containing all user interfaces. As SWT uses native
    components, you must choose the correct one for your platform.
 
