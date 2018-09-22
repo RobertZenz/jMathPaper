@@ -50,6 +50,14 @@
 	</target>
 
 	<target name="jar" depends="compile" description="Creates the jar.">
+		<jar jarfile="${dist}/${jar}-${version}-core.jar" manifest="MANIFEST.MF">
+			<fileset dir="${build}">
+				<exclude name="org/bonsaimind/jmathpaper/uis/**/*" />
+				<exclude name="org/bonsaimind/jmathpaper/Main.*" />
+				<exclude name="org/bonsaimind/jmathpaper/Arguments.*" />
+			</fileset>
+			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
+		</jar>
 		<jar jarfile="${dist}/${jar}-${version}-cli.jar" manifest="MANIFEST.MF">
 			<fileset dir="${build}">
 				<exclude name="org/bonsaimind/jmathpaper/uis/swt/**/*" />

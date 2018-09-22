@@ -30,6 +30,8 @@ Download
 
 There are multiple download options available:
 
+ * Core: Library option, can not be run on its own and only contains the most
+   basic classes without any UI implementations.
  * CLI: Only contains the command line and service interface.
  * CLI-TUI: Only contains the command line and service interface and the simple
    text user interface.
