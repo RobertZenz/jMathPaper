@@ -178,6 +178,10 @@ public abstract class AbstractPapersUi implements Ui {
 					close();
 					break;
 				
+				case CLOSEALL:
+					closeAll();
+					break;
+				
 				case COPY:
 					copy();
 					break;

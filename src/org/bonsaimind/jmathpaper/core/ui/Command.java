@@ -32,11 +32,11 @@ public enum Command {
 	/** The paper should be cleared. */
 	CLEAR("clean", "clear"),
 	
-	/**
-	 * The current paper will be closed. Depending on the UI, that might mean
-	 * that the application exits.
-	 */
+	/** The current paper will be closed. */
 	CLOSE("close", ":bdelete", ":bd"),
+	
+	/** All papers will be closed. */
+	CLOSEALL("closeall"),
 	
 	/**
 	 * The current paper will be copied to the clipboard in its text
