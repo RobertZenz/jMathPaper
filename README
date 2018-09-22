@@ -175,7 +175,8 @@ acceptable.
 
     #1                            3feet to meter = 0.9144
     #2                            3feet in meter = 0.9144
-    #3                               3feet meter = 0.9144
+    #3                            3feet as meter = 0.9144
+    #4                               3feet meter = 0.9144
 
 Units can either be specified by name or by alias (for example `meter` and `m`).
 Additionally, they can also be specified in plural (`meters`).

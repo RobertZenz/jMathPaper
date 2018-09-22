@@ -51,6 +51,7 @@ public class TestUnitConversion extends AbstractRegexTest {
 		
 		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 to 1");
 		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 in 1");
+		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 as 1");
 		assertMatch("sin(45) * sqrt(50) + 49 - 10", "1", "1", "sin(45) * sqrt(50) + 49 - 10 1 1");
 		
 		assertMatch("1", "km", "m", "1 km to m");
