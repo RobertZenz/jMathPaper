@@ -98,6 +98,10 @@ public class UnitConverter {
 	}
 	
 	public Prefix getPrefix(String prefixNameOrSymbol) {
+		if (prefixNameOrSymbol == null) {
+			return null;
+		}
+		
 		Prefix prefix = prefixesByName.get(prefixNameOrSymbol.toLowerCase());
 		
 		if (prefix == null) {
@@ -108,6 +112,10 @@ public class UnitConverter {
 	}
 	
 	public PrefixedUnit getPrefixedUnit(String prefixedUnit) {
+		if (prefixedUnit == null) {
+			return null;
+		}
+		
 		if (prefixedUnit.toLowerCase().startsWith("square")) {
 			prefixedUnit = prefixedUnit.substring(6) + "^2";
 		} else if (prefixedUnit.toLowerCase().startsWith("sq")) {
