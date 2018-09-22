@@ -127,6 +127,12 @@ public class Evaluator {
 		if (unitConversionMatcher.matches()) {
 			processedExpression = unitConversionMatcher.group("EXPRESSION");
 			
+			// Allow to convert from unit to unit without having to specify
+			// an amount.
+			if (processedExpression.trim().isEmpty()) {
+				processedExpression = "1";
+			}
+			
 			unitFrom = unitConverter.getPrefixedUnit(unitConversionMatcher.group("FROM"));
 			
 			if (unitFrom == null) {

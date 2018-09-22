@@ -158,6 +158,10 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("1000", "1 k1 to 1", evaluator);
 		assertResult("0.001", "1 1 to k1", evaluator);
 		
+		// No value
+		assertResult("1000", "km to m", evaluator);
+		assertResult("2.54", "in to cm", evaluator);
+		
 		// Expression support
 		assertResult("0.0175", "5*5*70 centimeter to kilometer", evaluator);
 		assertResult("2.7432", "30/10 * sqrt(9) ft to meter", evaluator);
