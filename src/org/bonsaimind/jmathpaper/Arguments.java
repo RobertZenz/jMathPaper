@@ -38,6 +38,11 @@ public class Arguments {
 	
 	private List<Path> aliasesFilesPaths = null;
 	
+	@Option(names = { "--context" }, paramLabel = "CONTEXTFILE", description = "Load context expressions from this file.")
+	private List<String> contextExpressionsFiles = null;
+	
+	private List<Path> contextExpressionsFilesPaths = null;
+	
 	@Option(names = { "--conversions" }, paramLabel = "CONVERSIONSFILE", description = "Load unit conversions from this file.")
 	private List<String> conversionsFiles = null;
 	
@@ -83,6 +88,14 @@ public class Arguments {
 		}
 		
 		return aliasesFilesPaths;
+	}
+	
+	public List<Path> getContextExpressionsFiles() {
+		if (contextExpressionsFilesPaths == null) {
+			contextExpressionsFilesPaths = convertStringsToPaths(contextExpressionsFiles);
+		}
+		
+		return contextExpressionsFilesPaths;
 	}
 	
 	public List<Path> getConversionsFiles() {

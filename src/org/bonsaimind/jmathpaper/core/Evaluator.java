@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,8 +55,8 @@ public class Evaluator {
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
 	private Map<String, String> aliases = new HashMap<>();
+	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
 	private int expressionCounter = 0;
-	private String lastVariableAdded = null;
 	private MathContext mathContext = DEFAULT_MATH_CONTEXT;
 	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
 	private UnitConverter unitConverter = new UnitConverter();
@@ -87,6 +88,93 @@ public class Evaluator {
 	}
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
+		return addEvaluatedExpression(evaluateInternal(expression, this::getNextId));
+	}
+	
+	public MathContext getMathContext() {
+		return mathContext;
+	}
+	
+	public UnitConverter getUnitConverter() {
+		return unitConverter;
+	}
+	
+	public void loadAlias(String aliasDefinition) {
+		if (aliasDefinition == null || aliasDefinition.isEmpty()) {
+			return;
+		}
+		
+		String[] splittedDefinition = aliasDefinition.split("[ \t]+", 2);
+		
+		if (splittedDefinition.length != 2) {
+			return;
+		}
+		
+		registerAlias(splittedDefinition[0], splittedDefinition[1]);
+	}
+	
+	public void loadContextExpression(String expression) {
+		try {
+			contextExpressions.add(evaluateInternal(expression, null));
+		} catch (InvalidExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Expression prepareExpression(String expression) {
+		if (expression == null || expression.length() == 0) {
+			return new Expression("0");
+		}
+		
+		String processedExpression = expression.replace('#', 'R');
+		
+		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
+				this,
+				processedExpression,
+				mathContext);
+		
+		for (EvaluatedExpression contextExpression : contextExpressions) {
+			applyEvaluatedExpression(mathExpression, contextExpression);
+		}
+		
+		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
+			applyEvaluatedExpression(mathExpression, previousEvaluatedExpression);
+		}
+		
+		return mathExpression;
+	}
+	
+	public void registerAlias(String alias, String replacement) {
+		aliases.put("(^| )" + alias + "( |$)", replacement);
+	}
+	
+	public void reset() {
+		expressionCounter = 0;
+		previousEvaluatedExpressions.clear();
+	}
+	
+	public void setMathContext(MathContext mathContext) {
+		this.mathContext = mathContext;
+	}
+	
+	protected void applyEvaluatedExpression(EvaluatorAwareExpression mathExpression, EvaluatedExpression evaluatedExpression) {
+		if (evaluatedExpression instanceof FunctionEvaluatedExpression) {
+			FunctionEvaluatedExpression functionEvaluatedExpression = (FunctionEvaluatedExpression)evaluatedExpression;
+			
+			mathExpression.addFunction(mathExpression.new EvaluatingFunction(
+					functionEvaluatedExpression.getId(),
+					functionEvaluatedExpression.getParameters(),
+					functionEvaluatedExpression.getBody(),
+					functionEvaluatedExpression.isBoolean()));
+		} else {
+			mathExpression.with(
+					evaluatedExpression.getId().replace('#', 'R'),
+					evaluatedExpression.getResult());
+		}
+	}
+	
+	protected EvaluatedExpression evaluateInternal(String expression, Supplier<String> idSupplier) throws InvalidExpressionException {
 		String preProcessedExpression = preProcess(expression);
 		String processedExpression = stripComments(preProcessedExpression);
 		processedExpression = replaceAliases(processedExpression);
@@ -102,12 +190,12 @@ public class Evaluator {
 				parameters = Arrays.asList(parametersList.split("\\s*,\\s*"));
 			}
 			
-			return addEvaluatedExpression(new FunctionEvaluatedExpression(
+			return new FunctionEvaluatedExpression(
 					functionMatcher.group("ID"),
 					preProcessedExpression,
 					parameters,
 					functionMatcher.group("EXPRESSION"),
-					prepareExpression(functionMatcher.group("EXPRESSION")).isBoolean()));
+					prepareExpression(functionMatcher.group("EXPRESSION")).isBoolean());
 		}
 		
 		String id = null;
@@ -156,85 +244,17 @@ public class Evaluator {
 			}
 			
 			if (id == null) {
-				id = getNextId();
+				id = idSupplier.get();
 			}
 			
-			lastVariableAdded = id;
-			
 			if (mathExpression.isBoolean()) {
-				return addEvaluatedExpression(new BooleanEvaluatedExpression(id, preProcessedExpression, result));
+				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
 			} else {
-				return addEvaluatedExpression(new NumberEvaluatedExpression(id, preProcessedExpression, result));
+				return new NumberEvaluatedExpression(id, preProcessedExpression, result);
 			}
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);
 		}
-	}
-	
-	public MathContext getMathContext() {
-		return mathContext;
-	}
-	
-	public UnitConverter getUnitConverter() {
-		return unitConverter;
-	}
-	
-	public void loadAlias(String aliasDefinition) {
-		if (aliasDefinition == null || aliasDefinition.isEmpty()) {
-			return;
-		}
-		
-		String[] splittedDefinition = aliasDefinition.split("[ \t]+", 2);
-		
-		if (splittedDefinition.length != 2) {
-			return;
-		}
-		
-		registerAlias(splittedDefinition[0], splittedDefinition[1]);
-	}
-	
-	public Expression prepareExpression(String expression) {
-		if (expression == null || expression.length() == 0) {
-			return new Expression("0");
-		}
-		
-		String processedExpression = expression.replace('#', 'R');
-		
-		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
-				this,
-				processedExpression,
-				mathContext);
-		
-		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
-			if (previousEvaluatedExpression instanceof FunctionEvaluatedExpression) {
-				FunctionEvaluatedExpression functionEvaluatedExpression = (FunctionEvaluatedExpression)previousEvaluatedExpression;
-				
-				mathExpression.addFunction(mathExpression.new EvaluatingFunction(
-						functionEvaluatedExpression.getId(),
-						functionEvaluatedExpression.getParameters(),
-						functionEvaluatedExpression.getBody(),
-						functionEvaluatedExpression.isBoolean()));
-			} else {
-				mathExpression.with(
-						previousEvaluatedExpression.getId().replace('#', 'R'),
-						previousEvaluatedExpression.getResult());
-			}
-		}
-		
-		return mathExpression;
-	}
-	
-	public void registerAlias(String alias, String replacement) {
-		aliases.put("(^| )" + alias + "( |$)", replacement);
-	}
-	
-	public void reset() {
-		expressionCounter = 0;
-		previousEvaluatedExpressions.clear();
-	}
-	
-	public void setMathContext(MathContext mathContext) {
-		this.mathContext = mathContext;
 	}
 	
 	private EvaluatedExpression addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
@@ -285,11 +305,15 @@ public class Evaluator {
 	}
 	
 	private String replaceLastReference(String value) {
-		if (lastVariableAdded == null) {
-			return "0";
-		} else {
-			return lastVariableAdded;
+		for (int index = previousEvaluatedExpressions.size() - 1; index >= 0; index--) {
+			EvaluatedExpression evaluatedExpression = previousEvaluatedExpressions.get(index);
+			
+			if (evaluatedExpression instanceof NumberEvaluatedExpression) {
+				return evaluatedExpression.getId();
+			}
 		}
+		
+		return "0";
 	}
 	
 	private String stripComments(String expression) {

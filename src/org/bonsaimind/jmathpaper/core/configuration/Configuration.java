@@ -38,6 +38,7 @@ public final class Configuration {
 	private static final String DIRECTORY_NAME = "jmathpaper";
 	private static final String GLOBAL_PAPER_NAME = "global.jmathpaper";
 	private static final String USER_ALIASES_NAME = "user.aliases";
+	private static final String USER_CONTEXT_EXPRESSIONS_NAME = "user.context";
 	private static final String USER_CONVERSIONS_NAME = "user.conversions";
 	private static final String USER_PREFIXES_NAME = "user.prefixes";
 	private static final String USER_UNITS_NAME = "user.units";
@@ -99,6 +100,10 @@ public final class Configuration {
 		return getConfigDirectory().resolve(USER_ALIASES_NAME);
 	}
 	
+	public static final Path getUserContextExpressionsFile() {
+		return getConfigDirectory().resolve(USER_CONTEXT_EXPRESSIONS_NAME);
+	}
+	
 	public static final Path getUserConversionsFile() {
 		return getConfigDirectory().resolve(USER_CONVERSIONS_NAME);
 	}
@@ -152,6 +157,7 @@ public final class Configuration {
 	 */
 	private static final void copyDefaultConfigFilesIfNeeded() {
 		copyDefaultConfigFileIfNeeded(USER_ALIASES_NAME);
+		copyDefaultConfigFileIfNeeded(USER_CONTEXT_EXPRESSIONS_NAME);
 		copyDefaultConfigFileIfNeeded(USER_CONVERSIONS_NAME);
 		copyDefaultConfigFileIfNeeded(USER_PREFIXES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_UNITS_NAME);

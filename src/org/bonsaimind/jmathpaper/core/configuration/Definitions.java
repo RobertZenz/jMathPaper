@@ -11,10 +11,12 @@ import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
 public class Definitions {
 	protected List<String> aliasDefinitions = new ArrayList<>();
+	protected List<String> contextExpressions = new ArrayList<>();
 	protected List<String> conversionDefinitions = new ArrayList<>();
 	protected List<String> prefixDefinitions = new ArrayList<>();
 	protected List<String> unitDefinitions = new ArrayList<>();
 	private List<String> readonlyAliasDefinitions = null;
+	private List<String> readonlyContextExpressions = null;
 	private List<String> readonlyConversionDefinitions = null;
 	private List<String> readonlyPrefixDefinitions = null;
 	private List<String> readonlyUnitDefinitions = null;
@@ -25,6 +27,10 @@ public class Definitions {
 	
 	public void addAliasDefinition(String aliasDefinition) {
 		aliasDefinitions.add(aliasDefinition);
+	}
+	
+	public void addContextExpression(String expression) {
+		contextExpressions.add(expression);
 	}
 	
 	public void addConversionDefinition(String conversionDefinition) {
@@ -49,6 +55,10 @@ public class Definitions {
 		prefixDefinitions.forEach(unitConverter::loadPrefix);
 		unitDefinitions.forEach(unitConverter::loadUnit);
 		conversionDefinitions.forEach(unitConverter::loadConversion);
+		
+		// Load the context expressions last to make sure that everything is
+		// available for them.
+		contextExpressions.forEach(evaluator::loadContextExpression);
 	}
 	
 	public List<String> getAliasDefinitions() {
@@ -57,6 +67,14 @@ public class Definitions {
 		}
 		
 		return readonlyAliasDefinitions;
+	}
+	
+	public List<String> getContextExpressions() {
+		if (readonlyContextExpressions == null) {
+			readonlyContextExpressions = Collections.unmodifiableList(contextExpressions);
+		}
+		
+		return readonlyContextExpressions;
 	}
 	
 	public List<String> getConversionDefinitions() {

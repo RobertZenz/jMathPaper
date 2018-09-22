@@ -173,6 +173,13 @@ public final class Main {
 			ConfigurationProcessor.process(conversionsFile, definitions::addConversionDefinition);
 		}
 		
+		// Expressions
+		ResourceLoader.processResource("other/default.context", definitions::addContextExpression);
+		ConfigurationProcessor.process(Configuration.getUserContextExpressionsFile(), definitions::addContextExpression);
+		for (Path contextExpressionsFile : arguments.getContextExpressionsFiles()) {
+			ConfigurationProcessor.process(contextExpressionsFile, definitions::addContextExpression);
+		}
+		
 		return definitions;
 	}
 }

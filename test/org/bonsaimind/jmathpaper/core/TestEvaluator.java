@@ -65,6 +65,22 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testContextExpressions() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		evaluator.loadContextExpression("a=5");
+		evaluator.loadContextExpression("test(x)=x*5");
+		
+		assertResult("5", "a", evaluator);
+		assertResult("50", "test(10)", evaluator);
+		
+		evaluator.reset();
+		
+		assertResult("5", "a", evaluator);
+		assertResult("50", "test(10)", evaluator);
+	}
+	
+	@Test
 	public void testFunctions() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
@@ -136,6 +152,8 @@ public class TestEvaluator extends AbstractExpressionTest {
 		ResourceLoader.processResource("units/si.prefixes", evaluator.getUnitConverter()::loadPrefix);
 		ResourceLoader.processResource("units/default.units", evaluator.getUnitConverter()::loadUnit);
 		ResourceLoader.processResource("units/default.conversions", evaluator.getUnitConverter()::loadConversion);
+		ResourceLoader.processResource("other/default.aliases", evaluator::loadAlias);
+		ResourceLoader.processResource("other/default.context", evaluator::loadContextExpression);
 		
 		// Basic support
 		assertResult("2.54", "1inch to centimeter", evaluator);
