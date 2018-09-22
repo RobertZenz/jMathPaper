@@ -40,6 +40,7 @@ public final class Configuration {
 	private static final String USER_ALIASES_NAME = "user.aliases";
 	private static final String USER_CONTEXT_EXPRESSIONS_NAME = "user.context";
 	private static final String USER_CONVERSIONS_NAME = "user.conversions";
+	private static final String USER_PAPER_TEMPLATE_NAME = "template.jmathpaper";
 	private static final String USER_PREFIXES_NAME = "user.prefixes";
 	private static final String USER_UNITS_NAME = "user.units";
 	
@@ -108,6 +109,10 @@ public final class Configuration {
 		return getConfigDirectory().resolve(USER_CONVERSIONS_NAME);
 	}
 	
+	public static final Path getUserPaperTemplateFile() {
+		return getConfigDirectory().resolve(USER_PAPER_TEMPLATE_NAME);
+	}
+	
 	public static final Path getUserPrefixesFile() {
 		return getConfigDirectory().resolve(USER_PREFIXES_NAME);
 	}
@@ -159,6 +164,7 @@ public final class Configuration {
 		copyDefaultConfigFileIfNeeded(USER_ALIASES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_CONTEXT_EXPRESSIONS_NAME);
 		copyDefaultConfigFileIfNeeded(USER_CONVERSIONS_NAME);
+		copyDefaultConfigFileIfNeeded(USER_PAPER_TEMPLATE_NAME);
 		copyDefaultConfigFileIfNeeded(USER_PREFIXES_NAME);
 		copyDefaultConfigFileIfNeeded(USER_UNITS_NAME);
 	}

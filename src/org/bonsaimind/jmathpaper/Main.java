@@ -180,6 +180,12 @@ public final class Main {
 			ConfigurationProcessor.process(contextExpressionsFile, definitions::addContextExpression);
 		}
 		
+		// Paper template
+		definitions.setPaperTemplate(Configuration.getUserPaperTemplateFile());
+		if (arguments.getPaperTemplateFile() != null) {
+			definitions.setPaperTemplate(arguments.getPaperTemplateFile());
+		}
+		
 		return definitions;
 	}
 }

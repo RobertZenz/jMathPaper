@@ -1,11 +1,15 @@
 
 package org.bonsaimind.jmathpaper.core.configuration;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.bonsaimind.jmathpaper.core.Evaluator;
+import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
@@ -13,6 +17,7 @@ public class Definitions {
 	protected List<String> aliasDefinitions = new ArrayList<>();
 	protected List<String> contextExpressions = new ArrayList<>();
 	protected List<String> conversionDefinitions = new ArrayList<>();
+	protected Path paperTemplate = null;
 	protected List<String> prefixDefinitions = new ArrayList<>();
 	protected List<String> unitDefinitions = new ArrayList<>();
 	private List<String> readonlyAliasDefinitions = null;
@@ -46,6 +51,18 @@ public class Definitions {
 	}
 	
 	public void apply(Paper paper) {
+		if (paperTemplate != null && Files.exists(paperTemplate)) {
+			try {
+				paper.loadFrom(paperTemplate);
+			} catch (InvalidExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		Evaluator evaluator = paper.getEvaluator();
 		
 		aliasDefinitions.forEach(evaluator::loadAlias);
@@ -85,6 +102,10 @@ public class Definitions {
 		return readonlyConversionDefinitions;
 	}
 	
+	public Path getPaperTemplate() {
+		return paperTemplate;
+	}
+	
 	public List<String> getPrefixDefinitions() {
 		if (readonlyPrefixDefinitions == null) {
 			readonlyPrefixDefinitions = Collections.unmodifiableList(aliasDefinitions);
@@ -99,5 +120,9 @@ public class Definitions {
 		}
 		
 		return readonlyUnitDefinitions;
+	}
+	
+	public void setPaperTemplate(Path paperTemplate) {
+		this.paperTemplate = paperTemplate;
 	}
 }

@@ -61,6 +61,11 @@ public class Arguments {
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
 	
+	@Option(names = { "-t", "--template" }, paramLabel = "", arity = "1", description = "The template to use for new papers.")
+	private String paperTemplateFile = null;
+	
+	private Path paperTemplateFilePath = null;
+	
 	@Option(names = { "--prefixes" }, paramLabel = "PREFIXESFILE", description = "Load prefixes from this file.")
 	private List<String> prefixesFiles = null;
 	
@@ -129,6 +134,16 @@ public class Arguments {
 		}
 		
 		return filesPaths;
+	}
+	
+	public Path getPaperTemplateFile() {
+		if (paperTemplateFilePath == null) {
+			if (paperTemplateFile != null) {
+				paperTemplateFilePath = Paths.get(paperTemplateFile);
+			}
+		}
+		
+		return paperTemplateFilePath;
 	}
 	
 	public List<Path> getPrefixesFiles() {

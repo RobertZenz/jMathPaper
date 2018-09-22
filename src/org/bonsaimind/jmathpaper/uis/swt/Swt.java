@@ -233,6 +233,14 @@ public class Swt extends AbstractPapersUi {
 		
 		cTabFolder.setSelection(attachNewTabItem(paper));
 		updateMenuItems();
+		
+		PaperComponent paperComponent = getCurrentPaperComponent();
+		
+		if (paperComponent != null) {
+			paperComponent.clearExpressions();
+			paperComponent.updateExpressions();
+			paperComponent.updateNotes();
+		}
 	}
 	
 	@Override
