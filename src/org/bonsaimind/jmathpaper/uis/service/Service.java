@@ -32,7 +32,7 @@ public class Service extends AbstractPapersUi {
 	protected void currentPaperHasBeenModified() {
 		EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
 		
-		if (!uiParameters.getBoolean("isPrintResultOnly")) {
+		if (uiParameters.getBoolean("isPrintResultOnly")) {
 			System.out.print(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
 		} else {
 			System.out.print(paper.format(evaluatedExpression));

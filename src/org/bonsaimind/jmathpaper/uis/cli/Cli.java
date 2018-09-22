@@ -50,15 +50,28 @@ public class Cli extends AbstractPapersUi {
 	
 	@Override
 	public void run() throws Exception {
+		// Nothing to do here.
+	}
+	
+	@Override
+	protected void currentPaperHasBeenModified() {
+		super.currentPaperHasBeenModified();
+		
 		if (paper.getFile() != null) {
-			save();
+			try {
+				save();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
-		if (!uiParameters.getBoolean("isPrintResultOnly")) {
-			System.out.print(paper.toString().trim());
-		} else {
-			EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
+		EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
+		
+		if (uiParameters.getBoolean("isPrintResultOnly")) {
 			System.out.print(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
+		} else {
+			System.out.print(paper.format(evaluatedExpression));
 		}
 		
 		if (!uiParameters.getBoolean("isNoNewline")) {
