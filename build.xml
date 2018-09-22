@@ -56,13 +56,52 @@
 				<exclude name="org/bonsaimind/jmathpaper/Main.*" />
 				<exclude name="org/bonsaimind/jmathpaper/Arguments.*" />
 			</fileset>
+		</jar>
+		<tar destfile="${dist}/${jar}-${version}-core.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-core.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 		</jar>
+
 		<jar jarfile="${dist}/${jar}-${version}-cli.jar" manifest="MANIFEST.MF">
 			<fileset dir="${build}">
 				<exclude name="org/bonsaimind/jmathpaper/uis/swt/**/*" />
 				<exclude name="org/bonsaimind/jmathpaper/uis/tui/**/*" />
 			</fileset>
+		</jar>
+		<tar destfile="${dist}/${jar}-${version}-cli.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+				<include name="picocli/picocli-${picocli.version}.jar" />
+				<include name="picocli/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-cli.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 		</jar>
@@ -71,24 +110,122 @@
 			<fileset dir="${build}">
 				<exclude name="org/bonsaimind/jmathpaper/uis/swt/**/*" />
 			</fileset>
+		</jar>
+		<tar destfile="${dist}/${jar}-${version}-cli-tui.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+				<include name="jline/jline-${jline.version}.jar" />
+				<include name="jline/LICENSE" />
+				<include name="picocli/picocli-${picocli.version}.jar" />
+				<include name="picocli/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-cli-tui.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-			
-		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" basedir="${build}" manifest="MANIFEST.MF">
+
+		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" basedir="${build}" manifest="MANIFEST.MF" />
+		<tar destfile="${dist}/${jar}-${version}-full-linux.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+				<include name="jline/jline-${jline.version}.jar" />
+				<include name="jline/LICENSE" />
+				<include name="picocli/picocli-${picocli.version}.jar" />
+				<include name="picocli/LICENSE" />
+				<include name="swt/linux/swt-${swt.version}.jar" />
+				<include name="swt/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/linux/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
-		<jar jarfile="${dist}/${jar}-${version}-full-macos.jar" basedir="${build}" manifest="MANIFEST.MF">
+
+		<jar jarfile="${dist}/${jar}-${version}-full-macos.jar" basedir="${build}" manifest="MANIFEST.MF" />
+		<tar destfile="${dist}/${jar}-${version}-full-macos.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+				<include name="jline/jline-${jline.version}.jar" />
+				<include name="jline/LICENSE" />
+				<include name="picocli/picocli-${picocli.version}.jar" />
+				<include name="picocli/LICENSE" />
+				<include name="swt/macos/swt-${swt.version}.jar" />
+				<include name="swt/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/swt/macos/swt-${swt.version}.jar" excludes="META-INF/**/*" />
 		</jar>
+
 		<jar jarfile="${dist}/${jar}-${version}-full-windows.jar" basedir="${build}" manifest="MANIFEST.MF">
+			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
+			<zipfileset src="${libs}/swt/windows/swt-${swt.version}.jar" excludes="META-INF/**/*" />
+		</jar>
+		<tar destfile="${dist}/${jar}-${version}-full-windows.tar.bz2" compression="bzip2">
+			<fileset dir=".">
+				<include name="CHANGES" />
+				<include name="CONTRIBUTE" />
+				<include name="CREDITS" />
+				<include name="LICENSE" />
+				<include name="README" />
+			</fileset>
+			<fileset dir="${dist}">
+				<include name="${jar}-${version}-core.jar" />
+			</fileset>
+			<fileset dir="${libs}">
+				<include name="evalex/EvalEx-${evalex.version}.jar" />
+				<include name="evalex/LICENSE" />
+				<include name="jline/jline-${jline.version}.jar" />
+				<include name="jline/LICENSE" />
+				<include name="picocli/picocli-${picocli.version}.jar" />
+				<include name="picocli/LICENSE" />
+				<include name="swt/windows/swt-${swt.version}.jar" />
+				<include name="swt/LICENSE" />
+			</fileset>
+		</tar>
+		<jar jarfile="${dist}/${jar}-${version}-full-linux.jar" update="true" manifest="MANIFEST.MF">
 			<zipfileset src="${libs}/evalex/EvalEx-${evalex.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/jline/jline-${jline.version}.jar" excludes="META-INF/**/*" />
 			<zipfileset src="${libs}/picocli/picocli-${picocli.version}.jar" excludes="META-INF/**/*" />
@@ -97,7 +234,7 @@
 	</target>
 
 	<target name="dist" depends="jar" description="Creates the tar archive.">
-		<tar destfile="${dist}/${jar}-${version}.tar" basedir=".">
+		<tar destfile="${dist}/${jar}-${version}.tar.bz2" basedir="." compression="bzip2">
 			<include name="${libs}/**/*" />
 			<include name="${src}/**/*" />
 			<include name="${dist}/${jar}-${version}-*.jar" />
@@ -108,7 +245,6 @@
 			<include name="LICENSE" />
 			<include name="README" />
 		</tar>
-		<bzip2 src="${dist}/${jar}-${version}.tar" destfile="${dist}/${jar}-${version}.tar.bz2" />
 	</target>
 
 	<target name="all" depends="clean,dist" />
