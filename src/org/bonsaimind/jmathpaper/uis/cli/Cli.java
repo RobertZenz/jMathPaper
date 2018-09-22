@@ -35,7 +35,9 @@ public class Cli extends AbstractPapersUi {
 		super.clear();
 		
 		try {
-			save();
+			if (paper.getFile() != null) {
+				save();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,7 +53,9 @@ public class Cli extends AbstractPapersUi {
 	public void run(UiParameters uiParameters) throws Exception {
 		super.run(uiParameters);
 		
-		save();
+		if (paper.getFile() != null) {
+			save();
+		}
 		
 		if (!uiParameters.getBoolean("isPrintResultOnly")) {
 			System.out.print(paper.toString().trim());
