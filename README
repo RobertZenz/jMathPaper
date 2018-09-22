@@ -25,6 +25,18 @@ Please see the attached license files for details.
  * [SWT](https://www.eclipse.org/swt/), Eclipse Public License 1.0
 
 
+Download
+--------
+
+There are multiple download options available:
+
+ * CLI: Only contains the command line and service interface.
+ * CLI-TUI: Only contains the command line and service interface and the simple
+   text user interface.
+ * Full: The full build, containing all user interfaces. As SWT uses native
+   components, you must choose the correct one for your platform.
+
+
 Usage
 -----
 
@@ -452,16 +464,6 @@ jMathPaper is a Java 8 application which uses SWT and EvalEx.
 The save format is a simple plain text format, with UTF-8 as encoding and UNIX
 line endings. Everything from the start of the file to the first empty line is
 treated as expression, everything below the first empty line is treated as note.
-
-### Jars
-
-There are multiple jars available for download:
-
- * CLI, only containing the command line and service interface.
- * CLI-TUI, only containing the command line and service interface and the
-   simple text user interface.
- * Full, the full builds, containing all user interfaces. As SWT uses native
-   components, these must be built for every platform.
 
 ### Custom UIs
 
