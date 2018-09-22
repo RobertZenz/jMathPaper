@@ -90,7 +90,7 @@ public final class Main {
 		}
 		
 		try {
-			ui.init();
+			ui.init(arguments.getUiParameters());
 			
 			ui.setDefaultDefinitions(createDefaultDefinitions(arguments));
 			
@@ -112,7 +112,7 @@ public final class Main {
 				ui.process(arguments.getExpression());
 			}
 			
-			ui.run(arguments.getUiParameters());
+			ui.run();
 		} catch (Exception e) {
 			System.out.println("Failed to run UI.");
 			e.printStackTrace(System.out);

@@ -106,7 +106,9 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void init() throws Exception {
+	public void init(UiParameters uiParameters) throws Exception {
+		super.init(uiParameters);
+		
 		display = new Display();
 		
 		GridLayout mainLayout = new GridLayout(1, true);
@@ -292,9 +294,7 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		super.run(uiParameters);
-		
+	public void run() throws Exception {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();

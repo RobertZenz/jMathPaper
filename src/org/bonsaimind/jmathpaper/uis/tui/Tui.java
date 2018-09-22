@@ -27,7 +27,6 @@ import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
-import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReader.Option;
 import org.jline.reader.LineReaderBuilder;
@@ -96,9 +95,7 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		super.run(uiParameters);
-		
+	public void run() throws Exception {
 		try (Terminal terminal = TerminalBuilder.terminal()) {
 			writer = terminal.writer();
 			

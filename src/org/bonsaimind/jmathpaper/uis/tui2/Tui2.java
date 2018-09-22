@@ -82,8 +82,8 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void init() throws Exception {
-		super.init();
+	public void init(UiParameters uiParameters) throws Exception {
+		super.init(uiParameters);
 		
 		tabBar = new PseudoTabBar<Paper>()
 				.addSelectedTabChangedListener(this::onSelectedTabChanged);
@@ -188,9 +188,7 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		super.run(uiParameters);
-		
+	public void run() throws Exception {
 		Terminal terminal = new DefaultTerminalFactory().createTerminal();
 		
 		screen = new TerminalScreen(terminal);

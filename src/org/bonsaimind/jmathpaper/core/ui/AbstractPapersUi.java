@@ -262,8 +262,8 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init() throws Exception {
-		// Implemented to simplify extending classes.
+	public void init(UiParameters uiParameters) throws Exception {
+		this.uiParameters = uiParameters;
 	}
 	
 	/**
@@ -359,14 +359,6 @@ public abstract class AbstractPapersUi implements Ui {
 		paper.load();
 		
 		currentPaperHasBeenReset();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		this.uiParameters = uiParameters;
 	}
 	
 	/**

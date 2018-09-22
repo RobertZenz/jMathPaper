@@ -44,10 +44,15 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 		quitCalled = true;
 	}
 	
+	@Override
+	public void run() throws Exception {
+		// Nothing to do.
+	}
+	
 	@Before
 	public void setup() throws Exception {
-		init();
-		run(new UiParameters(Collections.emptyMap()));
+		init(new UiParameters(Collections.emptyMap()));
+		run();
 		
 		new_();
 	}

@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
-import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 
 public class Service extends AbstractPapersUi {
 	private volatile boolean running = true;
@@ -21,9 +20,7 @@ public class Service extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		super.run(uiParameters);
-		
+	public void run() throws Exception {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 			while (running) {
 				process(reader.readLine());

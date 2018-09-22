@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
-import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 
 public class Cli extends AbstractPapersUi {
 	public Cli() {
@@ -50,9 +49,7 @@ public class Cli extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(UiParameters uiParameters) throws Exception {
-		super.run(uiParameters);
-		
+	public void run() throws Exception {
 		if (paper.getFile() != null) {
 			save();
 		}

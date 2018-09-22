@@ -102,9 +102,10 @@ public interface Ui {
 	 * accept any {@link Command} and is able to {@link #evaluate(String)
 	 * evaluate} expression.
 	 * 
+	 * @param uiParameters The {@link UiParameters} to use.
 	 * @throws Exception If there was an {@link Exception} thrown.
 	 */
-	public void init() throws Exception;
+	public void init(UiParameters uiParameters) throws Exception;
 	
 	/**
 	 * Creates a new {@link Paper}.
@@ -190,10 +191,9 @@ public interface Ui {
 	 * With this call the UI should start working, start its main loop if there
 	 * is any.
 	 * 
-	 * @param uiParameters The {@link UiParameters} to use.
 	 * @throws Exception If running the UI failed.
 	 */
-	public void run(UiParameters uiParameters) throws Exception;
+	public void run() throws Exception;
 	
 	/**
 	 * Saves the current {@link Paper}.
