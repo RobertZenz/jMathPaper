@@ -67,45 +67,6 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void clear() {
-		super.clear();
-		
-		PaperComponent paperComponent = getCurrentPaperComponent();
-		
-		if (paperComponent != null) {
-			paperComponent.clearExpressions();
-			paperComponent.updateExpressions();
-		}
-	}
-	
-	@Override
-	public void close() {
-		CTabItem currentTabItem = cTabFolder.getSelection();
-		
-		super.close();
-		
-		if (currentTabItem != null) {
-			currentTabItem.dispose();
-		}
-	}
-	
-	@Override
-	public void closeAll() {
-		super.closeAll();
-		
-		while (cTabFolder.getItemCount() > 0) {
-			cTabFolder.getItem(0).dispose();
-		}
-	}
-	
-	@Override
-	public void evaluate(String expression) throws InvalidExpressionException {
-		super.evaluate(expression);
-		
-		updateCurrentTabItem();
-	}
-	
-	@Override
 	public void init(UiParameters uiParameters) throws Exception {
 		super.init(uiParameters);
 		
@@ -216,7 +177,6 @@ public class Swt extends AbstractPapersUi {
 		cTabFolder = new CTabFolder(composite, SWT.BORDER);
 		cTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		cTabFolder.addSelectionListener(new ForwardingSelectionListener(this::updateCurrentPaper));
-		cTabFolder.addSelectionListener(new ForwardingSelectionListener(this::updateCurrentTabItem));
 		cTabFolder.addSelectionListener(new ForwardingSelectionListener(this::updateMenuItems));
 		
 		errorLabel = new Label(composite, SWT.RIGHT);
@@ -230,67 +190,8 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void new_() {
-		super.new_();
-		
-		cTabFolder.setSelection(attachNewTabItem(paper));
-		updateMenuItems();
-		
-		PaperComponent paperComponent = getCurrentPaperComponent();
-		
-		if (paperComponent != null) {
-			paperComponent.clearExpressions();
-			paperComponent.updateExpressions();
-			paperComponent.updateNotes();
-		}
-	}
-	
-	@Override
-	public void open(Path file) throws InvalidExpressionException, IOException {
-		Paper paperToBeClosed = null;
-		
-		if (papers.size() == 1
-				&& paper != null
-				&& paper.getEvaluatedExpressions().isEmpty()
-				&& paper.getFile() == null) {
-			// Seems like a new and empty paper, let's close it.
-			paperToBeClosed = paper;
-		}
-		
-		super.open(file);
-		
-		// If there is already a tab with the current paper, we can exit.
-		for (CTabItem cTabItem : cTabFolder.getItems()) {
-			if (((PaperComponent)cTabItem.getControl()).getPaper() == paper) {
-				return;
-			}
-		}
-		
-		setPaper(paperToBeClosed);
-		close();
-		
-		// Otherwise we will create a new one.
-		cTabFolder.setSelection(attachNewTabItem(paper));
-		updateCurrentTabItem();
-	}
-	
-	@Override
 	public void quit() {
 		shell.dispose();
-	}
-	
-	@Override
-	public void reload() throws InvalidExpressionException, IOException {
-		if (paper != null) {
-			super.reload();
-			
-			PaperComponent paperComponent = getCurrentPaperComponent();
-			
-			if (paperComponent != null) {
-				paperComponent.clearExpressions();
-				paperComponent.updateExpressions();
-			}
-		}
 	}
 	
 	@Override
@@ -330,7 +231,8 @@ public class Swt extends AbstractPapersUi {
 		}
 	}
 	
-	protected CTabItem attachNewTabItem(Paper paper) {
+	@Override
+	protected void currentPaperHasBeenAdded() {
 		CTabItem cTabItem = new CTabItem(cTabFolder, SWT.CLOSE);
 		
 		if (paper.getFile() != null) {
@@ -346,20 +248,29 @@ public class Swt extends AbstractPapersUi {
 		paperComponent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		cTabItem.setControl(paperComponent);
 		
-		return cTabItem;
+		cTabFolder.setSelection(cTabItem);
+		
+		updateMenuItems();
+		
+		getCurrentPaperComponent().updateExpressions();
+		getCurrentPaperComponent().updateNotes();
 	}
 	
 	@Override
 	protected void currentPaperHasBeenModified() {
-		super.currentPaperHasBeenModified();
+		CTabItem cTabItem = cTabFolder.getSelection();
 		
-		if (cTabFolder.getSelection() != null) {
-			CTabItem cTabItem = cTabFolder.getSelection();
-			
-			if (!cTabItem.getText().startsWith("*")) {
-				cTabItem.setText("*" + cTabItem.getText());
-			}
+		if (!cTabItem.getText().startsWith("*")) {
+			cTabItem.setText("*" + cTabItem.getText());
 		}
+		
+		getCurrentPaperComponent().updateExpressions();
+		getCurrentPaperComponent().updateNotes();
+	}
+	
+	@Override
+	protected void currentPaperHasBeenRemoved() {
+		cTabFolder.getSelection().dispose();
 	}
 	
 	@Override
@@ -370,6 +281,26 @@ public class Swt extends AbstractPapersUi {
 			cTabItem.setText(paper.getFile().getFileName().toString());
 			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
 		}
+		
+		getCurrentPaperComponent().clearExpressions();
+		getCurrentPaperComponent().updateExpressions();
+		getCurrentPaperComponent().updateNotes();
+	}
+	
+	@Override
+	protected void currentSelectedPaperHasChanged() {
+		for (CTabItem cTabItem : cTabFolder.getItems()) {
+			Paper tabItemPaper = ((PaperComponent)cTabItem.getControl()).getPaper();
+			
+			if (tabItemPaper == paper) {
+				cTabFolder.setSelection(cTabItem);
+				break;
+			}
+		}
+		
+		errorLabel.setText("");
+		
+		updateMenuItems();
 	}
 	
 	protected PaperComponent getCurrentPaperComponent() {
@@ -380,50 +311,11 @@ public class Swt extends AbstractPapersUi {
 		return null;
 	}
 	
-	@Override
-	protected void reevaluate() throws InvalidExpressionException {
-		super.reevaluate();
-		
-		PaperComponent paperComponent = getCurrentPaperComponent();
-		
-		if (paperComponent != null) {
-			paperComponent.clearExpressions();
-			paperComponent.updateExpressions();
-		}
-	}
-	
-	@Override
-	protected void setPaper(Paper paper) {
-		if (this.paper != paper) {
-			super.setPaper(paper);
-			
-			for (CTabItem cTabItem : cTabFolder.getItems()) {
-				Paper tabItemPaper = ((PaperComponent)cTabItem.getControl()).getPaper();
-				
-				if (tabItemPaper == paper) {
-					cTabFolder.setSelection(cTabItem);
-					break;
-				}
-			}
-			
-			errorLabel.setText("");
-		}
-		
-		updateMenuItems();
-	}
-	
 	protected void updateCurrentPaper() {
 		if (cTabFolder.getSelection() != null) {
 			setPaper(getCurrentPaperComponent().getPaper());
 		} else {
 			setPaper(null);
-		}
-	}
-	
-	protected void updateCurrentTabItem() {
-		if (cTabFolder.getSelection() != null) {
-			getCurrentPaperComponent().updateExpressions();
-			getCurrentPaperComponent().updateNotes();
 		}
 	}
 	

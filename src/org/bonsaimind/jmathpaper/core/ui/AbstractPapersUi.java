@@ -82,6 +82,8 @@ public abstract class AbstractPapersUi implements Ui {
 			
 			papers.remove(paper);
 			
+			currentPaperHasBeenRemoved();
+			
 			if (!papers.isEmpty()) {
 				if (removedIndex < papers.size() - 1) {
 					setPaper(papers.get(removedIndex));
@@ -99,8 +101,9 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	@Override
 	public void closeAll() {
-		papers.clear();
-		setPaper(null);
+		while (!papers.isEmpty()) {
+			close();
+		}
 	}
 	
 	/**
@@ -275,6 +278,8 @@ public abstract class AbstractPapersUi implements Ui {
 		
 		papers.add(newPaper);
 		setPaper(newPaper);
+		
+		currentPaperHasBeenAdded();
 	}
 	
 	/**
@@ -315,8 +320,19 @@ public abstract class AbstractPapersUi implements Ui {
 		loadedPaper.setFile(file);
 		loadedPaper.loadFrom(file);
 		
+		// Paper could be successfully loaded.
+		if (papers.size() == 1
+				&& paper != null
+				&& paper.getEvaluatedExpressions().isEmpty()
+				&& paper.getFile() == null) {
+			// Seems like a new and empty paper, let's close it.
+			close();
+		}
+		
 		papers.add(loadedPaper);
 		setPaper(loadedPaper);
+		
+		currentPaperHasBeenAdded();
 	}
 	
 	/**
@@ -518,24 +534,52 @@ public abstract class AbstractPapersUi implements Ui {
 		return paper;
 	}
 	
+	protected void currentPaperHasBeenAdded() {
+		
+	}
+	
 	/**
-	 * Invoked whenever the current {@link Paper} has been modified.
+	 * Invoked whenever the current {@link Paper} has been modified,meaning that
+	 * one or more additional expressions has been added.
 	 * <p>
 	 * Overriding classes can safely assume that there is a current
 	 * {@link Paper}.
 	 */
 	protected void currentPaperHasBeenModified() {
-		// For overriding classes.
+		// For extending classes.
 	}
 	
 	/**
-	 * Invoked whenever the current {@link Paper} has been reset.
+	 * Invoked whenever the current {@link Paper} has been removed.
+	 * <p>
+	 * Overriding classes can safely assume that there is a current
+	 * {@link Paper}. However, that {@link Paper} has already been removed from
+	 * the {@link #papers list}. Any changes to the {@link #setPaper(Paper)
+	 * current paper} during this function will be undone.
+	 */
+	protected void currentPaperHasBeenRemoved() {
+		// For extending classes.
+	}
+	
+	/**
+	 * Invoked whenever the current {@link Paper} has been reset, meaning the
+	 * complete content has to be considered changed.
 	 * <p>
 	 * Overriding classes can safely assume that there is a current
 	 * {@link Paper}.
 	 */
 	protected void currentPaperHasBeenReset() {
-		// For overriding classes.
+		// For extending classes.
+	}
+	
+	/**
+	 * Invoked whenever the currently selected {@link Paper} changes.
+	 * <p>
+	 * Overriding classes must check whether a {@link Paper} is currently
+	 * selected.
+	 */
+	protected void currentSelectedPaperHasChanged() {
+		// For extending classes.
 	}
 	
 	/**
@@ -584,6 +628,8 @@ public abstract class AbstractPapersUi implements Ui {
 		checkCurrentPaper();
 		
 		paper.reevaluate();
+		
+		currentPaperHasBeenReset();
 	}
 	
 	/**
@@ -599,7 +645,11 @@ public abstract class AbstractPapersUi implements Ui {
 			throw new IllegalStateException("The current paper must be part of this UI.");
 		}
 		
-		this.paper = paper;
+		if (paper != this.paper) {
+			this.paper = paper;
+			
+			currentSelectedPaperHasChanged();
+		}
 	}
 	
 	/**

@@ -19,9 +19,7 @@
 
 package org.bonsaimind.jmathpaper.uis.tui;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
@@ -44,54 +42,8 @@ public class Tui extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void clear() {
-		super.clear();
-		
-		printPaper();
-	}
-	
-	@Override
-	public void close() {
-		super.close();
-		
-		if (paper == null) {
-			new_();
-		}
-		
-		printPaper();
-	}
-	
-	@Override
-	public void next() {
-		super.next();
-		
-		printPaper();
-	}
-	
-	@Override
-	public void open(Path file) throws InvalidExpressionException, IOException {
-		super.open(file);
-		
-		printPaper();
-	}
-	
-	@Override
-	public void previous() {
-		super.previous();
-		
-		printPaper();
-	}
-	
-	@Override
 	public void quit() {
 		running = false;
-	}
-	
-	@Override
-	public void reload() throws InvalidExpressionException, IOException {
-		super.reload();
-		
-		printPaper();
 	}
 	
 	@Override
@@ -114,7 +66,7 @@ public class Tui extends AbstractPapersUi {
 				try {
 					String prompt = "> ";
 					
-					if (paper.isChanged()) {
+					if (paper != null && paper.isChanged()) {
 						prompt = "*" + prompt;
 					}
 					
@@ -125,14 +77,6 @@ public class Tui extends AbstractPapersUi {
 						if (!tryAsCommand(input)) {
 							try {
 								evaluate(input);
-								
-								EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
-								
-								writer.write(evaluatedExpression.format(
-										paper.getIdColumnSize(),
-										paper.getExpressionColumnSize(),
-										paper.getResultColumnSize(),
-										paper.getNumberFormat()));
 							} catch (InvalidExpressionException e) {
 								writer.write(e.getCause().getMessage());
 								
@@ -152,6 +96,27 @@ public class Tui extends AbstractPapersUi {
 				terminal.flush();
 			}
 		}
+	}
+	
+	@Override
+	protected void currentPaperHasBeenModified() {
+		EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
+		
+		writer.write(evaluatedExpression.format(
+				paper.getIdColumnSize(),
+				paper.getExpressionColumnSize(),
+				paper.getResultColumnSize(),
+				paper.getNumberFormat()));
+	}
+	
+	@Override
+	protected void currentPaperHasBeenReset() {
+		printPaper();
+	}
+	
+	@Override
+	protected void currentSelectedPaperHasChanged() {
+		printPaper();
 	}
 	
 	protected void printPaper() {
@@ -195,12 +160,5 @@ public class Tui extends AbstractPapersUi {
 				}
 			}
 		}
-	}
-	
-	@Override
-	protected void reevaluate() throws InvalidExpressionException {
-		super.reevaluate();
-		
-		printPaper();
 	}
 }

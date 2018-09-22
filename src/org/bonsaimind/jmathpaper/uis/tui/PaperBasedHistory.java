@@ -21,6 +21,7 @@ package org.bonsaimind.jmathpaper.uis.tui;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -206,12 +207,16 @@ public class PaperBasedHistory implements History {
 		if (ui.getPaper() != lastPaper || lastSize != getEvaluatedExpressions().size()) {
 			lastPaper = ui.getPaper();
 			
-			index = ui.getPaper().getEvaluatedExpressions().size();
-			lastSize = ui.getPaper().getEvaluatedExpressions().size();
+			index = getEvaluatedExpressions().size();
+			lastSize = getEvaluatedExpressions().size();
 		}
 	}
 	
 	private List<EvaluatedExpression> getEvaluatedExpressions() {
+		if (ui.getPaper() == null) {
+			return Collections.emptyList();
+		}
+		
 		return ui.getPaper().getEvaluatedExpressions();
 	}
 	

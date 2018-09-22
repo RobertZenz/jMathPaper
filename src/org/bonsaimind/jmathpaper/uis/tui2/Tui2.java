@@ -2,11 +2,9 @@
 package org.bonsaimind.jmathpaper.uis.tui2;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
@@ -49,36 +47,6 @@ public class Tui2 extends AbstractPapersUi {
 	
 	public Tui2() {
 		super();
-	}
-	
-	@Override
-	public void clear() {
-		super.clear();
-		
-		clearExpressionsTable();
-		updateExpressionTable();
-	}
-	
-	@Override
-	public void close() {
-		Paper currentPaper = paper;
-		
-		super.close();
-		
-		if (currentPaper != null) {
-			tabBar.removeTab(tabBar.getSelectedTabIndex());
-		}
-	}
-	
-	@Override
-	public void closeAll() {
-		super.closeAll();
-		
-		clearExpressionsTable();
-		
-		while (tabBar.getTabCount() > 0) {
-			tabBar.removeTab(0);
-		}
 	}
 	
 	@Override
@@ -140,43 +108,6 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void new_() {
-		super.new_();
-		
-		addTab(paper);
-	}
-	
-	@Override
-	public void open(Path file) throws InvalidExpressionException, IOException {
-		Paper paperToBeClosed = null;
-		
-		if (papers.size() == 1
-				&& paper != null
-				&& paper.getEvaluatedExpressions().isEmpty()
-				&& paper.getFile() == null) {
-			// Seems like a new and empty paper, let's close it.
-			paperToBeClosed = paper;
-		}
-		
-		super.open(file);
-		
-		Paper openedPaper = paper;
-		
-		// If there is already a tab with the current paper, we can exit.
-		for (int index = 0; index < tabBar.getTabCount(); index++) {
-			if (tabBar.getContent(index) == paper) {
-				return;
-			}
-		}
-		
-		setPaper(paperToBeClosed);
-		close();
-		
-		setPaper(openedPaper);
-		addTab(paper);
-	}
-	
-	@Override
 	public void quit() {
 		try {
 			window.close();
@@ -209,18 +140,29 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	@Override
+	protected void currentPaperHasBeenAdded() {
+		addTab(paper);
+	}
+	
+	@Override
 	protected void currentPaperHasBeenModified() {
-		super.currentPaperHasBeenModified();
-		
 		clearExpressionsTable();
 		updateExpressionTable();
 	}
 	
 	@Override
+	protected void currentPaperHasBeenRemoved() {
+		tabBar.removeTab(tabBar.getSelectedTabIndex());
+	}
+	
+	@Override
 	protected void currentPaperHasBeenReset() {
-		super.currentPaperHasBeenReset();
-		
 		clearExpressionsTable();
+		updateExpressionTable();
+	}
+	
+	@Override
+	protected void currentSelectedPaperHasChanged() {
 		updateExpressionTable();
 	}
 	
