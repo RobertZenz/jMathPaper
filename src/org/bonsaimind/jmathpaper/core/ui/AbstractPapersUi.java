@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
@@ -41,9 +40,7 @@ import org.bonsaimind.jmathpaper.core.configuration.Definitions;
  * functionality based on that.
  */
 public abstract class AbstractPapersUi implements Ui {
-	/** The {@link Arguments} with which this has been run. */
-	protected Arguments arguments = null;
-	
+	/** The {@link Definitions} to use by default. */
 	protected Definitions defaultDefinitions = null;
 	
 	/** The currently selected {@link Paper}. */
@@ -51,6 +48,9 @@ public abstract class AbstractPapersUi implements Ui {
 	
 	/** The {@link List} of {@link Paper}s. */
 	protected List<Paper> papers = new ArrayList<>();
+	
+	/** The {@link UiParameters} with which this has been run. */
+	protected UiParameters uiParameters = null;
 	
 	/** The {@link #papers} as read-only {@link List}. */
 	private List<Paper> readonlyPapers = null;
@@ -365,8 +365,8 @@ public abstract class AbstractPapersUi implements Ui {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void run(Arguments arguments) throws Exception {
-		this.arguments = arguments;
+	public void run(UiParameters uiParameters) throws Exception {
+		this.uiParameters = uiParameters;
 	}
 	
 	/**

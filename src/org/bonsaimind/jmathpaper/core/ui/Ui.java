@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
@@ -191,10 +190,10 @@ public interface Ui {
 	 * With this call the UI should start working, start its main loop if there
 	 * is any.
 	 * 
-	 * @param arguments The {@link Arguments} to use.
+	 * @param uiParameters The {@link UiParameters} to use.
 	 * @throws Exception If running the UI failed.
 	 */
-	public void run(Arguments arguments) throws Exception;
+	public void run(UiParameters uiParameters) throws Exception;
 	
 	/**
 	 * Saves the current {@link Paper}.

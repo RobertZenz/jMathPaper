@@ -21,12 +21,13 @@ package org.bonsaimind.jmathpaper.core;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
+import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	@Before
 	public void setup() throws Exception {
 		init();
-		run(new Arguments());
+		run(new UiParameters(Collections.emptyMap()));
 		
 		new_();
 	}

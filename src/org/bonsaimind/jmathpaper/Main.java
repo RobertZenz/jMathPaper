@@ -124,7 +124,7 @@ public final class Main {
 				ui.process(arguments.getExpression());
 			}
 			
-			ui.run(arguments);
+			ui.run(arguments.getUiParameters());
 		} catch (Exception e) {
 			System.out.println("Failed to run UI.");
 			System.out.println(e.toString());

@@ -24,11 +24,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.Version;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
+import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 import org.bonsaimind.jmathpaper.uis.swt.events.EventForwarder;
 import org.bonsaimind.jmathpaper.uis.swt.events.ForwardingSelectionListener;
 import org.eclipse.swt.SWT;
@@ -284,8 +284,8 @@ public class Swt extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(Arguments arguments) throws Exception {
-		super.run(arguments);
+	public void run(UiParameters uiParameters) throws Exception {
+		super.run(uiParameters);
 		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {

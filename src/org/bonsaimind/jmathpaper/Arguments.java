@@ -23,7 +23,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -52,19 +56,18 @@ public class Arguments {
 	@Option(names = { "-h", "--help" }, description = "Displays this help.", usageHelp = true)
 	private boolean helpRequested = false;
 	
-	@Option(names = { "-n", "--no-newline" }, description = "Omit a trailing new line when printing things. Only applicable for the CLI or Service TUI.")
-	private boolean noNewline = false;
-	
 	@Option(names = { "--prefixes" }, paramLabel = "PREFIXESFILE", description = "Load prefixes from this file.")
 	private List<String> prefixesFiles = null;
 	
 	private List<Path> prefixesFilesPaths = null;
 	
-	@Option(names = { "-p", "--print-only", "--print-result-only" }, description = "Print only the result of the given expression. Only applicable for the CLI or Service TUI.")
-	private boolean printResultOnly = false;
-	
 	@Option(names = { "-u", "--ui" }, arity = "1", description = "Define what user interface (UI) to start.")
 	private String ui = null;
+	
+	private UiParameters uiParameters = null;
+	
+	@Option(names = { "-p", "--uiparam", "--uiparameter" }, description = "Define a parameter which will be passed to the UI.")
+	private List<String> uiParametersStrings = null;
 	
 	@Option(names = { "--units" }, paramLabel = "UNITSFILE", description = "Load units from this file.")
 	private List<String> unitsFiles = null;
@@ -127,6 +130,32 @@ public class Arguments {
 		return ui;
 	}
 	
+	public UiParameters getUiParameters() {
+		if (uiParameters == null) {
+			Map<String, String> parameters = new HashMap<>();
+			
+			if (uiParametersStrings != null && !uiParametersStrings.isEmpty()) {
+				for (String uiParameterString : uiParametersStrings) {
+					if (uiParameterString != null && !uiParameterString.trim().isEmpty()) {
+						int firstColonIndex = uiParametersStrings.indexOf(":");
+						
+						if (firstColonIndex > 0) {
+							parameters.put(
+									uiParameterString.substring(0, firstColonIndex).trim(),
+									uiParameterString.substring(firstColonIndex + 1));
+						} else {
+							parameters.put(uiParameterString, Boolean.TRUE.toString());
+						}
+					}
+				}
+			}
+			
+			uiParameters = new UiParameters(parameters);
+		}
+		
+		return uiParameters;
+	}
+	
 	public List<Path> getUnitsFiles() {
 		if (unitsFilesPaths == null) {
 			unitsFilesPaths = convertStringsToPaths(unitsFiles);
@@ -141,14 +170,6 @@ public class Arguments {
 	
 	public boolean isHelpRequested() {
 		return helpRequested;
-	}
-	
-	public boolean isNoNewline() {
-		return noNewline;
-	}
-	
-	public boolean isPrintResultOnly() {
-		return printResultOnly;
 	}
 	
 	public boolean isVersionRequested() {

@@ -4,9 +4,9 @@ package org.bonsaimind.jmathpaper.uis.service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
+import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 
 public class Service extends AbstractPapersUi {
 	private volatile boolean running = true;
@@ -21,8 +21,8 @@ public class Service extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(Arguments arguments) throws Exception {
-		super.run(arguments);
+	public void run(UiParameters uiParameters) throws Exception {
+		super.run(uiParameters);
 		
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 			while (running) {
@@ -35,13 +35,13 @@ public class Service extends AbstractPapersUi {
 	protected void currentPaperHasBeenModified() {
 		EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
 		
-		if (arguments.isPrintResultOnly()) {
+		if (!uiParameters.getBoolean("isPrintResultOnly")) {
 			System.out.print(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
 		} else {
 			System.out.print(paper.format(evaluatedExpression));
 		}
 		
-		if (!arguments.isNoNewline()) {
+		if (!uiParameters.getBoolean("isNoNewline")) {
 			System.out.println();
 		}
 	}

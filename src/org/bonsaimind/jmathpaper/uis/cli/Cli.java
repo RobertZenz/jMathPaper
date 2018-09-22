@@ -21,9 +21,9 @@ package org.bonsaimind.jmathpaper.uis.cli;
 
 import java.io.IOException;
 
-import org.bonsaimind.jmathpaper.Arguments;
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
+import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 
 public class Cli extends AbstractPapersUi {
 	public Cli() {
@@ -48,30 +48,20 @@ public class Cli extends AbstractPapersUi {
 	}
 	
 	@Override
-	public void run(Arguments arguments) throws Exception {
-		super.run(arguments);
+	public void run(UiParameters uiParameters) throws Exception {
+		super.run(uiParameters);
 		
-		if (arguments.getExpression() != null) {
-			save();
-			
-			if (!arguments.isPrintResultOnly()) {
-				System.out.print(paper.toString().trim());
-			} else {
-				EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
-				System.out.print(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
-			}
-			
-			if (!arguments.isNoNewline()) {
-				System.out.println();
-			}
+		save();
+		
+		if (!uiParameters.getBoolean("isPrintResultOnly")) {
+			System.out.print(paper.toString().trim());
 		} else {
-			if (!arguments.isPrintResultOnly()) {
-				System.out.print(paper.toString().trim());
-			}
-			
-			if (!arguments.isNoNewline()) {
-				System.out.println();
-			}
+			EvaluatedExpression evaluatedExpression = paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() - 1);
+			System.out.print(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
+		}
+		
+		if (!uiParameters.getBoolean("isNoNewline")) {
+			System.out.println();
 		}
 	}
 }
