@@ -37,6 +37,7 @@ import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpre
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
+import org.bonsaimind.jmathpaper.core.units.Prefix;
 import org.bonsaimind.jmathpaper.core.units.PrefixedUnit;
 import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
@@ -54,6 +55,7 @@ public class Evaluator {
 	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
 	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
+	private static final Pattern UNIT_CONVERSION_SIMPLE = ResourceLoader.compileRegex("unit-conversion-simple");
 	private Map<String, String> aliases = new HashMap<>();
 	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
 	private int expressionCounter = 0;
@@ -232,6 +234,32 @@ public class Evaluator {
 			if (unitTo == null) {
 				throw new InvalidExpressionException("No such unit: " + unitConversionMatcher.group("TO"));
 			}
+		} else {
+			unitConversionMatcher = UNIT_CONVERSION_SIMPLE.matcher(processedExpression);
+			
+			if (unitConversionMatcher.matches()) {
+				String unitFromString = unitConversionMatcher.group("FROM");
+				
+				if (!isKnown(unitFromString)) {
+					unitFrom = unitConverter.getPrefixedUnit(unitFromString);
+					
+					// Only allow the conversion if we have found
+					if (unitFrom != null) {
+						processedExpression = unitConversionMatcher.group("EXPRESSION");
+						
+						// Allow to convert from unit to unit without having to
+						// specify
+						// an amount.
+						if (processedExpression.trim().isEmpty()) {
+							processedExpression = "1";
+						}
+						
+						unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
+					} else {
+						unitFrom = null;
+					}
+				}
+			}
 		}
 		
 		try {
@@ -290,6 +318,16 @@ public class Evaluator {
 		expressionCounter = expressionCounter + 1;
 		
 		return "#" + Integer.toString(expressionCounter);
+	}
+	
+	private boolean isKnown(String name) {
+		for (EvaluatedExpression evaluatedExpression : previousEvaluatedExpressions) {
+			if (evaluatedExpression.getId().equals(name)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	private String preProcess(String expression) {

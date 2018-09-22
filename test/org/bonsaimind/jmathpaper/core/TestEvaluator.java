@@ -195,6 +195,18 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("0.001", "1milli to 1", evaluator);
 		assertResult("0.000001", "1milli to k", evaluator);
 		assertResult("0.000001", "1milli to kilo", evaluator);
+		
+		// Automatic conversions
+		assertResult("1000", "1km", evaluator);
+		assertResult("1000", "1k", evaluator);
+		assertResult("1000", "1000m", evaluator);
+		assertResult("9000", "1 + 1 * 8 km", evaluator);
+		assertResult("1000", "km", evaluator);
+		assertResult("1000", "k", evaluator);
+		
+		// Test if the automatic conversion will not pickup variables.
+		evaluator.evaluate("km=5");
+		assertResult("5", "km", evaluator);
 	}
 	
 	@Test
