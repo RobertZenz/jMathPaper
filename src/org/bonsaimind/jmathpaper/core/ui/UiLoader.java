@@ -20,11 +20,42 @@
 package org.bonsaimind.jmathpaper.core.ui;
 
 /**
- * The {@link UiLoader} is a helper class to dynamically load {@link Class}
- * es.
+ * The {@link UiLoader} is a helper class to dynamically load {@link Class} es.
  */
 public final class UiLoader {
 	private UiLoader() {
+	}
+	
+	/**
+	 * Loads the first available {@link Ui} class with the given name.
+	 * <p>
+	 * This function will try the given class names and return the first one
+	 * that can be instantiated.
+	 * <p>
+	 * The name can either be a full qualified class name or a "simple" name
+	 * which will be automatically converted to a fully qualified class name.
+	 * 
+	 * @param uiClassNames The names of the UI classes to try.
+	 * @return The {@link Ui} instance, {@code null} if none could be created.
+	 */
+	public static final Ui getAvailableUi(String... uiClassNames) {
+		if (uiClassNames == null || uiClassNames.length == 0) {
+			return null;
+		}
+		
+		for (String uiClassName : uiClassNames) {
+			try {
+				Ui ui = getUi(uiClassName);
+				
+				if (ui != null) {
+					return ui;
+				}
+			} catch (Exception e) {
+				// Ignore the exception.
+			}
+		}
+		
+		return null;
 	}
 	
 	/**

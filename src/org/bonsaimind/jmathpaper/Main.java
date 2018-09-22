@@ -73,29 +73,10 @@ public final class Main {
 			}
 		} else {
 			if ((arguments.getExpression() == null || arguments.hasFiles())) {
-				try {
-					ui = UiLoader.getUi("swt");
-				} catch (Exception e) {
-					// Ignore the exception, as the SWT UI might not be included
-					// in the jar that we run.
-					
-					try {
-						ui = UiLoader.getUi("tui2");
-					} catch (Exception e2) {
-						// Ignore the exception, as the SWT UI might not be
-						// included in the jar that we run.
-						
-						try {
-							ui = UiLoader.getUi("tui");
-						} catch (Exception e3) {
-							// Ignore the exception, as the SWT UI might not be
-							// included in the jar that we run.
-						}
-					}
-				}
-				
-				if (ui == null) {
-				}
+				// Try several UIs without checking for exception. It might very
+				// well be that this is a jar which does not contain all or any
+				// of these. So just try it and see if we can find one.
+				ui = UiLoader.getAvailableUi("swt", "tui2", "tui");
 			}
 		}
 		
