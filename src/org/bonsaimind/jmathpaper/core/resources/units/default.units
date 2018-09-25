@@ -131,10 +131,10 @@ reaumur		1	Re,°Re
 romer		1	Ro,°Ro
 
 # Time
-second		1	sec
+second		1	s
 minute		1	min
-hour		1
-day			1
+hour		1	h
+day			1	d
 week		1
 month		1
 year		1
