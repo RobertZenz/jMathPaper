@@ -58,7 +58,10 @@ public class UnitConverter {
 		BigDecimal conversionFactor = getConversionFactor(from, to, calculationMathContext);
 		
 		if (conversionFactor != null) {
-			return value.multiply(conversionFactor, calculationMathContext).round(mathContext);
+			return value
+					.multiply(conversionFactor, calculationMathContext)
+					.round(mathContext)
+					.stripTrailingZeros();
 		} else {
 			// Let's try with a conversion expression instead.
 			List<String> conversions = getConversions(from.getUnit(), to.getUnit());
@@ -67,7 +70,8 @@ public class UnitConverter {
 				throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
 			} else if (conversions.isEmpty()) {
 				return convertBetweenPrefixes(from, to, value, calculationMathContext)
-						.round(mathContext);
+						.round(mathContext)
+						.stripTrailingZeros();
 			} else {
 				BigDecimal convertedValue = value;
 				convertedValue = convertedValue.multiply(from.getPrefix().getFactor(), calculationMathContext);
@@ -78,7 +82,8 @@ public class UnitConverter {
 				
 				return convertedValue
 						.divide(to.getPrefix().getFactor(), calculationMathContext)
-						.round(mathContext);
+						.round(mathContext)
+						.stripTrailingZeros();
 			}
 		}
 	}
