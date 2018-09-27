@@ -21,6 +21,7 @@ package org.bonsaimind.jmathpaper.core.units;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,14 +35,14 @@ import java.util.Set;
 import com.udojava.evalex.Expression;
 
 public class UnitConverter {
-	protected static final MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;
+	protected static final MathContext DEFAULT_MATH_CONTEXT = new MathContext(512, RoundingMode.HALF_UP);
 	protected Map<Unit, Map<Unit, BigDecimal>> conversionFactors = new HashMap<>();
+	protected MathContext conversionMathContext = DEFAULT_MATH_CONTEXT;
 	protected Map<Unit, Map<Unit, String>> conversions = new HashMap<>();
 	protected Map<String, Prefix> prefixesByName = new HashMap<>();
 	protected Map<String, Prefix> prefixesBySymbol = new HashMap<>();
 	protected Map<String, Unit> unitsByName = new HashMap<>();
 	protected Map<String, Unit> unitsBySymbol = new HashMap<>();
-	
 	private List<Prefix> readonlyPrefixes = null;
 	private List<Unit> readonlyUnits = null;
 	
@@ -52,10 +53,12 @@ public class UnitConverter {
 	}
 	
 	public BigDecimal convert(PrefixedUnit from, PrefixedUnit to, BigDecimal value, MathContext mathContext) {
-		BigDecimal conversionFactor = getConversionFactor(from, to, mathContext);
+		MathContext calculationMathContext = createCalculationMathContext(mathContext);
+		
+		BigDecimal conversionFactor = getConversionFactor(from, to, calculationMathContext);
 		
 		if (conversionFactor != null) {
-			return value.multiply(conversionFactor, mathContext);
+			return value.multiply(conversionFactor, calculationMathContext).round(mathContext);
 		} else {
 			// Let's try with a conversion expression instead.
 			List<String> conversions = getConversions(from.getUnit(), to.getUnit());
@@ -64,19 +67,20 @@ public class UnitConverter {
 				throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
 			} else if (conversions.isEmpty()) {
 				return value
-						.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), mathContext), mathContext)
-						.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), mathContext), mathContext);
+						.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), calculationMathContext), calculationMathContext)
+						.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), calculationMathContext), calculationMathContext)
+						.round(mathContext);
 			} else {
 				BigDecimal convertedValue = value;
-				convertedValue = convertedValue.multiply(from.getPrefix().getFactor(), mathContext);
+				convertedValue = convertedValue.multiply(from.getPrefix().getFactor(), calculationMathContext);
 				
 				for (String conversion : conversions) {
-					convertedValue = new Expression(conversion, mathContext).with("x", convertedValue).eval();
+					convertedValue = new Expression(conversion, calculationMathContext).with("x", convertedValue).eval();
 				}
 				
-				convertedValue = convertedValue.divide(to.getPrefix().getFactor(), mathContext);
-				
-				return convertedValue;
+				return convertedValue
+						.divide(to.getPrefix().getFactor(), calculationMathContext)
+						.round(mathContext);
 			}
 		}
 	}
@@ -291,7 +295,7 @@ public class UnitConverter {
 		if (conversionString.contains("x") || conversionString.startsWith(")")) {
 			registerConversion(from, to, conversionString);
 		} else {
-			registerConversion(from, to, new Expression(conversionString, DEFAULT_MATH_CONTEXT).eval());
+			registerConversion(from, to, new Expression(conversionString, conversionMathContext).eval());
 		}
 	}
 	
@@ -346,19 +350,19 @@ public class UnitConverter {
 				from.getUnit(),
 				to.getUnit(),
 				conversionFactor
-						.divide(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), DEFAULT_MATH_CONTEXT), DEFAULT_MATH_CONTEXT)
-						.multiply(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), DEFAULT_MATH_CONTEXT), DEFAULT_MATH_CONTEXT));
+						.divide(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), conversionMathContext), conversionMathContext)
+						.multiply(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), conversionMathContext), conversionMathContext));
 	}
 	
 	public UnitConverter registerConversion(PrefixedUnit from, PrefixedUnit to, String conversion) {
 		String expressionString = conversion;
 		
 		if (from.getPrefix() != Prefix.BASE) {
-			expressionString = expressionString.replace("x", "(x*" + from.getPrefix().getFactor().pow(from.getUnit().getExponent(), DEFAULT_MATH_CONTEXT).toString() + ")");
+			expressionString = expressionString.replace("x", "(x*" + from.getPrefix().getFactor().pow(from.getUnit().getExponent(), conversionMathContext).toString() + ")");
 		}
 		
 		if (from.getPrefix() != Prefix.BASE) {
-			expressionString = "(" + expressionString + ")*" + to.getPrefix().getFactor().pow(to.getUnit().getExponent(), DEFAULT_MATH_CONTEXT).toString() + "";
+			expressionString = "(" + expressionString + ")*" + to.getPrefix().getFactor().pow(to.getUnit().getExponent(), conversionMathContext).toString() + "";
 		}
 		
 		registerConversionInternal(
@@ -371,7 +375,7 @@ public class UnitConverter {
 	
 	public UnitConverter registerConversion(Unit from, Unit to, BigDecimal conversionFactor) {
 		registerConversionInternal(from, to, conversionFactor);
-		registerConversionInternal(to, from, BigDecimal.ONE.divide(conversionFactor, DEFAULT_MATH_CONTEXT));
+		registerConversionInternal(to, from, BigDecimal.ONE.divide(conversionFactor, conversionMathContext));
 		
 		return this;
 	}
@@ -401,6 +405,12 @@ public class UnitConverter {
 		}
 		
 		return this;
+	}
+	
+	protected MathContext createCalculationMathContext(MathContext resultMathContext) {
+		return new MathContext(
+				Math.max(resultMathContext.getPrecision() * 2, 4),
+				resultMathContext.getRoundingMode());
 	}
 	
 	protected <TARGET> boolean findConversions(
