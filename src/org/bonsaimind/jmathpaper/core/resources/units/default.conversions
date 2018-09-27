@@ -49,7 +49,7 @@ rood	10890sqft
 acre	43560sqft
 
 # Imperial volume, https://en.wikipedia.org/wiki/Imperial_units#Volume
-fluidounce	28.4130625ml
+fluidounce	28.4130625mlitre
 gill		5floz
 pint		20floz
 quart		40floz
