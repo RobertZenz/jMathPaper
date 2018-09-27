@@ -70,6 +70,14 @@ span		1
 cubit		1
 ell			1
 
+# US volume, https://en.wikipedia.org/wiki/Fluid_ounce
+usfluidounce	3	usfloz
+usgill			3	usgi
+uscup			3	uscp
+uspint			3	uspt
+usquart			3	usqt
+usgallon		3	usgal
+
 # Astronomy length
 earthradius			1	RE
 lunardistance		1	LD

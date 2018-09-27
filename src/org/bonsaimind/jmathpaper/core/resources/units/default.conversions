@@ -62,6 +62,14 @@ ounce	28.349523125g
 # Imperial pressure
 poundspersquareinch	6.894757kPa
 
+# US volume, https://en.wikipedia.org/wiki/Fluid_ounce
+usfluidounce	29.5735295625mlitre
+usgill			4usfloz
+uscup			8usfloz
+uspint			16usfloz
+usquart			32usfloz
+usgallon		128usfloz
+
 # Astronomy length
 earthradius			6371km
 lunardistance		384402km
