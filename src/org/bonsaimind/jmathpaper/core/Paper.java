@@ -142,7 +142,7 @@ public class Paper {
 	}
 	
 	public int getPrecision() {
-		return evaluator.getMathContext().getPrecision();
+		return evaluator.getResultMathContext().getPrecision();
 	}
 	
 	public int getResultColumnSize() {
@@ -150,7 +150,7 @@ public class Paper {
 	}
 	
 	public RoundingMode getRoundingMode() {
-		return evaluator.getMathContext().getRoundingMode();
+		return evaluator.getResultMathContext().getRoundingMode();
 	}
 	
 	public boolean isChanged() {
@@ -195,7 +195,8 @@ public class Paper {
 		}
 		
 		Evaluator newEvaluator = new Evaluator(evaluator);
-		newEvaluator.setMathContext(evaluator.getMathContext());
+		newEvaluator.setCalculationMathContext(evaluator.getCalculationMathContext());
+		newEvaluator.setResultMathContext(evaluator.getResultMathContext());
 		
 		List<EvaluatedExpression> newEvaluatedExpressions = new ArrayList<>();
 		
@@ -247,7 +248,7 @@ public class Paper {
 		if (format.contains("?")) {
 			StringBuilder builder = new StringBuilder();
 			
-			for (int counter = 0; counter < evaluator.getMathContext().getPrecision(); counter++) {
+			for (int counter = 0; counter < evaluator.getResultMathContext().getPrecision(); counter++) {
 				builder.append("#");
 			}
 			
@@ -255,23 +256,29 @@ public class Paper {
 		}
 		
 		numberFormat = new DecimalFormat(format);
-		numberFormat.setRoundingMode(evaluator.getMathContext().getRoundingMode());
+		numberFormat.setRoundingMode(evaluator.getResultMathContext().getRoundingMode());
 	}
 	
 	public void setPrecision(int precision) {
-		evaluator.setMathContext(new MathContext(
+		evaluator.setCalculationMathContext(new MathContext(
+				Math.max(precision * 2, 4),
+				evaluator.getCalculationMathContext().getRoundingMode()));
+		evaluator.setResultMathContext(new MathContext(
 				precision,
-				evaluator.getMathContext().getRoundingMode()));
+				evaluator.getResultMathContext().getRoundingMode()));
 		
 		setNumberFormat(originalNumberFormat);
 	}
 	
 	public void setRoundingMode(RoundingMode roundingMode) {
-		evaluator.setMathContext(new MathContext(
-				evaluator.getMathContext().getPrecision(),
+		evaluator.setCalculationMathContext(new MathContext(
+				evaluator.getCalculationMathContext().getPrecision(),
+				roundingMode));
+		evaluator.setResultMathContext(new MathContext(
+				evaluator.getResultMathContext().getPrecision(),
 				roundingMode));
 		
-		numberFormat.setRoundingMode(evaluator.getMathContext().getRoundingMode());
+		numberFormat.setRoundingMode(evaluator.getResultMathContext().getRoundingMode());
 	}
 	
 	@Override

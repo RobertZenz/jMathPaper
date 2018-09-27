@@ -48,7 +48,8 @@ public class Evaluator {
 	private static final String COMMENT_INLINE_END = "*/";
 	private static final String COMMENT_INLINE_START = "/*";
 	private static final String COMMENT_START = "//";
-	private static final MathContext DEFAULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
+	private static final MathContext DEFAULT_CALCULATION_MATH_CONTEXT = new MathContext(64, RoundingMode.HALF_UP);
+	private static final MathContext DEFAULT_RESULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
 	private static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
 	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
 	private static final Pattern ID = ResourceLoader.compileRegex("id");
@@ -57,10 +58,11 @@ public class Evaluator {
 	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
 	private static final Pattern UNIT_CONVERSION_SIMPLE = ResourceLoader.compileRegex("unit-conversion-simple");
 	private Map<String, String> aliases = new HashMap<>();
+	private MathContext calculationMathContext = DEFAULT_CALCULATION_MATH_CONTEXT;
 	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
 	private int expressionCounter = 0;
-	private MathContext mathContext = DEFAULT_MATH_CONTEXT;
 	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
+	private MathContext resultMathContext = DEFAULT_RESULT_MATH_CONTEXT;
 	private UnitConverter unitConverter = new UnitConverter();
 	
 	public Evaluator() {
@@ -73,7 +75,8 @@ public class Evaluator {
 		this();
 		
 		aliases = evaluator.aliases;
-		mathContext = evaluator.mathContext;
+		calculationMathContext = evaluator.calculationMathContext;
+		resultMathContext = evaluator.resultMathContext;
 		unitConverter = evaluator.unitConverter;
 	}
 	
@@ -93,8 +96,12 @@ public class Evaluator {
 		return addEvaluatedExpression(evaluateInternal(expression, this::getNextId));
 	}
 	
-	public MathContext getMathContext() {
-		return mathContext;
+	public MathContext getCalculationMathContext() {
+		return calculationMathContext;
+	}
+	
+	public MathContext getResultMathContext() {
+		return resultMathContext;
 	}
 	
 	public UnitConverter getUnitConverter() {
@@ -134,7 +141,7 @@ public class Evaluator {
 		EvaluatorAwareExpression mathExpression = new EvaluatorAwareExpression(
 				this,
 				processedExpression,
-				mathContext);
+				calculationMathContext);
 		
 		for (EvaluatedExpression contextExpression : contextExpressions) {
 			applyEvaluatedExpression(mathExpression, contextExpression);
@@ -156,8 +163,12 @@ public class Evaluator {
 		previousEvaluatedExpressions.clear();
 	}
 	
-	public void setMathContext(MathContext mathContext) {
-		this.mathContext = mathContext;
+	public void setCalculationMathContext(MathContext calculationMathContext) {
+		this.calculationMathContext = calculationMathContext;
+	}
+	
+	public void setResultMathContext(MathContext resultMathContext) {
+		this.resultMathContext = resultMathContext;
 	}
 	
 	protected void applyEvaluatedExpression(EvaluatorAwareExpression mathExpression, EvaluatedExpression evaluatedExpression) {
@@ -268,12 +279,14 @@ public class Evaluator {
 			BigDecimal result = mathExpression.eval();
 			
 			if (unitFrom != null && unitTo != null) {
-				result = unitConverter.convert(unitFrom, unitTo, result, mathContext).stripTrailingZeros();
+				result = unitConverter.convert(unitFrom, unitTo, result, calculationMathContext).stripTrailingZeros();
 			}
 			
 			if (id == null) {
 				id = idSupplier.get();
 			}
+			
+			result = result.round(resultMathContext);
 			
 			if (mathExpression.isBoolean()) {
 				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);

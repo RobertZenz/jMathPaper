@@ -141,6 +141,8 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("123456790", "123456789+1", new Evaluator());
 		assertResult("123456789123456790", "123456789123456789+1", new Evaluator());
 		assertResult("1.000000001", "1.000000+0.000000001", new Evaluator());
+		
+		assertResult("60", "1/(1/60)", new Evaluator());
 	}
 	
 	@Test
