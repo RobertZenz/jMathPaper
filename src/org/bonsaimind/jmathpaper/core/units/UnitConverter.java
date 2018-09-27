@@ -423,7 +423,7 @@ public class UnitConverter {
 		
 		if (sourceConversionFactors != null) {
 			for (Entry<Unit, TARGET> entry : sourceConversionFactors.entrySet()) {
-				if (entry.getKey() == targetUnit) {
+				if (entry.getKey().equals(targetUnit)) {
 					foundConversionFactors.add(entry.getValue());
 					
 					return true;
