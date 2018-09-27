@@ -245,6 +245,17 @@ public class TestUnitConverter {
 	}
 	
 	@Test
+	public void testPrefixConversionForHigherDimensions() {
+		UnitConverter unitConverter = new UnitConverter();
+		unitConverter.registerUnit(new Unit("a", 3));
+		
+		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
+		
+		assertEquals(new BigDecimal("1000"), unitConverter.convert("a", "ma", new BigDecimal("1"), MathContext.DECIMAL128));
+		assertEquals(new BigDecimal("0.001"), unitConverter.convert("a", "ka", new BigDecimal("1"), MathContext.DECIMAL128));
+	}
+	
+	@Test
 	public void testSimpleConversion() {
 		Unit unitA = new Unit("a", 1);
 		Unit unitB = new Unit("b", 1);
