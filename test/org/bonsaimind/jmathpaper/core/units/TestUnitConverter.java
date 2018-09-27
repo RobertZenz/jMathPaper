@@ -21,12 +21,15 @@ package org.bonsaimind.jmathpaper.core.units;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestUnitConverter {
+	private static final MathContext DEFAULT_MATH_CONTEXT = new MathContext(34, RoundingMode.HALF_UP);
+	
 	@Test
 	public void testBultinExponentPrefixes() {
 		UnitConverter unitConverter = new UnitConverter();
@@ -42,6 +45,20 @@ public class TestUnitConverter {
 		Assert.assertEquals(2, unitConverter.getPrefixedUnit("sqmeter").getUnit().getExponent());
 		Assert.assertEquals(3, unitConverter.getPrefixedUnit("cubicmeter").getUnit().getExponent());
 		Assert.assertEquals(3, unitConverter.getPrefixedUnit("cumeter").getUnit().getExponent());
+	}
+	
+	@Test
+	public void testCompoundUnits() {
+		UnitConverter unitConverter = new UnitConverter();
+		ResourceLoader.processResource("units/iec.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", unitConverter::loadPrefix);
+		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
+		
+		assertEquals(new BigDecimal("0.0001726031089548149915603983845453662"), unitConverter.convert("km/h", "ml/sec", new BigDecimal("1"), DEFAULT_MATH_CONTEXT));
+		assertEquals(new BigDecimal("60"), unitConverter.convert("l/min", "l/h", new BigDecimal("1"), DEFAULT_MATH_CONTEXT));
+		assertEquals(new BigDecimal("127137.6"), unitConverter.convert("m/s^2", "km/h^2", new BigDecimal("9.81"), DEFAULT_MATH_CONTEXT));
+		assertEquals(new BigDecimal("0.04257460806979184310033457322666291"), unitConverter.convert("l/min/m^2", "gal/h/in^2", new BigDecimal("5"), DEFAULT_MATH_CONTEXT));
 	}
 	
 	@Test

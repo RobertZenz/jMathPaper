@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit.Token;
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit.TokenType;
+
 import com.udojava.evalex.Expression;
 
 public class UnitConverter {
@@ -50,6 +53,14 @@ public class UnitConverter {
 		super();
 		
 		registerUnit(Unit.ONE);
+	}
+	
+	public BigDecimal convert(CompoundUnit from, CompoundUnit to, BigDecimal value, MathContext mathContext) {
+		MathContext calculationMathContext = createCalculationMathContext(mathContext);
+		
+		return getConversionFactor(from, to, calculationMathContext)
+				.multiply(value, calculationMathContext)
+				.round(mathContext);
 	}
 	
 	public BigDecimal convert(PrefixedUnit from, PrefixedUnit to, BigDecimal value, MathContext mathContext) {
@@ -89,6 +100,14 @@ public class UnitConverter {
 	}
 	
 	public BigDecimal convert(String from, String to, BigDecimal value, MathContext mathContext) {
+		if (isCompoundUnit(from) || isCompoundUnit(to)) {
+			if (!isCompoundUnit(from) || !isCompoundUnit(to)) {
+				throw new UnsupportedOperationException("Cannot convert between " + from + " and " + to + ".");
+			}
+			
+			return convert(getCompoundUnit(from), getCompoundUnit(to), value, mathContext);
+		}
+		
 		PrefixedUnit fromPrefixedUnit = getPrefixedUnit(from);
 		
 		if (fromPrefixedUnit == null) {
@@ -102,6 +121,65 @@ public class UnitConverter {
 		}
 		
 		return convert(fromPrefixedUnit, toPrefixedUnit, value, mathContext);
+	}
+	
+	public CompoundUnit getCompoundUnit(String compoundUnit) {
+		if (compoundUnit == null) {
+			return null;
+		}
+		
+		StringBuilder currentToken = new StringBuilder();
+		TokenType currentTokenType = null;
+		
+		List<Token> tokens = new ArrayList<>();
+		
+		for (char character : compoundUnit.toCharArray()) {
+			if (isUnitPart(character)) {
+				if (currentTokenType != TokenType.UNIT && currentToken.length() > 0) {
+					tokens.add(new Token(
+							currentToken.toString(),
+							currentTokenType,
+							null));
+					
+					currentToken.delete(0, currentToken.length());
+				}
+				
+				currentToken.append(character);
+				currentTokenType = TokenType.UNIT;
+			} else if (isOperatorPart(character)) {
+				if (currentTokenType != TokenType.OPERATOR && currentToken.length() > 0) {
+					tokens.add(new Token(
+							currentToken.toString(),
+							currentTokenType,
+							getPrefixedUnit(currentToken.toString())));
+					
+					currentToken.delete(0, currentToken.length());
+				}
+				
+				currentToken.append(character);
+				currentTokenType = TokenType.OPERATOR;
+			}
+		}
+		
+		if (currentToken.length() > 0) {
+			if (currentTokenType == TokenType.OPERATOR) {
+				tokens.add(new Token(
+						currentToken.toString(),
+						currentTokenType,
+						null));
+			} else {
+				tokens.add(new Token(
+						currentToken.toString(),
+						currentTokenType,
+						getPrefixedUnit(currentToken.toString())));
+			}
+		}
+		
+		if (tokens.isEmpty()) {
+			return null;
+		}
+		
+		return new CompoundUnit(tokens);
 	}
 	
 	public Prefix getPrefix(String prefixNameOrSymbol) {
@@ -464,6 +542,52 @@ public class UnitConverter {
 		return false;
 	}
 	
+	protected BigDecimal getConversionFactor(CompoundUnit from, CompoundUnit to, MathContext mathContext) {
+		StringBuilder conversionExpressionString = new StringBuilder();
+		Map<String, BigDecimal> variables = new HashMap<>();
+		
+		if (from.getTokens().size() != to.getTokens().size()) {
+			throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
+		}
+		
+		for (int index = 0; index < from.getTokens().size(); index++) {
+			Token fromToken = from.getTokens().get(index);
+			Token toToken = to.getTokens().get(index);
+			
+			if (fromToken.getTokenType() != toToken.getTokenType()) {
+				throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
+			}
+			
+			if (fromToken.getTokenType() == TokenType.UNIT) {
+				String variableName = "V" + Integer.toString(variables.size());
+				BigDecimal convertedValue = convert(
+						fromToken.getUnit(),
+						toToken.getUnit(),
+						BigDecimal.ONE,
+						mathContext);
+				
+				conversionExpressionString.append(variableName);
+				variables.put(variableName, convertedValue);
+			} else {
+				if (!fromToken.getValue().equals(toToken.getValue())) {
+					throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
+				}
+				
+				conversionExpressionString.append(fromToken.getValue());
+			}
+		}
+		
+		Expression conversionExpression = new Expression(
+				conversionExpressionString.toString(),
+				mathContext);
+		
+		for (Entry<String, BigDecimal> entry : variables.entrySet()) {
+			conversionExpression.setVariable(entry.getKey(), entry.getValue());
+		}
+		
+		return conversionExpression.eval();
+	}
+	
 	protected BigDecimal getConversionFactor(PrefixedUnit from, PrefixedUnit to, MathContext mathContext) {
 		BigDecimal conversionFactor = getConversionFactor(from.getUnit(), to.getUnit(), mathContext);
 		
@@ -576,6 +700,26 @@ public class UnitConverter {
 		}
 		
 		return null;
+	}
+	
+	protected boolean isCompoundUnit(String unit) {
+		return unit.contains("+")
+				|| unit.contains("-")
+				|| unit.contains("*")
+				|| unit.contains("/");
+	}
+	
+	protected boolean isOperatorPart(char character) {
+		return character == '+'
+				|| character == '-'
+				|| character == '*'
+				|| character == '/';
+	}
+	
+	protected boolean isUnitPart(char character) {
+		return Character.isLetter(character)
+				|| Character.isDigit(character)
+				|| character == '^';
 	}
 	
 	protected void registerConversionInternal(Unit from, Unit to, BigDecimal conversionFactor) {
