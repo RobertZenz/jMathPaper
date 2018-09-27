@@ -487,7 +487,9 @@ public class UnitConverter {
 			}
 		}
 		
-		if (conversionFactor == null && from.getExponent() > 1) {
+		if (conversionFactor == null
+				&& from.getExponent() > 1
+				&& (from.isDerived() || to.isDerived())) {
 			// Squared/Cubic units? Let's try the plain ones.
 			
 			Unit plainFrom = from;
@@ -495,14 +497,10 @@ public class UnitConverter {
 			
 			if (from.isDerived()) {
 				plainFrom = from.withExponent(1);
-			} else {
-				
 			}
 			
 			if (to.isDerived()) {
 				plainTo = to.withExponent(1);
-			} else {
-				
 			}
 			
 			conversionFactor = getConversionFactor(plainFrom, plainTo, mathContext);
