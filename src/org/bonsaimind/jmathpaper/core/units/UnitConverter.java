@@ -60,7 +60,8 @@ public class UnitConverter {
 		
 		return getConversionFactor(from, to, calculationMathContext)
 				.multiply(value, calculationMathContext)
-				.round(mathContext);
+				.round(mathContext)
+				.stripTrailingZeros();
 	}
 	
 	public BigDecimal convert(PrefixedUnit from, PrefixedUnit to, BigDecimal value, MathContext mathContext) {
