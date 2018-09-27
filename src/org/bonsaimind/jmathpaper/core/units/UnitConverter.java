@@ -66,9 +66,7 @@ public class UnitConverter {
 			if (conversions == null) {
 				throw new UnsupportedOperationException("Cannot convert from " + from.toString() + " to " + to.toString() + ".");
 			} else if (conversions.isEmpty()) {
-				return value
-						.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), calculationMathContext), calculationMathContext)
-						.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), calculationMathContext), calculationMathContext)
+				return convertBetweenPrefixes(from, to, value, calculationMathContext)
 						.round(mathContext);
 			} else {
 				BigDecimal convertedValue = value;
@@ -349,9 +347,7 @@ public class UnitConverter {
 		return registerConversion(
 				from.getUnit(),
 				to.getUnit(),
-				conversionFactor
-						.divide(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), conversionMathContext), conversionMathContext)
-						.multiply(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), conversionMathContext), conversionMathContext));
+				convertBetweenPrefixes(to, from, conversionFactor, conversionMathContext));
 	}
 	
 	public UnitConverter registerConversion(PrefixedUnit from, PrefixedUnit to, String conversion) {
@@ -407,6 +403,27 @@ public class UnitConverter {
 		return this;
 	}
 	
+	protected BigDecimal convertBetweenPrefixes(PrefixedUnit from, PrefixedUnit to, BigDecimal value, MathContext mathContext) {
+		BigDecimal fromFactor = null;
+		BigDecimal toFactor = null;
+		
+		if (from.getUnit().isDerived()) {
+			fromFactor = from.getPrefix().getFactor().pow(from.getUnit().getExponent(), mathContext);
+		} else {
+			fromFactor = from.getPrefix().getFactor();
+		}
+		
+		if (to.getUnit().isDerived()) {
+			toFactor = to.getPrefix().getFactor().pow(to.getUnit().getExponent(), mathContext);
+		} else {
+			toFactor = to.getPrefix().getFactor();
+		}
+		
+		return value
+				.multiply(fromFactor, mathContext)
+				.divide(toFactor, mathContext);
+	}
+	
 	protected MathContext createCalculationMathContext(MathContext resultMathContext) {
 		return new MathContext(
 				Math.max(resultMathContext.getPrecision() * 2, 4),
@@ -446,9 +463,7 @@ public class UnitConverter {
 		BigDecimal conversionFactor = getConversionFactor(from.getUnit(), to.getUnit(), mathContext);
 		
 		if (conversionFactor != null) {
-			conversionFactor = conversionFactor
-					.multiply(from.getPrefix().getFactor().pow(from.getUnit().getExponent(), mathContext), mathContext)
-					.divide(to.getPrefix().getFactor().pow(to.getUnit().getExponent(), mathContext), mathContext);
+			conversionFactor = convertBetweenPrefixes(from, to, conversionFactor, mathContext);
 		}
 		
 		return conversionFactor;
