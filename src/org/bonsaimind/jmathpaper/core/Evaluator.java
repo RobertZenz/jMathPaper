@@ -203,12 +203,16 @@ public class Evaluator {
 				parameters = Arrays.asList(parametersList.split("\\s*,\\s*"));
 			}
 			
-			return new FunctionEvaluatedExpression(
-					functionMatcher.group("ID"),
-					preProcessedExpression,
-					parameters,
-					functionMatcher.group("EXPRESSION"),
-					prepareExpression(functionMatcher.group("EXPRESSION")).isBoolean());
+			try {
+				return new FunctionEvaluatedExpression(
+						functionMatcher.group("ID"),
+						preProcessedExpression,
+						parameters,
+						functionMatcher.group("EXPRESSION"),
+						prepareExpression(functionMatcher.group("EXPRESSION")).isBoolean());
+			} catch (Expression.ExpressionException e) {
+				throw new InvalidExpressionException(e.getMessage(), e);
+			}
 		}
 		
 		String id = null;
