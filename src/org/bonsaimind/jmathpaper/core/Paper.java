@@ -260,9 +260,15 @@ public class Paper {
 	}
 	
 	public void setPrecision(int precision) {
-		evaluator.setCalculationMathContext(new MathContext(
-				Math.max(precision * 2, 4),
-				evaluator.getCalculationMathContext().getRoundingMode()));
+		if (precision <= 0) {
+			evaluator.setCalculationMathContext(new MathContext(
+					precision,
+					evaluator.getCalculationMathContext().getRoundingMode()));
+		} else {
+			evaluator.setCalculationMathContext(new MathContext(
+					Math.max(precision * 2, 4),
+					evaluator.getCalculationMathContext().getRoundingMode()));
+		}
 		evaluator.setResultMathContext(new MathContext(
 				precision,
 				evaluator.getResultMathContext().getRoundingMode()));
