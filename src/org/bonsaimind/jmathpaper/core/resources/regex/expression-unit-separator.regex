@@ -15,19 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Regular Expression for finding a function definition and expression.
+# Regular Expression for finding the separation index of an expression and
+# the unit.
 #
 # Matched samples:
 #   1+1*4 m to in
 
 
-^
-(?<EXPRESSION>
-	.*?
+(
+	[0-9)] *[a-zA-Z]
+	|[0-9] +1
+	|[a-zA-Z)] +[a-zA-Z]
+	|[a-zA-Z)] *1
 )
-( )*
-(?<FROM>
-	([a-zA-Z]+)
-	(\^[0-9]+)?
-)
-$					# End of string.

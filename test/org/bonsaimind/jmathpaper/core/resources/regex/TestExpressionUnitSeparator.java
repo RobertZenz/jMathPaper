@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Robert 'Bobby' Zenz
+ * Copyright 2018, Robert 'Bobby' Zenz
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,27 +24,39 @@ import java.util.regex.Matcher;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestUnitConversionSimple extends AbstractRegexTest {
+public class TestExpressionUnitSeparator extends AbstractRegexTest {
 	@Test
-	public void test() {
+	public void testNoMatch() {
 		assertNoMatch("");
-		assertNoMatch("1+1");
-		assertNoMatch("sin(45) * 34 - 2");
-		
-		assertNoMatch("=1");
-		assertNoMatch("0=1");
-		assertNoMatch("a-r=1");
-		assertNoMatch("--er=2");
-		
-		assertNoMatch("a=5");
-		
-		assertMatch("", "abcd", "abcd");
-		assertMatch("1", "km", "1km");
-		assertMatch("1*8 + abcd", "km", "1*8 + abcd km");
-		assertMatch("abcd", "km", "abcd km");
+		assertNoMatch("1");
+		assertNoMatch("12346433");
+		assertNoMatch("something");
+		assertNoMatch("321414+something");
+		assertNoMatch("(5*6)+9^power");
 	}
 	
-	protected void assertMatch(String expectedExpression, String expectedFrom, String value) {
+	@Test
+	public void testOne() {
+		assertMatch(2, "1+1 1");
+		assertMatch(2, "abc 1");
+		assertMatch(2, "abc1");
+		assertMatch(12, "sqrt(5*abc+1)1");
+		assertMatch(12, "sqrt(5*abc+1) 1");
+		assertMatch(12, "sqrt(5*abc+1) 1/km");
+	}
+	
+	@Test
+	public void testUnits() {
+		assertMatch(2, "1+1 km");
+		assertMatch(2, "1+1km");
+		assertMatch(2, "abc km");
+		assertMatch(12, "sqrt(5*abc+1)km");
+		assertMatch(12, "sqrt(5*abc+1) km");
+		assertMatch(12, "sqrt(5*abc+1) km/km");
+		assertMatch(0, "1inch to centimeter");
+	}
+	
+	protected void assertMatch(int expectedIndex, String value) {
 		Matcher matcher = pattern.matcher(value);
 		
 		Assert.assertTrue(
@@ -52,17 +64,12 @@ public class TestUnitConversionSimple extends AbstractRegexTest {
 				matcher.find());
 		
 		Assert.assertEquals(
-				"Expected EXPRESSION not found.",
-				expectedExpression,
-				matcher.group("EXPRESSION"));
-		Assert.assertEquals(
-				"Expected FROM not found.",
-				expectedFrom,
-				matcher.group("FROM"));
+				expectedIndex,
+				matcher.start());
 	}
 	
 	@Override
 	protected String getRegexName() {
-		return "unit-conversion-simple";
+		return "expression-unit-separator";
 	}
 }

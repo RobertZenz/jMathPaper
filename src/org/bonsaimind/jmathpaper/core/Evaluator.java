@@ -50,13 +50,12 @@ public class Evaluator {
 	private static final String COMMENT_START = "//";
 	private static final MathContext DEFAULT_CALCULATION_MATH_CONTEXT = new MathContext(64, RoundingMode.HALF_UP);
 	private static final MathContext DEFAULT_RESULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
+	private static final Pattern EXPRESSION_UNIT_SEPARATOR = ResourceLoader.compileRegex("expression-unit-separator");
 	private static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
 	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
 	private static final Pattern ID = ResourceLoader.compileRegex("id");
 	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
 	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
-	private static final Pattern UNIT_CONVERSION = ResourceLoader.compileRegex("unit-conversion");
-	private static final Pattern UNIT_CONVERSION_SIMPLE = ResourceLoader.compileRegex("unit-conversion-simple");
 	private Map<String, String> aliases = new HashMap<>();
 	private MathContext calculationMathContext = DEFAULT_CALCULATION_MATH_CONTEXT;
 	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
@@ -227,53 +226,63 @@ public class Evaluator {
 		PrefixedUnit unitFrom = null;
 		PrefixedUnit unitTo = null;
 		
-		Matcher unitConversionMatcher = UNIT_CONVERSION.matcher(processedExpression);
+		Matcher expressionUnitSeparatorMatcher = EXPRESSION_UNIT_SEPARATOR.matcher(processedExpression);
 		
-		if (unitConversionMatcher.matches()) {
-			processedExpression = unitConversionMatcher.group("EXPRESSION");
+		if (expressionUnitSeparatorMatcher.find()) {
+			String expressionPart = processedExpression.substring(0, expressionUnitSeparatorMatcher.start() + 1);
+			String unitsPart = processedExpression.substring(expressionUnitSeparatorMatcher.start() + 1);
 			
-			// Allow to convert from unit to unit without having to specify
-			// an amount.
-			if (processedExpression.trim().isEmpty()) {
-				processedExpression = "1";
-			}
+			String[] unitParts = splitUnitConversion(unitsPart);
 			
-			unitFrom = unitConverter.getPrefixedUnit(unitConversionMatcher.group("FROM"));
-			
-			if (unitFrom == null) {
-				throw new InvalidExpressionException("No such unit: " + unitConversionMatcher.group("FROM"));
-			}
-			
-			unitTo = unitConverter.getPrefixedUnit(unitConversionMatcher.group("TO"));
-			
-			if (unitTo == null) {
-				throw new InvalidExpressionException("No such unit: " + unitConversionMatcher.group("TO"));
-			}
-		} else {
-			unitConversionMatcher = UNIT_CONVERSION_SIMPLE.matcher(processedExpression);
-			
-			if (unitConversionMatcher.matches()) {
-				String unitFromString = unitConversionMatcher.group("FROM");
+			if (unitParts[0] != null && unitParts[0].isEmpty()) {
+				unitFrom = unitConverter.getPrefixedUnit(expressionPart.trim());
 				
-				if (!isKnown(unitFromString)) {
-					unitFrom = unitConverter.getPrefixedUnit(unitFromString);
+				if (unitFrom != null) {
+					expressionPart = "1";
+				} else {
+					unitFrom = unitConverter.getPrefixedUnit(unitParts[1]);
 					
-					// Only allow the conversion if we have found
-					if (unitFrom != null) {
-						processedExpression = unitConversionMatcher.group("EXPRESSION");
-						
-						// Allow to convert from unit to unit without having to
-						// specify
-						// an amount.
-						if (processedExpression.trim().isEmpty()) {
-							processedExpression = "1";
-						}
-						
-						unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
-					} else {
-						unitFrom = null;
+					if (unitFrom == null) {
+						throw new InvalidExpressionException("No such unit: " + unitParts[1]);
 					}
+					
+					unitParts[0] = unitParts[1];
+					unitParts[1] = null;
 				}
+			} else if (unitParts[1] != null && unitParts[1].isEmpty()) {
+				unitFrom = unitConverter.getPrefixedUnit(expressionPart.trim());
+				
+				if (unitFrom == null) {
+					throw new InvalidExpressionException("No such unit: " + expressionPart.trim());
+				}
+				
+				expressionPart = "1";
+				unitParts[1] = unitParts[0];
+			} else {
+				unitFrom = unitConverter.getPrefixedUnit(unitParts[0]);
+				
+				if (unitFrom == null) {
+					throw new InvalidExpressionException("No such unit: " + unitParts[0]);
+				}
+			}
+			
+			if (unitParts[1] == null) {
+				unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
+			} else {
+				unitTo = unitConverter.getPrefixedUnit(unitParts[1]);
+				
+				if (unitTo == null) {
+					throw new InvalidExpressionException("No such unit: " + unitParts[1]);
+				}
+			}
+			
+			processedExpression = expressionPart;
+		} else if (!isKnown(processedExpression)) {
+			unitFrom = unitConverter.getPrefixedUnit(processedExpression);
+			
+			if (unitFrom != null) {
+				unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
+				processedExpression = "1";
 			}
 		}
 		
@@ -369,6 +378,39 @@ public class Evaluator {
 		}
 		
 		return "0";
+	}
+	
+	private String[] splitUnitConversion(String unitConversionString) {
+		int splitIndex = unitConversionString.indexOf(" as ");
+		
+		if (splitIndex < 0) {
+			splitIndex = unitConversionString.indexOf(" in ");
+		}
+		
+		if (splitIndex < 0) {
+			splitIndex = unitConversionString.indexOf(" to ");
+		}
+		
+		if (splitIndex >= 0) {
+			return new String[] {
+					unitConversionString.substring(0, splitIndex).trim(),
+					unitConversionString.substring(splitIndex + 4).trim()
+			};
+		}
+		
+		splitIndex = unitConversionString.indexOf(" ");
+		
+		if (splitIndex >= 0) {
+			return new String[] {
+					unitConversionString.substring(0, splitIndex).trim(),
+					unitConversionString.substring(splitIndex + 1).trim()
+			};
+		}
+		
+		return new String[] {
+				unitConversionString.trim(),
+				null
+		};
 	}
 	
 	private String stripComments(String expression) {

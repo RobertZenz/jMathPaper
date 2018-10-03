@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
@@ -126,6 +127,33 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 				"1+1",
 				"command \"some ; value 1+1\" ; 2+2"
 		}, "   command value    ; 1+1; command \"some ; value 1+1\" \\; 2+2");
+	}
+	
+	@Test
+	public void testUnitConversions() throws CommandExecutionException, InvalidExpressionException {
+		// Load the defaults
+		ResourceLoader.processResource("units/iec.prefixes", getPaper().getEvaluator().getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", getPaper().getEvaluator().getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/default.units", getPaper().getEvaluator().getUnitConverter()::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", getPaper().getEvaluator().getUnitConverter()::loadConversion);
+		
+		process("1km to m");
+		assertLastResult("1000");
+		
+		process("1km in m");
+		assertLastResult("1000");
+		
+		process("1km as m");
+		assertLastResult("1000");
+		
+		process("1km m");
+		assertLastResult("1000");
+		
+		process("1km");
+		assertLastResult("1000");
+		
+		process("km");
+		assertLastResult("1000");
 	}
 	
 	private final void assertLastResult(boolean expected) {
