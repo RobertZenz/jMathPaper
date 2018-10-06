@@ -239,9 +239,21 @@ By default, SI and IEC prefixes are supported.
 
 Not just plain values but whole expressions are supported.
 
-    a                                          a = 5
-    b                                          b = 10
+    a                                        a=5 = 5
+    b                                       b=10 = 10
     c                  c=a*sqrt(b) meter to inch = 622.4956...
+
+Also combined units are being supported.
+
+    #1                           5km/h to in/sec = 10.9361...
+    #2               12 l/sec/m^2 in l/hour/sqin = 27.8709...
+
+
+There is also an automatic conversion from a unit with a prefix to a unit
+without one, if no target unit is specified.
+
+    #1                                       1km = 1000
+    #2                                     1km/h = 1000
 
 #### Custom units files
 
