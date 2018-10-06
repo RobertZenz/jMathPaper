@@ -55,6 +55,13 @@ public class TestUnitConverter {
 		ResourceLoader.processResource("units/default.units", unitConverter::loadUnit);
 		ResourceLoader.processResource("units/default.conversions", unitConverter::loadConversion);
 		
+		Assert.assertNull(unitConverter.getCompoundUnit(null));
+		Assert.assertNull(unitConverter.getCompoundUnit(""));
+		Assert.assertNull(unitConverter.getCompoundUnit("   "));
+		Assert.assertNull(unitConverter.getCompoundUnit("12"));
+		Assert.assertNull(unitConverter.getCompoundUnit("12 / 12"));
+		Assert.assertNull(unitConverter.getCompoundUnit("km/2/h"));
+		
 		assertEquals(new BigDecimal("0.0001726031089548149915603983845453662"), unitConverter.convert("km/h", "ml/sec", new BigDecimal("1"), DEFAULT_MATH_CONTEXT));
 		assertEquals(new BigDecimal("60"), unitConverter.convert("l/min", "l/h", new BigDecimal("1"), DEFAULT_MATH_CONTEXT));
 		assertEquals(new BigDecimal("127137.6"), unitConverter.convert("m/s^2", "km/h^2", new BigDecimal("9.81"), DEFAULT_MATH_CONTEXT));
