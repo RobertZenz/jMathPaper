@@ -149,10 +149,16 @@ public class UnitConverter {
 				currentTokenType = TokenType.UNIT;
 			} else if (isOperatorPart(character)) {
 				if (currentTokenType != TokenType.OPERATOR && currentToken.length() > 0) {
+					PrefixedUnit prefixedUnit = getPrefixedUnit(currentToken.toString());
+					
+					if (prefixedUnit == null) {
+						return null;
+					}
+					
 					tokens.add(new Token(
 							currentToken.toString(),
 							currentTokenType,
-							getPrefixedUnit(currentToken.toString())));
+							prefixedUnit));
 					
 					currentToken.delete(0, currentToken.length());
 				}
@@ -169,10 +175,16 @@ public class UnitConverter {
 						currentTokenType,
 						null));
 			} else {
+				PrefixedUnit prefixedUnit = getPrefixedUnit(currentToken.toString());
+				
+				if (prefixedUnit == null) {
+					return null;
+				}
+				
 				tokens.add(new Token(
 						currentToken.toString(),
 						currentTokenType,
-						getPrefixedUnit(currentToken.toString())));
+						prefixedUnit));
 			}
 		}
 		
