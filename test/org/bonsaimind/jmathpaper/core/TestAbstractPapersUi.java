@@ -89,6 +89,33 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	}
 	
 	@Test
+	public void testCompoundUnitConversions() throws CommandExecutionException, InvalidExpressionException {
+		// Load the defaults
+		ResourceLoader.processResource("units/iec.prefixes", getPaper().getEvaluator().getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", getPaper().getEvaluator().getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/default.units", getPaper().getEvaluator().getUnitConverter()::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", getPaper().getEvaluator().getUnitConverter()::loadConversion);
+		
+		process("1m/sec to km/h");
+		assertLastResult("3.6");
+		
+		process("1l/sec/m^2 to usfloz/hour/in^2");
+		assertLastResult("78.535637590755700991921464362409");
+		
+		process("1 km/h m/h");
+		assertLastResult("1000");
+		
+		process("2 km/h m/h");
+		assertLastResult("2000");
+		
+		process("1+1 * 8 / 2 + 10km/h m/h");
+		assertLastResult("15000");
+		
+		process("km/h");
+		assertLastResult("1000");
+	}
+	
+	@Test
 	public void testSplitParameters() {
 		assertSplitParameters(new String[] {}, null);
 		assertSplitParameters(new String[] {}, "");

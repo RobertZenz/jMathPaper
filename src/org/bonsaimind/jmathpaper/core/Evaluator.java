@@ -37,7 +37,9 @@ import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpre
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
-import org.bonsaimind.jmathpaper.core.units.PrefixedUnit;
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit;
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit.Token;
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit.TokenType;
 import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
 import com.udojava.evalex.Expression;
@@ -222,8 +224,8 @@ public class Evaluator {
 			processedExpression = idMatcher.group("EXPRESSION");
 		}
 		
-		PrefixedUnit unitFrom = null;
-		PrefixedUnit unitTo = null;
+		CompoundUnit unitFrom = null;
+		CompoundUnit unitTo = null;
 		
 		Matcher expressionUnitSeparatorMatcher = EXPRESSION_UNIT_SEPARATOR.matcher(processedExpression);
 		
@@ -234,12 +236,12 @@ public class Evaluator {
 			String[] unitParts = splitUnitConversion(unitsPart);
 			
 			if (unitParts[0] != null && unitParts[0].isEmpty()) {
-				unitFrom = unitConverter.getPrefixedUnit(expressionPart.trim());
+				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
 				if (unitFrom != null) {
 					expressionPart = "1";
 				} else {
-					unitFrom = unitConverter.getPrefixedUnit(unitParts[1]);
+					unitFrom = unitConverter.getCompoundUnit(unitParts[1]);
 					
 					if (unitFrom == null) {
 						throw new InvalidExpressionException("No such unit: " + unitParts[1]);
@@ -249,7 +251,7 @@ public class Evaluator {
 					unitParts[1] = null;
 				}
 			} else if (unitParts[1] != null && unitParts[1].isEmpty()) {
-				unitFrom = unitConverter.getPrefixedUnit(expressionPart.trim());
+				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
 				if (unitFrom == null) {
 					throw new InvalidExpressionException("No such unit: " + expressionPart.trim());
@@ -258,7 +260,7 @@ public class Evaluator {
 				expressionPart = "1";
 				unitParts[1] = unitParts[0];
 			} else {
-				unitFrom = unitConverter.getPrefixedUnit(unitParts[0]);
+				unitFrom = unitConverter.getCompoundUnit(unitParts[0]);
 				
 				if (unitFrom == null) {
 					throw new InvalidExpressionException("No such unit: " + unitParts[0]);
@@ -268,7 +270,7 @@ public class Evaluator {
 			if (unitParts[1] == null) {
 				unitTo = unitFrom.atBase();
 			} else {
-				unitTo = unitConverter.getPrefixedUnit(unitParts[1]);
+				unitTo = unitConverter.getCompoundUnit(unitParts[1]);
 				
 				if (unitTo == null) {
 					throw new InvalidExpressionException("No such unit: " + unitParts[1]);
@@ -277,11 +279,15 @@ public class Evaluator {
 			
 			processedExpression = expressionPart;
 		} else if (!isKnown(processedExpression)) {
-			unitFrom = unitConverter.getPrefixedUnit(processedExpression);
+			unitFrom = unitConverter.getCompoundUnit(processedExpression);
 			
 			if (unitFrom != null) {
-				unitTo = unitFrom.atBase();
-				processedExpression = "1";
+				if (!isKnown(unitFrom)) {
+					unitTo = unitFrom.atBase();
+					processedExpression = "1";
+				} else {
+					unitFrom = null;
+				}
 			}
 		}
 		
@@ -345,6 +351,18 @@ public class Evaluator {
 		return "#" + Integer.toString(expressionCounter);
 	}
 	
+	private boolean isKnown(CompoundUnit compoundUnit) {
+		for (Token token : compoundUnit.getTokens()) {
+			if (token.getTokenType() == TokenType.UNIT) {
+				if (!isKnown(token.getValue())) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
 	private boolean isKnown(String name) {
 		for (EvaluatedExpression evaluatedExpression : previousEvaluatedExpressions) {
 			if (evaluatedExpression.getId().equals(name)) {
@@ -397,7 +415,7 @@ public class Evaluator {
 			};
 		}
 		
-		splitIndex = unitConversionString.indexOf(" ");
+		splitIndex = unitConversionString.lastIndexOf(" ");
 		
 		if (splitIndex >= 0) {
 			return new String[] {
