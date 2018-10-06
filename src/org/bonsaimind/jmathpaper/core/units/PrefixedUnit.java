@@ -57,6 +57,17 @@ public class PrefixedUnit {
 	}
 	
 	/**
+	 * A {@link PrefixedUnit} derived from this one with the {@link Prefix#BASE}
+	 * .
+	 * 
+	 * @return A {@link PrefixedUnit} derived from this one with the
+	 *         {@link Prefix#BASE}.
+	 */
+	public PrefixedUnit atBase() {
+		return new PrefixedUnit(Prefix.BASE, unit);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

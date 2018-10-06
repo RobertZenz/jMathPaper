@@ -37,7 +37,6 @@ import org.bonsaimind.jmathpaper.core.evaluatedexpressions.BooleanEvaluatedExpre
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.FunctionEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
-import org.bonsaimind.jmathpaper.core.units.Prefix;
 import org.bonsaimind.jmathpaper.core.units.PrefixedUnit;
 import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 
@@ -267,7 +266,7 @@ public class Evaluator {
 			}
 			
 			if (unitParts[1] == null) {
-				unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
+				unitTo = unitFrom.atBase();
 			} else {
 				unitTo = unitConverter.getPrefixedUnit(unitParts[1]);
 				
@@ -281,7 +280,7 @@ public class Evaluator {
 			unitFrom = unitConverter.getPrefixedUnit(processedExpression);
 			
 			if (unitFrom != null) {
-				unitTo = new PrefixedUnit(Prefix.BASE, unitFrom.getUnit());
+				unitTo = unitFrom.atBase();
 				processedExpression = "1";
 			}
 		}

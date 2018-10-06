@@ -45,6 +45,30 @@ public class CompoundUnit {
 	}
 	
 	/**
+	 * Returns a {@link CompoundUnit} derived from this one with all units at
+	 * their base, meaning with the {@link Prefix#BASE}.
+	 * 
+	 * @return A {@link CompoundUnit} derived from this one wtih all units at
+	 *         their base.
+	 */
+	public CompoundUnit atBase() {
+		List<Token> tokensAtBase = new ArrayList<>();
+		
+		for (Token token : tokens) {
+			if (token.getTokenType() == TokenType.UNIT) {
+				tokensAtBase.add(new Token(
+						token.getValue(),
+						token.getTokenType(),
+						token.getUnit().atBase()));
+			} else {
+				tokensAtBase.add(token);
+			}
+		}
+		
+		return new CompoundUnit(tokensAtBase);
+	}
+	
+	/**
 	 * Gets the {@link List} of {@link Token}s which makes up this
 	 * {@link CompoundUnit}.
 	 * 
