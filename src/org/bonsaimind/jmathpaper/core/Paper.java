@@ -76,7 +76,7 @@ public class Paper {
 	}
 	
 	public void evaluateFromText(String text) throws InvalidExpressionException {
-		evaluateLines(Arrays.asList(text.split("\\n")));
+		evaluateLines(Arrays.asList(text.split("\\r?\\n")));
 	}
 	
 	public void evaluateLines(List<String> lines) throws InvalidExpressionException {
