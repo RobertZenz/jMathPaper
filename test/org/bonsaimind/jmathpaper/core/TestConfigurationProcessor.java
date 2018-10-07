@@ -22,6 +22,7 @@ package org.bonsaimind.jmathpaper.core;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
+import org.bonsaimind.jmathpaper.core.configuration.ConfigurationProcessor;
 import org.junit.Assert;
 import org.junit.Test;
 

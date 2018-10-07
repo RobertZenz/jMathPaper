@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.core;
+package org.bonsaimind.jmathpaper.core.configuration;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

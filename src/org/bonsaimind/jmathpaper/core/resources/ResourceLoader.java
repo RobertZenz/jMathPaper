@@ -22,7 +22,7 @@ package org.bonsaimind.jmathpaper.core.resources;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.bonsaimind.jmathpaper.core.ConfigurationProcessor;
+import org.bonsaimind.jmathpaper.core.configuration.ConfigurationProcessor;
 
 /**
  * {@link ResourceLoader} is a static utility for loading embedded resources.

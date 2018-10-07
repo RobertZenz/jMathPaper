@@ -21,8 +21,8 @@ package org.bonsaimind.jmathpaper;
 
 import java.nio.file.Path;
 
-import org.bonsaimind.jmathpaper.core.ConfigurationProcessor;
 import org.bonsaimind.jmathpaper.core.configuration.Configuration;
+import org.bonsaimind.jmathpaper.core.configuration.ConfigurationProcessor;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
 import org.bonsaimind.jmathpaper.core.ui.Ui;
