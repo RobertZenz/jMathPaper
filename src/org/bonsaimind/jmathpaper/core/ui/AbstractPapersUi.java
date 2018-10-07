@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.configuration.Definitions;
@@ -183,7 +184,22 @@ public abstract class AbstractPapersUi implements Ui {
 					break;
 				
 				case COPY:
-					copy();
+					if (parameters != null && parameters.length > 0) {
+						PaperPart paperPart = PaperPart.getPaperPart(parameters[0]);
+						
+						if (paperPart == null) {
+							copy(PaperPart.LINE, String.join(" ", parameters));
+						} else if (parameters.length > 1) {
+							List<String> remainingParameters = new ArrayList<>(Arrays.asList(parameters));
+							remainingParameters.remove(0);
+							
+							copy(paperPart, String.join(" ", remainingParameters));
+						} else {
+							copy(paperPart, null);
+						}
+					} else {
+						copy(PaperPart.PAPER, null);
+					}
 					break;
 				
 				case NEXT:
@@ -511,15 +527,81 @@ public abstract class AbstractPapersUi implements Ui {
 	}
 	
 	/**
+	 * Checks that the current {@link #paper} is not empty.
+	 *
+	 * @throws IllegalStateException If the current {@link #paper} is empty.
+	 */
+	protected void checkCurrentPaperNotEmpty() throws IllegalStateException {
+		if (paper == null || paper.getEvaluatedExpressions().isEmpty()) {
+			throw new IllegalStateException("This operation can only be performed with a paper with lines.");
+		}
+	}
+	
+	/**
 	 * Copies the current {@link #paper} to the clipboard of the system.
 	 * 
 	 * @throws IllegalStateException If there is no current {@link #paper}.
 	 */
-	protected void copy() throws IllegalStateException {
+	protected void copy(PaperPart paperPart, String identification) throws IllegalStateException {
 		checkCurrentPaper();
 		
+		switch (paperPart) {
+			case EXPRESSION:
+			case ID:
+			case LINE:
+			case RESULT:
+				checkCurrentPaperNotEmpty();
+				
+				List<EvaluatedExpression> evaluatedExpressions = null;
+				
+				if (identification != null && !identification.isEmpty()) {
+					evaluatedExpressions = getEvaluatedExpressions(identification);
+				} else {
+					evaluatedExpressions = paper.getEvaluatedExpressions();
+				}
+				
+				if (evaluatedExpressions.isEmpty()) {
+					throw new IllegalArgumentException("No matching lines found for: " + identification);
+				}
+				
+				StringBuilder content = new StringBuilder();
+				
+				for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+					if (content.length() > 0) {
+						content.append("\n");
+					}
+					
+					switch (paperPart) {
+						case EXPRESSION:
+							content.append(evaluatedExpression.getExpression());
+							break;
+						
+						case ID:
+							content.append(evaluatedExpression.getId());
+							break;
+						
+						case LINE:
+							content.append(evaluatedExpression.toString());
+							break;
+						
+						case RESULT:
+							content.append(evaluatedExpression.getFormattedResult(paper.getNumberFormat()));
+							break;
+					}
+				}
+				
+				copyToClipboard(content.toString());
+				break;
+			
+			case PAPER:
+				copyToClipboard(paper.toString());
+				break;
+		}
+	}
+	
+	protected void copyToClipboard(String value) {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-				new StringSelection(paper.toString()),
+				new StringSelection(value),
 				null);
 	}
 	
@@ -617,6 +699,103 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		throw new IllegalArgumentException("\"" + name + "\" is not a value of " + enumClass.getSimpleName() + ".");
+	}
+	
+	/**
+	 * Gets the {@link EvaluatedExpression} from the current {@link Paper} which
+	 * matches the given identifier.
+	 * <p>
+	 * The give identifier can either be the ID (case-sensitive), or the 1-based
+	 * index of the expression.
+	 * 
+	 * @param identifier The ID of the {@link EvaluatedExpression} to get or the
+	 *        1-based index.
+	 * @return The {@link EvaluatedExpression} which matches the given
+	 *         identifier.
+	 */
+	protected EvaluatedExpression getEvaluatedExpression(String identifier) {
+		if (identifier == null || identifier.isEmpty()) {
+			return null;
+		}
+		
+		String trimmedIdentifier = identifier.trim();
+		
+		try {
+			int number = Integer.parseInt(trimmedIdentifier);
+			
+			if (number >= 0) {
+				return paper.getEvaluatedExpressions().get(number - 1);
+			} else {
+				return paper.getEvaluatedExpressions().get(paper.getEvaluatedExpressions().size() + number);
+			}
+		} catch (NumberFormatException e) {
+			// Ignore and continue.
+		}
+		
+		for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+			if (evaluatedExpression.getId().equals(trimmedIdentifier)) {
+				return evaluatedExpression;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the {@link EvaluatedExpression}s which are matching the given
+	 * identification}.
+	 * <p>
+	 * The given identification can either be a single ID or 1-based index, a
+	 * comma-separated list of IDs or 1-based indexes or a range which is
+	 * separated by double-dots.
+	 * 
+	 * @param identification The identification for the
+	 *        {@link EvaluatedExpression}s.
+	 * @return The {@link List} of matching {@link EvaluatedExpression}s.
+	 */
+	protected List<EvaluatedExpression> getEvaluatedExpressions(String identification) {
+		if (identification == null || identification.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
+		
+		if (identification.contains("..")) {
+			String[] identifiers = identification.split("\\.\\.");
+			
+			EvaluatedExpression startEvaluatedExpression = getEvaluatedExpression(identifiers[0]);
+			EvaluatedExpression endEvaluatedExpression = getEvaluatedExpression(identifiers[1]);
+			
+			if (startEvaluatedExpression != null || endEvaluatedExpression != null) {
+				boolean addEvaluatedExpressions = false;
+				
+				for (EvaluatedExpression evaluatedExpression : paper.getEvaluatedExpressions()) {
+					if (evaluatedExpression == startEvaluatedExpression) {
+						addEvaluatedExpressions = true;
+					}
+					
+					if (addEvaluatedExpressions) {
+						evaluatedExpressions.add(evaluatedExpression);
+					}
+					
+					if (evaluatedExpression == endEvaluatedExpression) {
+						addEvaluatedExpressions = false;
+					}
+				}
+			}
+		} else if (identification.contains(",")) {
+			for (String identifier : identification.split(",")) {
+				EvaluatedExpression evaluatedExpression = getEvaluatedExpression(identifier);
+				
+				if (evaluatedExpression != null) {
+					evaluatedExpressions.add(evaluatedExpression);
+				}
+			}
+		} else {
+			evaluatedExpressions.add(getEvaluatedExpression(identification));
+		}
+		
+		return evaluatedExpressions;
 	}
 	
 	/**

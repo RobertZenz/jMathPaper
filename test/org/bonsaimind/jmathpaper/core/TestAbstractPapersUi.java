@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestAbstractPapersUi extends AbstractPapersUi {
+	private String clipboard = "";
 	private volatile boolean quitCalled = false;
 	
 	public TestAbstractPapersUi() {
@@ -79,6 +80,59 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 		
 		process("true noway true");
 		assertLastResult(false);
+	}
+	
+	@Test
+	public void testCommandCopy() throws CommandExecutionException, InvalidExpressionException {
+		process("1+1");
+		process("2+2");
+		process("3+3");
+		process("4+4");
+		process("5+5");
+		
+		// Lines by ID
+		
+		process("copy #1");
+		assertClipboard("#1 1+1 = 2");
+		
+		process("copy #1, #2, #3");
+		assertClipboard("#1 1+1 = 2\n#2 2+2 = 4\n#3 3+3 = 6");
+		
+		process("copy #1..#3");
+		assertClipboard("#1 1+1 = 2\n#2 2+2 = 4\n#3 3+3 = 6");
+		
+		// Lines by index.
+		
+		process("copy 1");
+		assertClipboard("#1 1+1 = 2");
+		
+		process("copy -1");
+		assertClipboard("#5 5+5 = 10");
+		
+		process("copy 1, 2, 3");
+		assertClipboard("#1 1+1 = 2\n#2 2+2 = 4\n#3 3+3 = 6");
+		
+		process("copy 1..3");
+		assertClipboard("#1 1+1 = 2\n#2 2+2 = 4\n#3 3+3 = 6");
+		
+		process("copy 1..-3");
+		assertClipboard("#1 1+1 = 2\n#2 2+2 = 4\n#3 3+3 = 6");
+		
+		// IDs
+		process("copy ID 1..-3");
+		assertClipboard("#1\n#2\n#3");
+		
+		// Expression
+		process("copy exp 1..-3");
+		assertClipboard("1+1\n2+2\n3+3");
+		
+		// Result
+		process("copy res 1..-3");
+		assertClipboard("2\n4\n6");
+		
+		// Copy everything
+		process("copy exp");
+		assertClipboard("1+1\n2+2\n3+3\n4+4\n5+5");
 	}
 	
 	@Test
@@ -181,6 +235,15 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 		
 		process("km");
 		assertLastResult("1000");
+	}
+	
+	@Override
+	protected void copyToClipboard(String value) {
+		clipboard = value;
+	}
+	
+	private final void assertClipboard(String expected) {
+		Assert.assertEquals(expected, clipboard);
 	}
 	
 	private final void assertLastResult(boolean expected) {

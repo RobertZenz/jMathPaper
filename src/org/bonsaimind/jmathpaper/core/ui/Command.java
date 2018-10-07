@@ -38,10 +38,7 @@ public enum Command {
 	/** All papers will be closed. */
 	CLOSEALL("closeall"),
 	
-	/**
-	 * The current paper will be copied to the clipboard in its text
-	 * representation.
-	 */
+	/** The specified part will be copied to the clipboard. */
 	COPY("copy", "cp", "y"),
 	
 	/** Start a new paper. */

@@ -381,7 +381,8 @@ be entered instead of expressions:
                                                         :bd
     
     copy        Copies the current paper to             copy, cp, y
-                the clipboard.
+                the clipboard by default. Accepts
+                a type and a range.
     new         Creates a new paper.                    new, :new
     
     next        Switches to the next paper in           next, right,
@@ -422,6 +423,36 @@ Parameters are to be provided space separated and can be quoted, some examples:
     open "./relative path with spaces/file.jmathpaper"
     open ./relative\ path\ with\ spaces/file.jmathpaper
     open a.jmathpaper b.jmathpaper c.jmathpaper
+
+#### copy
+
+The copy command accepts additional parameters, namely a part and a range. If
+no parameters are provided the whole paper will be copied, if parameters are
+provided only the set parts of the given lines will be copied.
+
+    copy [part] [range]
+
+The types available are:
+
+    Part
+    -----------------------------------------------------------------------
+    expression  The expression of the selected lines.    exp
+    
+    id          The ID of the selected lines.
+    
+    line        The whole lines.
+    
+    paper       The whole paper.
+    
+    result      The result of the selected lines.        res
+
+The range can either be nothing (for all), a single ID or index (starting at 1),
+a comma separated list of ID's or indexes or a range specified with two dots.
+
+    copy abc
+    copy 4
+    copy expression #3,abc,#7
+    copy result 3..abc
 
 ### Options
 
