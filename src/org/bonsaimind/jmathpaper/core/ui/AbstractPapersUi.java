@@ -210,6 +210,20 @@ public abstract class AbstractPapersUi implements Ui {
 					new_();
 					break;
 				
+				case NOTE:
+					if (parameters != null && parameters.length > 0) {
+						NoteAction noteAction = NoteAction.getNoteAction(parameters[0]);
+						
+						if (noteAction == null) {
+							noteAction = NoteAction.ADD;
+						}
+						
+						editNote(noteAction, Arrays.copyOfRange(parameters, 1, parameters.length));
+					} else {
+						throw new CommandExecutionException("No parameters given: add/clear/delete/insert parameters");
+					}
+					break;
+				
 				case OPEN:
 					for (String parameter : parameters) {
 						open(Paths.get(parameter));
@@ -673,6 +687,61 @@ public abstract class AbstractPapersUi implements Ui {
 	 */
 	protected void currentSelectedPaperHasChanged() {
 		// For extending classes.
+	}
+	
+	/**
+	 * Edits the note of the current {@link Paper}.
+	 * 
+	 * @param noteAction The {@link NoteAction} to perform on the current note.
+	 * @param parameters The parameters to use.
+	 */
+	protected void editNote(NoteAction noteAction, String[] parameters) {
+		checkCurrentPaper();
+		
+		switch (noteAction) {
+			case ADD:
+				paper.setNotes(paper.getNotes() + String.join(" ", parameters) + "\n");
+				break;
+			
+			case CLEAR:
+				paper.setNotes("");
+				break;
+			
+			case DELETE:
+			case INSERT:
+				if (parameters.length <= 0) {
+					throw new IllegalArgumentException("Expected an index, got nothing.");
+				}
+				
+				int index = -1;
+				
+				try {
+					index = Integer.parseInt(parameters[0]) - 1;
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException("Expected an index, got: " + parameters[0], e);
+				}
+				
+				List<String> noteLines = new ArrayList<>(Arrays.asList(paper.getNotes().split("\\n")));
+				
+				if (index < 0 || index >= noteLines.size()) {
+					throw new IllegalArgumentException("Given index is out of range.");
+				}
+				
+				switch (noteAction) {
+					case DELETE:
+						noteLines.remove(index);
+						break;
+					
+					case INSERT:
+						noteLines.add(index, String.join(" ", Arrays.copyOfRange(parameters, 1, parameters.length)));
+						break;
+				}
+				
+				paper.setNotes(String.join("\n", noteLines) + "\n");
+				break;
+		}
+		
+		currentPaperHasBeenModified();
 	}
 	
 	/**

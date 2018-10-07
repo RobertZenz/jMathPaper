@@ -47,6 +47,9 @@ public enum Command {
 	/** Switches to the next paper, if there is any. */
 	NEXT("next", "right", ":bnext", ":bn"),
 	
+	/** Edits the note. */
+	NOTE("note"),
+	
 	/** Opens the given paper. */
 	OPEN("open", ":e"),
 	

@@ -383,10 +383,14 @@ be entered instead of expressions:
     copy        Copies the current paper to             copy, cp, y
                 the clipboard by default. Accepts
                 a type and a range.
+    
     new         Creates a new paper.                    new, :new
     
     next        Switches to the next paper in           next, right,
                 the list, if there is any.              :bnext, :bn
+    
+    note        Allows to edit the current note.        note
+                Accepts the operation and parameters.
     
     open        Opens a paper from the given path.      open, :e
                 The path to open the files is expected
@@ -434,17 +438,17 @@ provided only the set parts of the given lines will be copied.
 
 The types available are:
 
-    Part
+    Part        Description                              Aliases
     -----------------------------------------------------------------------
-    expression  The expression of the selected lines.    exp
+    expression  The expression of the selected lines.    expression, exp
     
-    id          The ID of the selected lines.
+    id          The ID of the selected lines.            id
     
-    line        The whole lines.
+    line        The whole lines.                         line
     
-    paper       The whole paper.
+    paper       The whole paper.                         paper
     
-    result      The result of the selected lines.        res
+    result      The result of the selected lines.        result, res
 
 The range can either be nothing (for all), a single ID or index (starting at 1),
 a comma separated list of ID's or indexes or a range specified with two dots.
@@ -453,6 +457,36 @@ a comma separated list of ID's or indexes or a range specified with two dots.
     copy 4
     copy expression #3,abc,#7
     copy result 3..abc
+
+#### note
+
+The note command accepts additional parameters, namely the action and
+the associated parameters.
+
+    note action [index] line
+
+The actions are:
+
+    Action      Description                              Aliases
+    -----------------------------------------------------------------------
+    add         Adds the given value as separate line    add, append
+                to the notes.
+    
+    clear       Clears the whole note.                   clear, clr, cls,
+                                                         reset
+    
+    delete      Deletes the line with the given 1-based  delete, del,
+                index.                                   remove, rem
+    
+    insert      Inserts the line at the given 1-based    insert, ins
+                index.
+
+Some examples.
+
+    note add New line.
+    note insert 1 Inserted before the first line.
+    note delete 3
+    note clear
 
 ### Options
 

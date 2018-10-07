@@ -136,6 +136,24 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	}
 	
 	@Test
+	public void testCommandNote() throws CommandExecutionException, InvalidExpressionException {
+		process("note add 1");
+		process("note add 2");
+		process("note add 3");
+		process("note add 4");
+		assertNote("1\n2\n3\n4\n");
+		
+		process("note insert 1 First");
+		assertNote("First\n1\n2\n3\n4\n");
+		
+		process("note delete 3");
+		assertNote("First\n1\n3\n4\n");
+		
+		process("note clear");
+		assertNote("");
+	}
+	
+	@Test
 	public void testCommandQuit() throws CommandExecutionException, InvalidExpressionException {
 		process("quit");
 		
@@ -270,6 +288,10 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 		for (int index = 0; index < expected.length; index++) {
 			Assert.assertEquals(expected[index], actual.get(index));
 		}
+	}
+	
+	private final void assertNote(String expected) {
+		Assert.assertEquals(expected, paper.getNotes());
 	}
 	
 	private final void assertSplitParameters(String[] expected, String input) {
