@@ -620,13 +620,20 @@ public abstract class AbstractPapersUi implements Ui {
 		return paper;
 	}
 	
+	/**
+	 * Invoked whenever the current {@link Paper} has been added, meaning that
+	 * is just has been added to this UI.
+	 * <p>
+	 * Overriding classes can safely assume that there is a current
+	 * {@link Paper}.
+	 */
 	protected void currentPaperHasBeenAdded() {
-		
+		// For extending classes.
 	}
 	
 	/**
-	 * Invoked whenever the current {@link Paper} has been modified,meaning that
-	 * one or more additional expressions has been added.
+	 * Invoked whenever the current {@link Paper} has been modified, meaning
+	 * that one or more additional expressions has been added.
 	 * <p>
 	 * Overriding classes can safely assume that there is a current
 	 * {@link Paper}.
