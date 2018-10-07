@@ -24,19 +24,19 @@ package org.bonsaimind.jmathpaper.core.ui;
  */
 public enum PaperPart {
 	/** The expression of a line/expression. */
-	EXPRESSION("exp"),
+	EXPRESSION("expression", "exp"),
 	
 	/** The ID of a line/expression. */
-	ID(),
+	ID("id"),
 	
 	/** The whole line-expression. */
-	LINE(),
+	LINE("line"),
 	
 	/** The whole paper. */
-	PAPER(),
+	PAPER("paper"),
 	
 	/** The result of a line/expression. */
-	RESULT("res");
+	RESULT("result", "res");
 	
 	private String[] aliases = null;
 	
@@ -50,10 +50,6 @@ public enum PaperPart {
 		}
 		
 		for (PaperPart paperPart : values()) {
-			if (paperPart.name().equalsIgnoreCase(name)) {
-				return paperPart;
-			}
-			
 			for (String alias : paperPart.aliases) {
 				if (name.equalsIgnoreCase(alias)) {
 					return paperPart;
