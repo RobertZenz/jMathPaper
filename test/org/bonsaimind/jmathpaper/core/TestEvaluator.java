@@ -65,6 +65,38 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testCompoundUnitConversions() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		// Load the defaults
+		ResourceLoader.processResource("units/iec.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/default.units", evaluator.getUnitConverter()::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", evaluator.getUnitConverter()::loadConversion);
+		ResourceLoader.processResource("other/default.aliases", evaluator::loadAlias);
+		ResourceLoader.processResource("other/default.context", evaluator::loadContextExpression);
+		
+		// Basic support
+		assertResult("2236.9362920544022906227630637079", "1km/sec to ml/h", evaluator);
+		assertResult("2236.9362920544022906227630637079", "1km/sec in ml/h", evaluator);
+		assertResult("2236.9362920544022906227630637079", "1km/sec as ml/h", evaluator);
+		assertResult("2236.9362920544022906227630637079", "1km/sec ml/h", evaluator);
+		
+		// Variables
+		evaluator.evaluate("a1=5");
+		assertResult("5", "a1", evaluator);
+		assertResult("61", "a1+7 * 8", evaluator);
+		assertResult("20", "a1 + a1 + a1 + a1", evaluator);
+		assertResult("20", "a1 + a1 + a1 + a1 1", evaluator);
+		assertResult("20", "a1 + a1 + a1 + a1 to 1", evaluator);
+		assertResult("20000", "a1 + a1 + a1 + a1 km to m", evaluator);
+		assertResult("20000", "a1 + a1 + a1 + a1 km m", evaluator);
+		
+		// No value
+		assertResult("43166.4685056", "l/hour/sqm l/minute/sqml", evaluator);
+	}
+	
+	@Test
 	public void testContextExpressions() throws InvalidExpressionException {
 		Evaluator evaluator = new Evaluator();
 		
@@ -161,6 +193,7 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("2.54", "1inch to centimeter", evaluator);
 		assertResult("2.54", "1in to cm", evaluator);
 		assertResult("2.54", "1in in cm", evaluator);
+		assertResult("2.54", "1in as cm", evaluator);
 		assertResult("2.54", "1in cm", evaluator);
 		
 		assertResult("1", "1 m to m", evaluator);

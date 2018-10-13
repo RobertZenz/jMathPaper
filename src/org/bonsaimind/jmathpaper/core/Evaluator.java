@@ -229,7 +229,7 @@ public class Evaluator {
 		
 		Matcher expressionUnitSeparatorMatcher = EXPRESSION_UNIT_SEPARATOR.matcher(processedExpression);
 		
-		if (expressionUnitSeparatorMatcher.find()) {
+		if (findExpressionUnitSeparatorPosition(processedExpression, expressionUnitSeparatorMatcher)) {
 			String expressionPart = processedExpression.substring(0, expressionUnitSeparatorMatcher.start() + 1);
 			String unitsPart = processedExpression.substring(expressionUnitSeparatorMatcher.start() + 1);
 			
@@ -238,7 +238,7 @@ public class Evaluator {
 			if (unitParts[0] != null && unitParts[0].isEmpty()) {
 				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
-				if (unitFrom != null) {
+				if (unitFrom != null && !isKnown(unitFrom)) {
 					expressionPart = "1";
 				} else {
 					unitFrom = unitConverter.getCompoundUnit(unitParts[1]);
@@ -343,6 +343,54 @@ public class Evaluator {
 		expression = applyPattern(expression, HEX_NUMBER, Evaluator::convertFromHex);
 		
 		return expression;
+	}
+	
+	private boolean findExpressionUnitSeparatorPosition(String expression, Matcher expressionUnitSeparatorMatcher) {
+		int searchIndex = 0;
+		
+		while (expressionUnitSeparatorMatcher.find(searchIndex)) {
+			if (expression.substring(
+					expressionUnitSeparatorMatcher.start() + 1,
+					expressionUnitSeparatorMatcher.end() - 1).equals(" ")) {
+				return true;
+			}
+			
+			String foundExpression = "";
+			int index = 0;
+			
+			index = expressionUnitSeparatorMatcher.start();
+			
+			while (index >= 0 && Character.isLetterOrDigit(expression.charAt(index))) {
+				index--;
+			}
+			
+			foundExpression = expression.substring(
+					index + 1,
+					Math.min(expression.length(), expressionUnitSeparatorMatcher.end()));
+			
+			if (!foundExpression.isEmpty() && Character.isDigit(foundExpression.charAt(0))) {
+				return true;
+			}
+			
+			if (expressionUnitSeparatorMatcher.end() < expression.length()) {
+				index = expressionUnitSeparatorMatcher.end();
+				
+				while (index < expression.length() && Character.isLetterOrDigit(expression.charAt(index))) {
+					index++;
+				}
+				
+				foundExpression = expression.substring(expressionUnitSeparatorMatcher.end(), index)
+						+ foundExpression;
+			}
+			
+			if (!isKnown(foundExpression)) {
+				return true;
+			}
+			
+			searchIndex = expressionUnitSeparatorMatcher.start() + 1;
+		}
+		
+		return false;
 	}
 	
 	private String getNextId() {
