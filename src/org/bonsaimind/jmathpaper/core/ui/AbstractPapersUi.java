@@ -505,24 +505,44 @@ public abstract class AbstractPapersUi implements Ui {
 		return value.toString();
 	}
 	
+	/**
+	 * Adds the given alias to the current {@link #paper}.
+	 * 
+	 * @param alias The alias to add.
+	 */
 	protected void addAlias(String alias) {
 		checkCurrentPaper();
 		
 		paper.getEvaluator().loadAlias(alias);
 	}
 	
+	/**
+	 * Adds the given conversion to the current {@link #paper}.
+	 * 
+	 * @param alias The conversion to add.
+	 */
 	protected void addConversion(String conversion) {
 		checkCurrentPaper();
 		
 		paper.getEvaluator().getUnitConverter().loadConversion(conversion);
 	}
 	
+	/**
+	 * Adds the given prefix to the current {@link #paper}.
+	 * 
+	 * @param alias The prefix to add.
+	 */
 	protected void addPrefix(String prefix) {
 		checkCurrentPaper();
 		
 		paper.getEvaluator().getUnitConverter().loadPrefix(prefix);
 	}
 	
+	/**
+	 * Adds the given unit to the current {@link #paper}.
+	 * 
+	 * @param alias The unit to add.
+	 */
 	protected void addUnit(String unit) {
 		checkCurrentPaper();
 		
