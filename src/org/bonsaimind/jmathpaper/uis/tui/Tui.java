@@ -128,15 +128,7 @@ public class Tui extends AbstractPapersUi {
 					writer.write("> ");
 				}
 				
-				if (paper.isChanged()) {
-					writer.write("*");
-				}
-				
-				if (paper.getFile() != null) {
-					writer.write(paper.getFile().toAbsolutePath().toString());
-				} else {
-					writer.write("(unsaved)");
-				}
+				writer.write(getLongPaperTitle(paper));
 				
 				writer.write("\n");
 			}

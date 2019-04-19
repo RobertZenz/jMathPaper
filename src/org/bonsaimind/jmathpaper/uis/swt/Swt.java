@@ -57,7 +57,6 @@ public class Swt extends AbstractPapersUi {
 	private FileDialog fileSaveDialog = null;
 	private MenuItem nextPaperMenuItem = null;
 	private MenuItem openMenuItem = null;
-	private int paperCounter = 0;
 	private MenuItem previousPaperMenuItem = null;
 	private MenuItem saveAsMenuItem = null;
 	private MenuItem saveMenuItem = null;
@@ -234,14 +233,8 @@ public class Swt extends AbstractPapersUi {
 	@Override
 	protected void currentPaperHasBeenAdded() {
 		CTabItem cTabItem = new CTabItem(cTabFolder, SWT.CLOSE);
-		
-		if (paper.getFile() != null) {
-			cTabItem.setText(paper.getFile().getFileName().toString());
-			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
-		} else {
-			paperCounter = paperCounter + 1;
-			cTabItem.setText("*Paper #" + Integer.toString(paperCounter));
-		}
+		cTabItem.setText(getShortPaperTitle(paper));
+		cTabItem.setToolTipText(getLongPaperTitle(paper));
 		cTabItem.addListener(SWT.Dispose, new EventForwarder(this::updateMenuItems));
 		
 		PaperComponent paperComponent = new PaperComponent(cTabFolder, this, paper, SWT.NONE);
@@ -259,10 +252,8 @@ public class Swt extends AbstractPapersUi {
 	@Override
 	protected void currentPaperHasBeenModified() {
 		CTabItem cTabItem = cTabFolder.getSelection();
-		
-		if (!cTabItem.getText().startsWith("*")) {
-			cTabItem.setText("*" + cTabItem.getText());
-		}
+		cTabItem.setText(getShortPaperTitle(paper));
+		cTabItem.setToolTipText(getLongPaperTitle(paper));
 		
 		getCurrentPaperComponent().updateExpressions();
 		getCurrentPaperComponent().updateNotes();
@@ -277,9 +268,9 @@ public class Swt extends AbstractPapersUi {
 	protected void currentPaperHasBeenReset() {
 		CTabItem cTabItem = cTabFolder.getSelection();
 		
-		if (cTabItem != null && paper != null && paper.getFile() != null) {
-			cTabItem.setText(paper.getFile().getFileName().toString());
-			cTabItem.setToolTipText(paper.getFile().toAbsolutePath().toString());
+		if (cTabItem != null && paper != null) {
+			cTabItem.setText(getShortPaperTitle(paper));
+			cTabItem.setToolTipText(getLongPaperTitle(paper));
 		}
 		
 		getCurrentPaperComponent().clearExpressions();

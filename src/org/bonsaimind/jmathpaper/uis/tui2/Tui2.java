@@ -40,7 +40,6 @@ public class Tui2 extends AbstractPapersUi {
 	private Table<String> expressionsTable = null;
 	private EventExtendedTextBox inputTextBox = null;
 	private TextBox notesTextBox = null;
-	private int paperCounter = 0;
 	private Screen screen = null;
 	private PseudoTabBar<Paper> tabBar = null;
 	private Window window = null;
@@ -176,12 +175,7 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	private void addTab(Paper paper) {
-		if (paper.getFile() != null) {
-			tabBar.addTab(papers.indexOf(paper), paper.getFile().getFileName().toString(), paper);
-		} else {
-			paperCounter = paperCounter + 1;
-			tabBar.addTab(papers.indexOf(paper), "*Paper #" + Integer.toString(paperCounter), paper);
-		}
+		tabBar.addTab(papers.indexOf(paper), getShortPaperTitle(paper), paper);
 	}
 	
 	private void clearExpressionsTable() {
