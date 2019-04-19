@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
@@ -52,6 +54,12 @@ public abstract class AbstractPapersUi implements Ui {
 	
 	/** The {@link UiParameters} with which this has been run. */
 	protected UiParameters uiParameters = null;
+	
+	/** The counter for papers which are not saved. */
+	private int paperCounter = 0;
+	
+	/** The cache for the titles of the papers. */
+	private Map<Paper, String> paperTitleCache = new WeakHashMap<>();
 	
 	/** The {@link #papers} as read-only {@link List}. */
 	private List<Paper> readonlyPapers = null;
@@ -892,6 +900,70 @@ public abstract class AbstractPapersUi implements Ui {
 		}
 		
 		return evaluatedExpressions;
+	}
+	
+	/**
+	 * Gets the long title for the given {@link Paper}.
+	 * <p>
+	 * The long title contains the full path (if any) and a short notice if the
+	 * {@link Paper} has unsaved modifications.
+	 * 
+	 * @param paper The {@link Paper} to get the long title for, can be
+	 *        {@code null} in which case an empty {@link String} is returned.
+	 * @return The long title for the given paper.
+	 */
+	protected String getLongPaperTitle(Paper paper) {
+		if (paper == null) {
+			return "";
+		}
+		
+		if (paper.getFile() != null) {
+			String title = paper.getFile().toAbsolutePath().toString();
+			
+			if (paper.isChanged()) {
+				title = "(not saved) " + title;
+			}
+			
+			return title;
+		} else {
+			return "not saved";
+		}
+	}
+	
+	/**
+	 * Gets the short title for the given {@link Paper}.
+	 * <p>
+	 * The short title contains the filename (if or a placeholder name) and a
+	 * marker if the {@link Paper} has unsaved modifications.
+	 * 
+	 * @param paper The {@link Paper} to get the short title for, can be
+	 *        {@code null} in which case an empty {@link String} is returned.
+	 * @return The short title for the given paper.
+	 */
+	protected String getShortPaperTitle(Paper paper) {
+		if (paper == null) {
+			return "";
+		}
+		
+		if (paper.getFile() != null) {
+			String title = paper.getFile().getFileName().toString();
+			
+			if (paper.isChanged()) {
+				title = "*" + title;
+			}
+			
+			return title;
+		} else {
+			String title = paperTitleCache.get(paper);
+			
+			if (title == null) {
+				paperCounter = paperCounter + 1;
+				title = "*Paper #" + Integer.toString(paperCounter);
+				paperTitleCache.put(paper, title);
+			}
+			
+			return title;
+		}
 	}
 	
 	/**
