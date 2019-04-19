@@ -49,6 +49,10 @@ public final class ResourceLoader {
 		
 		processResource(REGEX_PACKAGE + "/" + name + ".regex", pattern::append, null);
 		
+		if (pattern.length() == 0) {
+			throw new IllegalStateException("Pattern \"" + name + "\" could not be loaded.");
+		}
+		
 		return Pattern.compile(pattern.toString());
 	}
 	
