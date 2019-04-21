@@ -79,6 +79,8 @@ public abstract class AbstractPapersUi implements Ui {
 		checkCurrentPaper();
 		
 		paper.clear();
+		
+		currentPaperHasBeenModified();
 	}
 	
 	/**
