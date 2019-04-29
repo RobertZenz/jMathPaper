@@ -45,34 +45,6 @@ public class UiParameters {
 	 * Gets the parameter value with the given name.
 	 * 
 	 * @param parameterName The name of the parameter to get, case-sensitive.
-	 * @return The value of the parameter with the given name, {@code null} if
-	 *         there is no such parameter.
-	 */
-	public String get(String parameterName) {
-		return get(parameterName, null);
-	}
-	
-	/**
-	 * Gets the parameter value with the given name.
-	 * 
-	 * @param parameterName The name of the parameter to get, case-sensitive.
-	 * @param defaultValue The default value to return if the parameter does not
-	 *        exist.
-	 * @return The value of the parameter with the given name, the default value
-	 *         if there is no such parameter.
-	 */
-	public String get(String parameterName, String defaultValue) {
-		if (parameters.containsKey(parameterName)) {
-			return parameters.get(parameterName);
-		} else {
-			return defaultValue;
-		}
-	}
-	
-	/**
-	 * Gets the parameter value with the given name.
-	 * 
-	 * @param parameterName The name of the parameter to get, case-sensitive.
 	 * @return The value of the parameter with the given name, {@code false} if
 	 *         there is no such parameter.
 	 */
@@ -125,6 +97,34 @@ public class UiParameters {
 				// Ignore the exception, return the default value.
 				return defaultValue;
 			}
+		} else {
+			return defaultValue;
+		}
+	}
+	
+	/**
+	 * Gets the parameter value with the given name.
+	 * 
+	 * @param parameterName The name of the parameter to get, case-sensitive.
+	 * @return The value of the parameter with the given name, {@code null} if
+	 *         there is no such parameter.
+	 */
+	public String getString(String parameterName) {
+		return getString(parameterName, null);
+	}
+	
+	/**
+	 * Gets the parameter value with the given name.
+	 * 
+	 * @param parameterName The name of the parameter to get, case-sensitive.
+	 * @param defaultValue The default value to return if the parameter does not
+	 *        exist.
+	 * @return The value of the parameter with the given name, the default value
+	 *         if there is no such parameter.
+	 */
+	public String getString(String parameterName, String defaultValue) {
+		if (parameters.containsKey(parameterName)) {
+			return parameters.get(parameterName);
 		} else {
 			return defaultValue;
 		}
