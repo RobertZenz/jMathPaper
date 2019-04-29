@@ -44,15 +44,18 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 
 import org.bonsaimind.jmathpaper.Version;
+import org.bonsaimind.jmathpaper.core.support.Topic;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
 import org.bonsaimind.jmathpaper.uis.swing.components.PaperComponent;
 import org.bonsaimind.jmathpaper.uis.swing.events.ActionForwardingListener;
 import org.bonsaimind.jmathpaper.uis.swing.events.UiQuittingWindowListener;
+import org.bonsaimind.jmathpaper.uis.swing.help.HelpFrame;
 
 public class Swing extends AbstractPapersUi {
 	protected JFileChooser fileChooser = null;
 	protected JFrame frame = null;
+	protected HelpFrame helpFrame = null;
 	private JMenuItem clearPaperMenuItem;
 	private JMenuItem closeAllPapersMenuItem;
 	private JMenuItem closePaperMenuItem;
@@ -76,6 +79,8 @@ public class Swing extends AbstractPapersUi {
 		setupAlternateRowColor();
 		
 		fileChooser = new JFileChooser();
+		
+		helpFrame = new HelpFrame(help);
 		
 		// We need to catch the Ctrl+Tab/Ctrl+Shift+Tab keys directly in
 		// the event loop. See method for further information.
@@ -191,6 +196,9 @@ public class Swing extends AbstractPapersUi {
 	
 	@Override
 	public void quit() {
+		helpFrame.setVisible(false);
+		helpFrame.dispose();
+		
 		frame.setVisible(false);
 		frame.dispose();
 	}
@@ -302,6 +310,12 @@ public class Swing extends AbstractPapersUi {
 			// initialized or created.
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	protected void showHelp(Topic topic) {
+		helpFrame.showTopic(topic);
+		helpFrame.setVisible(true);
 	}
 	
 	private void onAwtEvent(AWTEvent event) {
