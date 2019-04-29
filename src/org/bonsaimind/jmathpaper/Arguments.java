@@ -165,7 +165,7 @@ public class Arguments {
 			if (uiParametersStrings != null && !uiParametersStrings.isEmpty()) {
 				for (String uiParameterString : uiParametersStrings) {
 					if (uiParameterString != null && !uiParameterString.trim().isEmpty()) {
-						int firstColonIndex = uiParametersStrings.indexOf(":");
+						int firstColonIndex = uiParameterString.indexOf(":");
 						
 						if (firstColonIndex > 0) {
 							parameters.put(
