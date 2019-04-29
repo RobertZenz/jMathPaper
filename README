@@ -22,7 +22,6 @@ Please see the attached license files for details.
  * [jline3](https://github.com/jline/jline3), BSD-like
  * [Lanterna](https://github.com/mabe02/lanterna), LGPLv3
  * [picocli](https://github.com/remkop/picocli), Apache 2.0
- * [SWT](https://www.eclipse.org/swt/), Eclipse Public License 1.0
 
 
 Download
@@ -38,8 +37,8 @@ There are multiple download options available:
  * CLI-TUI2: Only contains the command line and service interface and
    the extended text user interface. This interface has to be considered
    experimental and might not work correctly.
- * Full: The full build, containing all user interfaces. As SWT uses native
-   components, you must choose the correct one for your platform.
+ * GUI: Only contains the GUI interface.
+ * Full: The full build, containing all user interfaces including the GUI one.
 
 
 Usage
@@ -114,7 +113,7 @@ the name of the variable and an equals sign:
 The variable names must begin with either a lower- or uppercase letter or
 an underscore, and can contain any letter, underscores or numbers. 
 
-The following constancts are available by default:
+The following constants are available by default:
 
     Constant
     --------------------------------------------------------------------
@@ -339,10 +338,10 @@ jMathPaper supports three main modes of operations:
 
  1. CLI, only processing arguments given.
  2. TUI, a simple text interface.
- 3. SWT, a GUI based on SWT.
+ 3. Swing, a GUI based on Swing.
  4. Service, a UI to use jMathPaper as a service.
 
-By default with no arguments given the SWT UI is started, if an expression is
+By default with no arguments given the Swing UI is started, if an expression is
 given the CLI UI will be used instead.
 
 One can also force one UI to use by specifying `-t` as argument and one of
@@ -350,7 +349,7 @@ the following values:
 
  * `cli`
  * `tui`
- * `swt`
+ * `swing`
  * `service`
 
 ### Commands
@@ -589,7 +588,7 @@ from `/tmp/mathpipe-output`.
 Technical information
 ---------------------
 
-jMathPaper is a Java 8 application which uses SWT and EvalEx.
+jMathPaper is a Java 8 application which uses Swing and EvalEx.
 
 The save format is a simple plain text format, with UTF-8 as encoding and UNIX
 line endings. Everything from the start of the file to the first empty line is
