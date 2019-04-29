@@ -22,6 +22,7 @@ package org.bonsaimind.jmathpaper.core;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -175,6 +176,10 @@ public class Paper {
 		evaluateLines(Files.readAllLines(file, StandardCharsets.UTF_8));
 		
 		changed = false;
+	}
+	
+	public BigDecimal preview(String expression) throws InvalidExpressionException {
+		return evaluator.preview(expression);
 	}
 	
 	/**

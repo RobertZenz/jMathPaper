@@ -37,6 +37,7 @@ import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
 import org.bonsaimind.jmathpaper.core.ui.Ui;
 import org.bonsaimind.jmathpaper.uis.swing.events.KeyPressedListener;
+import org.bonsaimind.jmathpaper.uis.swing.events.NotifyingDocumentListener;
 import org.bonsaimind.jmathpaper.uis.swing.models.PaperColumnModel;
 import org.bonsaimind.jmathpaper.uis.swing.models.PaperModel;
 
@@ -83,6 +84,7 @@ public class PaperComponent extends JComponent {
 		
 		inputTextField = new JTextField();
 		inputTextField.setHorizontalAlignment(JTextField.RIGHT);
+		inputTextField.getDocument().addDocumentListener(new NotifyingDocumentListener(this::onInputTextFieldChanged));
 		inputTextField.addKeyListener(new KeyPressedListener(KeyEvent.VK_DOWN, this::onInputTextFieldDownKey));
 		inputTextField.addKeyListener(new KeyPressedListener(KeyEvent.VK_ESCAPE, this::onInputTextFieldEscapeKey));
 		inputTextField.addKeyListener(new KeyPressedListener(KeyEvent.VK_ENTER, this::onInputTextFieldReturnKey));
@@ -165,6 +167,18 @@ public class PaperComponent extends JComponent {
 			}
 		}
 		inputTextField.requestFocus();
+	}
+	
+	private void onInputTextFieldChanged() {
+		try {
+			messageLabel.setText(" ");
+			
+			if (!inputTextField.getText().trim().isEmpty()) {
+				messageLabel.setText(paper.getNumberFormat().format(paper.preview(inputTextField.getText())));
+			}
+		} catch (InvalidExpressionException e) {
+			// Ignore the exception, nothing to do.
+		}
 	}
 	
 	private void onInputTextFieldDownKey() {

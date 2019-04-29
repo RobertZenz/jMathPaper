@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
@@ -89,6 +90,7 @@ public class Tui2 extends AbstractPapersUi {
 		errorLabel = new Label("");
 		
 		inputTextBox = new EventExtendedTextBox(Style.SINGLE_LINE)
+				.addTextChangedHandler(this::onInputTextChanged)
 				.addHandler(new KeyStroke(KeyType.ArrowDown), this::onInputTextBoxDownKey)
 				.addHandler(new KeyStroke(KeyType.Enter), this::onInputTextBoxEnterKey)
 				.addHandler(new KeyStroke(KeyType.ArrowUp), this::onInputTextBoxUpKey);
@@ -221,6 +223,18 @@ public class Tui2 extends AbstractPapersUi {
 	
 	private void onInputTextBoxUpKey(EventExtendedTextBox textBox) {
 		selectNextRow(-1);
+	}
+	
+	private void onInputTextChanged(EventExtendedTextBox textBox, String oldText, String newText) {
+		try {
+			errorLabel.setText(" ");
+			
+			if (!newText.trim().isEmpty()) {
+				errorLabel.setText(paper.getNumberFormat().format(paper.preview(newText)));
+			}
+		} catch (InvalidExpressionException e) {
+			// Ignore the exception, nothing to do.
+		}
 	}
 	
 	private void onNotesTextBoxChanged(EventExtendedTextBox textBox, String oldText, String newText) {

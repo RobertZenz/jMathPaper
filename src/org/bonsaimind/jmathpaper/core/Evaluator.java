@@ -154,6 +154,10 @@ public class Evaluator {
 		return mathExpression;
 	}
 	
+	public BigDecimal preview(String expression) throws InvalidExpressionException {
+		return evaluateInternal(expression, null).getResult();
+	}
+	
 	public void registerAlias(String alias, String replacement) {
 		aliases.put("(^| )" + alias + "( |$)", replacement);
 	}
@@ -300,7 +304,7 @@ public class Evaluator {
 				result = unitConverter.convert(unitFrom, unitTo, result, calculationMathContext).stripTrailingZeros();
 			}
 			
-			if (id == null) {
+			if (id == null && idSupplier != null) {
 				id = idSupplier.get();
 			}
 			
