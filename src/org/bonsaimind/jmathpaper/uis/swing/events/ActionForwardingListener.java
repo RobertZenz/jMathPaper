@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Robert 'Bobby' Zenz
+ * Copyright 2019, Robert 'Bobby' Zenz
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,27 +17,22 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swt.events;
+package org.bonsaimind.jmathpaper.uis.swing.events;
 
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class ForwardingSelectionListener implements SelectionListener {
-	private Runnable target = null;
+public class ActionForwardingListener implements ActionListener {
+	protected Runnable action = null;
 	
-	public ForwardingSelectionListener(Runnable target) {
+	public ActionForwardingListener(Runnable action) {
 		super();
 		
-		this.target = target;
+		this.action = action;
 	}
 	
 	@Override
-	public void widgetDefaultSelected(SelectionEvent e) {
-		target.run();
-	}
-	
-	@Override
-	public void widgetSelected(SelectionEvent e) {
-		target.run();
+	public void actionPerformed(ActionEvent event) {
+		action.run();
 	}
 }

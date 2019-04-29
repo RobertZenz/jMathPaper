@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Robert 'Bobby' Zenz
+ * Copyright 2019, Robert 'Bobby' Zenz
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,22 +17,36 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swt.events;
+package org.bonsaimind.jmathpaper.uis.swing.events;
 
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class EventForwarder implements Listener {
-	private Runnable target = null;
+public class KeyPressedListener implements KeyListener {
+	protected Runnable action = null;
+	protected int key = -1;
 	
-	public EventForwarder(Runnable target) {
+	public KeyPressedListener(int key, Runnable action) {
 		super();
 		
-		this.target = target;
+		this.key = key;
+		this.action = action;
 	}
 	
 	@Override
-	public void handleEvent(Event event) {
-		target.run();
+	public void keyPressed(KeyEvent event) {
+		if (event.getKeyCode() == key) {
+			action.run();
+		}
+	}
+	
+	@Override
+	public void keyReleased(KeyEvent event) {
+		// Nothing to do.
+	}
+	
+	@Override
+	public void keyTyped(KeyEvent event) {
+		// Nothing to do.
 	}
 }
