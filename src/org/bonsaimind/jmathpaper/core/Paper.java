@@ -266,7 +266,7 @@ public class Paper {
 	}
 	
 	public void setNotes(String notes) {
-		changed = changed || Objects.equals(this.notes, notes);
+		changed = changed || !Objects.equals(this.notes, notes);
 		
 		this.notes = notes;
 	}
