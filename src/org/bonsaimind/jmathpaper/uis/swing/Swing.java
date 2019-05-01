@@ -129,6 +129,7 @@ public class Swing extends AbstractPapersUi {
 		quitMenuItem.addActionListener(new ActionForwardingListener(this::quit));
 		
 		JMenu fileMenu = new JMenu();
+		fileMenu.setMnemonic('F');
 		fileMenu.setText("File");
 		fileMenu.add(newPaperMenuItem);
 		fileMenu.add(openPaperMenuItem);
@@ -162,6 +163,7 @@ public class Swing extends AbstractPapersUi {
 		notesMenuItem.addActionListener(this::onShowHideNotesClicked);
 		
 		JMenu viewMenu = new JMenu();
+		viewMenu.setMnemonic('V');
 		viewMenu.setText("View");
 		viewMenu.add(nextPaperMenuItem);
 		viewMenu.add(previousPaperMenuItem);
