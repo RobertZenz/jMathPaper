@@ -20,7 +20,6 @@
 package org.bonsaimind.jmathpaper.core;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEvaluator extends AbstractExpressionTest {
@@ -243,15 +242,6 @@ public class TestEvaluator extends AbstractExpressionTest {
 		// Test if the automatic conversion will not pickup variables.
 		evaluator.evaluate("km=5");
 		assertResult("5", "km", evaluator);
-		
-		// These should not be allowed.
-		try {
-			evaluator.evaluate("1/cm");
-			Assert.fail();
-		} catch (InvalidExpressionException e) {
-			// Okay.
-		}
-		
 	}
 	
 	@Test
