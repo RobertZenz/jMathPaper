@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
-import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
@@ -185,6 +184,14 @@ public class Tui2 extends AbstractPapersUi {
 		updateExpressionTable();
 	}
 	
+	protected void setMessage(String message) {
+		if (message == null) {
+			errorLabel.setText(" ");
+		} else {
+			errorLabel.setText(message + " ");
+		}
+	}
+	
 	@Override
 	protected void setPaper(Paper paper) throws IllegalStateException {
 		super.setPaper(paper);
@@ -214,9 +221,9 @@ public class Tui2 extends AbstractPapersUi {
 			resetInput();
 		} catch (Exception e) {
 			if (e.getMessage() != null) {
-				errorLabel.setText(e.getMessage());
+				setMessage(e.getMessage());
 			} else {
-				errorLabel.setText("No details available: " + e.getClass().getSimpleName());
+				setMessage("No details available: " + e.getClass().getSimpleName());
 			}
 		}
 	}
@@ -226,15 +233,7 @@ public class Tui2 extends AbstractPapersUi {
 	}
 	
 	private void onInputTextChanged(EventExtendedTextBox textBox, String oldText, String newText) {
-		try {
-			errorLabel.setText(" ");
-			
-			if (!newText.trim().isEmpty()) {
-				errorLabel.setText(paper.preview(newText).getFormattedResult(paper.getNumberFormat()));
-			}
-		} catch (InvalidExpressionException e) {
-			// Ignore the exception, nothing to do.
-		}
+		setMessage(paper.previewResult(newText));
 	}
 	
 	private void onNotesTextBoxChanged(EventExtendedTextBox textBox, String oldText, String newText) {
@@ -252,7 +251,7 @@ public class Tui2 extends AbstractPapersUi {
 	
 	private void resetInput() {
 		inputTextBox.setText("");
-		errorLabel.setText("");
+		setMessage("");
 		
 		expressionsTable.setSelectedRow(-1);
 		bufferedInput = null;

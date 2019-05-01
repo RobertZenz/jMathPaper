@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpression;
+
 public class Paper {
 	private static final int DEFAULT_WIDTH = 50;
 	protected boolean changed = true;
@@ -179,6 +181,29 @@ public class Paper {
 	
 	public EvaluatedExpression preview(String expression) throws InvalidExpressionException {
 		return evaluator.preview(expression);
+	}
+	
+	public String previewResult(String expression) {
+		try {
+			if (expression != null && !expression.trim().isEmpty()) {
+				EvaluatedExpression previewExpression = preview(expression);
+				String preview = previewExpression.getFormattedResult(numberFormat);
+				
+				if (previewExpression instanceof NumberEvaluatedExpression) {
+					NumberEvaluatedExpression previewNumberExpression = (NumberEvaluatedExpression)previewExpression;
+					
+					if (!previewNumberExpression.getUnit().isOne()) {
+						preview = preview + " " + previewNumberExpression.getUnit().toString();
+					}
+				}
+				
+				return preview;
+			}
+		} catch (InvalidExpressionException e) {
+			// Ignore the exception, nothing to do.
+		}
+		
+		return "";
 	}
 	
 	/**

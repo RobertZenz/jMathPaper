@@ -192,6 +192,14 @@ public class Evaluator {
 	}
 	
 	protected EvaluatedExpression evaluateInternal(String expression, Supplier<String> idSupplier) throws InvalidExpressionException {
+		if (expression == null || expression.trim().isEmpty()) {
+			if (idSupplier != null) {
+				return new NumberEvaluatedExpression(idSupplier.get(), "0", BigDecimal.ZERO, CompoundUnit.ONE);
+			} else {
+				return new NumberEvaluatedExpression(null, "0", BigDecimal.ZERO, CompoundUnit.ONE);
+			}
+		}
+		
 		String preProcessedExpression = preProcess(expression);
 		String processedExpression = stripComments(preProcessedExpression);
 		processedExpression = replaceAliases(processedExpression);

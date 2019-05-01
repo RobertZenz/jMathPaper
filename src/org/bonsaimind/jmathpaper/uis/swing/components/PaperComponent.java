@@ -178,15 +178,7 @@ public class PaperComponent extends JComponent {
 	}
 	
 	private void onInputTextFieldChanged() {
-		try {
-			setMessage(null);
-			
-			if (!inputTextField.getText().trim().isEmpty()) {
-				setMessage(paper.preview(inputTextField.getText()).getFormattedResult(paper.getNumberFormat()));
-			}
-		} catch (InvalidExpressionException e) {
-			// Ignore the exception, nothing to do.
-		}
+		setMessage(paper.previewResult(inputTextField.getText()));
 	}
 	
 	private void onInputTextFieldDownKey() {
