@@ -28,7 +28,7 @@ package org.bonsaimind.jmathpaper.core.units;
  */
 public class PrefixedUnit {
 	/** An instance which denotes neither an unit nor a prefix. */
-	public static final PrefixedUnit NONE = new PrefixedUnit(Prefix.BASE, Unit.ONE);
+	public static final PrefixedUnit ONE = new PrefixedUnit(Prefix.BASE, Unit.ONE);
 	
 	protected Prefix prefix = null;
 	protected Unit unit = null;
@@ -58,7 +58,6 @@ public class PrefixedUnit {
 	
 	/**
 	 * A {@link PrefixedUnit} derived from this one with the {@link Prefix#BASE}
-	 * .
 	 * 
 	 * @return A {@link PrefixedUnit} derived from this one with the
 	 *         {@link Prefix#BASE}.
@@ -127,6 +126,18 @@ public class PrefixedUnit {
 		result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
 		result = prime * result + ((unit == null) ? 0 : unit.hashCode());
 		return result;
+	}
+	
+	/**
+	 * Gets whether this {@link PrefixedUnit} is the SI unit "1" without a
+	 * prefix.
+	 * 
+	 * @return {@code true} if this {@link PrefixedUnit} is the SI unit "1"
+	 *         without a prefix.
+	 */
+	public boolean isOne() {
+		return this == ONE
+				|| (prefix.isBase() && unit.isOne());
 	}
 	
 	/**

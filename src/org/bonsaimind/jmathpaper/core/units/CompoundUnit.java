@@ -20,6 +20,7 @@
 package org.bonsaimind.jmathpaper.core.units;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +29,9 @@ import java.util.List;
  * For example all units of speed are a compound unit of length and time.
  */
 public class CompoundUnit {
+	/** An instance which denotes no unit. */
+	public static final CompoundUnit ONE = new CompoundUnit(Arrays.asList(new CompoundUnit.Token("1", TokenType.UNIT, PrefixedUnit.ONE)));
+	
 	protected List<Token> tokens = new ArrayList<>();
 	private String cachedStringValue = null;
 	private List<Token> readonlyTokens = null;
@@ -81,6 +85,29 @@ public class CompoundUnit {
 		}
 		
 		return readonlyTokens;
+	}
+	
+	/**
+	 * Gets whether this {@link CompoundUnit} is the SI unit "1" or a
+	 * combination there of.
+	 * 
+	 * @return {@code true} if this {@link CompoundUnit} is the SI unit "1" or a
+	 *         combination there of.
+	 */
+	public boolean isOne() {
+		if (this == ONE) {
+			return true;
+		}
+		
+		for (Token token : tokens) {
+			if (token.getTokenType() == TokenType.UNIT) {
+				if (!token.getUnit().isOne()) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	/**

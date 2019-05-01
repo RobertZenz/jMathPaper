@@ -192,6 +192,17 @@ public class Unit {
 	}
 	
 	/**
+	 * Gets whether this {@link Unit} is the SI unit "1".
+	 * 
+	 * @return {@code true} if this {@link Unit} is the SI unit "1".
+	 * @see #ONE
+	 */
+	public boolean isOne() {
+		return this == ONE
+				|| (name.equals(ONE.getName()) && exponent == ONE.getExponent());
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override

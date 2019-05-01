@@ -152,6 +152,19 @@ public class Prefix {
 	}
 	
 	/**
+	 * Gets whether this {@link Prefix} is a base, meaning has a base and power
+	 * of 1.
+	 * 
+	 * @return {@code true} if this {@link Prefix} is a base, meaning has a base
+	 *         and power of 1.
+	 * @see #BASE
+	 */
+	public boolean isBase() {
+		return this == BASE
+				|| (base == BASE.base && power == BASE.power);
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
