@@ -230,7 +230,7 @@ public class Tui2 extends AbstractPapersUi {
 			errorLabel.setText(" ");
 			
 			if (!newText.trim().isEmpty()) {
-				errorLabel.setText(paper.getNumberFormat().format(paper.preview(newText)));
+				errorLabel.setText(paper.preview(newText).getFormattedResult(paper.getNumberFormat()));
 			}
 		} catch (InvalidExpressionException e) {
 			// Ignore the exception, nothing to do.

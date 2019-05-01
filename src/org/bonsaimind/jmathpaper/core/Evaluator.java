@@ -154,8 +154,8 @@ public class Evaluator {
 		return mathExpression;
 	}
 	
-	public BigDecimal preview(String expression) throws InvalidExpressionException {
-		return evaluateInternal(expression, null).getResult();
+	public EvaluatedExpression preview(String expression) throws InvalidExpressionException {
+		return evaluateInternal(expression, null);
 	}
 	
 	public void registerAlias(String alias, String replacement) {

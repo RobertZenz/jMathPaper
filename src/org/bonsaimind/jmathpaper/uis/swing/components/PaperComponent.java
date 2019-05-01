@@ -174,7 +174,7 @@ public class PaperComponent extends JComponent {
 			messageLabel.setText(" ");
 			
 			if (!inputTextField.getText().trim().isEmpty()) {
-				messageLabel.setText(paper.getNumberFormat().format(paper.preview(inputTextField.getText())));
+				messageLabel.setText(paper.preview(inputTextField.getText()).getFormattedResult(paper.getNumberFormat()));
 			}
 		} catch (InvalidExpressionException e) {
 			// Ignore the exception, nothing to do.
