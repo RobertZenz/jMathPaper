@@ -108,6 +108,9 @@ public class PaperComponent extends JComponent {
 		
 		notesTextArea = new JTextArea();
 		notesTextArea.setBorder(new JTextField().getBorder());
+		notesTextArea.setLineWrap(true);
+		notesTextArea.setWrapStyleWord(true);
+		notesTextArea.getDocument().addDocumentListener(new NotifyingDocumentListener(this::onNotesTextAreaChanged));
 		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setContinuousLayout(true);
@@ -118,6 +121,8 @@ public class PaperComponent extends JComponent {
 		
 		setLayout(new BorderLayout());
 		add(splitPane, BorderLayout.CENTER);
+		
+		refresh();
 	}
 	
 	public Paper getPaper() {
@@ -128,6 +133,8 @@ public class PaperComponent extends JComponent {
 		paperModel.refresh();
 		expressionsTable.resizeColumns();
 		tableScrollContainer.getVerticalScrollBar().setValue(tableScrollContainer.getVerticalScrollBar().getMaximum());
+		
+		notesTextArea.setText(paper.getNotes());
 		
 		resetInput();
 	}
@@ -228,5 +235,9 @@ public class PaperComponent extends JComponent {
 					expressionsTable.getRowCount() - 1,
 					expressionsTable.getRowCount() - 1);
 		}
+	}
+	
+	private void onNotesTextAreaChanged() {
+		paper.setNotes(notesTextArea.getText());
 	}
 }
