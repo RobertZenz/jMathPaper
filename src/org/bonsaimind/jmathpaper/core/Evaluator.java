@@ -313,7 +313,11 @@ public class Evaluator {
 			if (mathExpression.isBoolean()) {
 				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
 			} else {
-				return new NumberEvaluatedExpression(id, preProcessedExpression, result);
+				if (unitTo != null) {
+					return new NumberEvaluatedExpression(id, preProcessedExpression, result, unitTo);
+				} else {
+					return new NumberEvaluatedExpression(id, preProcessedExpression, result, CompoundUnit.ONE);
+				}
 			}
 		} catch (Throwable th) {
 			throw new InvalidExpressionException(th.getMessage(), th);

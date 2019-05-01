@@ -22,12 +22,15 @@ package org.bonsaimind.jmathpaper.core.evaluatedexpressions;
 import java.math.BigDecimal;
 
 import org.bonsaimind.jmathpaper.core.EvaluatedExpression;
+import org.bonsaimind.jmathpaper.core.units.CompoundUnit;
 
 /**
  * {@link NumberEvaluatedExpression} is a simple {@link EvaluatedExpression}
  * implementation which represents a numerical expression.
  */
 public class NumberEvaluatedExpression extends AbstractEvaluatedExpression {
+	protected CompoundUnit unit = null;
+	
 	/**
 	 * Creates a new instance of {@link NumberEvaluatedExpression}.
 	 *
@@ -35,7 +38,13 @@ public class NumberEvaluatedExpression extends AbstractEvaluatedExpression {
 	 * @param expression The expression.
 	 * @param result The result.
 	 */
-	public NumberEvaluatedExpression(String id, String expression, BigDecimal result) {
+	public NumberEvaluatedExpression(String id, String expression, BigDecimal result, CompoundUnit unit) {
 		super(id, expression, result);
+		
+		this.unit = unit;
+	}
+	
+	public CompoundUnit getUnit() {
+		return unit;
 	}
 }
