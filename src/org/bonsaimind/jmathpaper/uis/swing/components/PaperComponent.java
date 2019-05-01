@@ -46,6 +46,7 @@ public class PaperComponent extends JComponent {
 	private ColumnStretchingTable expressionsTable = null;
 	private JTextField inputTextField = null;
 	private JLabel messageLabel = null;
+	private JScrollPane notesScrollContainer = null;
 	private JTextArea notesTextArea = null;
 	private int originalDividerSize = -1;
 	private Paper paper = null;
@@ -112,10 +113,13 @@ public class PaperComponent extends JComponent {
 		notesTextArea.setWrapStyleWord(true);
 		notesTextArea.getDocument().addDocumentListener(new NotifyingDocumentListener(this::onNotesTextAreaChanged));
 		
+		notesScrollContainer = new JScrollPane();
+		notesScrollContainer.setViewportView(notesTextArea);
+		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setContinuousLayout(true);
 		splitPane.add(mainPanel, 0);
-		splitPane.add(notesTextArea, 1);
+		splitPane.add(notesScrollContainer, 1);
 		
 		originalDividerSize = splitPane.getDividerSize();
 		
@@ -145,7 +149,7 @@ public class PaperComponent extends JComponent {
 	}
 	
 	public void setNotesVisible(boolean notesVisible) {
-		notesTextArea.setVisible(notesVisible);
+		notesScrollContainer.setVisible(notesVisible);
 		
 		if (notesVisible) {
 			splitPane.setDividerSize(originalDividerSize);
