@@ -150,7 +150,15 @@ public class PaperComponent extends JComponent {
 	
 	protected void resetInput() {
 		inputTextField.setText("");
-		messageLabel.setText(" ");
+		setMessage(null);
+	}
+	
+	protected void setMessage(String message) {
+		if (message == null) {
+			messageLabel.setText(" ");
+		} else {
+			messageLabel.setText(message + " ");
+		}
 	}
 	
 	private void onExpressionsTableSelectionChanged(ListSelectionEvent event) {
@@ -171,10 +179,10 @@ public class PaperComponent extends JComponent {
 	
 	private void onInputTextFieldChanged() {
 		try {
-			messageLabel.setText(" ");
+			setMessage(null);
 			
 			if (!inputTextField.getText().trim().isEmpty()) {
-				messageLabel.setText(paper.preview(inputTextField.getText()).getFormattedResult(paper.getNumberFormat()));
+				setMessage(paper.preview(inputTextField.getText()).getFormattedResult(paper.getNumberFormat()));
 			}
 		} catch (InvalidExpressionException e) {
 			// Ignore the exception, nothing to do.
@@ -208,9 +216,9 @@ public class PaperComponent extends JComponent {
 				resetInput();
 			} catch (CommandExecutionException | InvalidExpressionException e) {
 				if (e.getMessage() != null) {
-					messageLabel.setText(e.getMessage());
+					setMessage(e.getMessage());
 				} else {
-					messageLabel.setText("No details available: " + e.getClass().getSimpleName());
+					setMessage("No details available: " + e.getClass().getSimpleName());
 				}
 			}
 		} else {
