@@ -31,7 +31,7 @@ public class TestEvaluatedExpression {
 	public void testToString() {
 		Assert.assertEquals(
 				"1 1+1 = 2",
-				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2")).toString());
+				new NumberEvaluatedExpression("1", "1+1", new BigDecimal("2"), null).toString());
 		
 		Assert.assertEquals(
 				"1 1>0 = true",

@@ -26,7 +26,7 @@ import java.text.NumberFormat;
  * {@link BooleanEvaluatedExpression} is an extension of
  * {@link NumberEvaluatedExpression} which handles the result as boolean.
  */
-public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
+public class BooleanEvaluatedExpression extends AbstractEvaluatedExpression {
 	/** The {@link BigDecimal} value that is used for {@code false}. */
 	public static final BigDecimal FALSE = BigDecimal.ZERO;
 	
@@ -112,6 +112,9 @@ public class BooleanEvaluatedExpression extends NumberEvaluatedExpression {
 		return booleanResult;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getFormattedResult(NumberFormat numberFormat) {
 		return asBoolean(result).toString();
