@@ -258,10 +258,7 @@ public class Swing extends AbstractPapersUi {
 	protected void currentPaperHasBeenModified() {
 		statusLabel.setText(" ");
 		
-		((PaperComponent)tabbedPane.getSelectedComponent()).refresh();
-		
-		tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
-		tabbedPane.setToolTipTextAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
+		refreshCurrentPaper();
 	}
 	
 	@Override
@@ -273,7 +270,7 @@ public class Swing extends AbstractPapersUi {
 	protected void currentPaperHasBeenReset() {
 		statusLabel.setText(" ");
 		
-		((PaperComponent)tabbedPane.getSelectedComponent()).refresh();
+		refreshCurrentPaper();
 	}
 	
 	@Override
@@ -293,6 +290,15 @@ public class Swing extends AbstractPapersUi {
 				component.requestFocus();
 				break;
 			}
+		}
+	}
+	
+	protected void refreshCurrentPaper() {
+		if (tabbedPane.getSelectedComponent() != null) {
+			((PaperComponent)tabbedPane.getSelectedComponent()).refresh();
+			
+			tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
+			tabbedPane.setToolTipTextAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
 		}
 	}
 	
