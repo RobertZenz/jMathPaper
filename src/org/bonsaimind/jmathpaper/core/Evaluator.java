@@ -248,6 +248,7 @@ public class Evaluator {
 		
 		CompoundUnit unitFrom = null;
 		CompoundUnit unitTo = null;
+		String unitConversionKeyword = null;
 		
 		Matcher expressionUnitSeparatorMatcher = EXPRESSION_UNIT_SEPARATOR.matcher(processedExpression);
 		
@@ -255,24 +256,25 @@ public class Evaluator {
 			String expressionPart = processedExpression.substring(0, expressionUnitSeparatorMatcher.start() + 1);
 			String unitsPart = processedExpression.substring(expressionUnitSeparatorMatcher.start() + 1);
 			
-			String[] unitParts = splitUnitConversion(unitsPart);
+			UnitConversion unitConversion = splitUnitConversion(unitsPart);
+			unitConversionKeyword = unitConversion.keyword;
 			
-			if (unitParts[0] != null && unitParts[0].isEmpty()) {
+			if (unitConversion.from != null && unitConversion.from.isEmpty()) {
 				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
 				if (unitFrom != null && !isKnown(unitFrom) && !unitFrom.isOne()) {
 					expressionPart = "1";
 				} else {
-					unitFrom = unitConverter.getCompoundUnit(unitParts[1]);
+					unitFrom = unitConverter.getCompoundUnit(unitConversion.to);
 					
 					if (unitFrom == null) {
-						throw new InvalidExpressionException("No such unit: " + unitParts[1]);
+						throw new InvalidExpressionException("No such unit: " + unitConversion.to);
 					}
 					
-					unitParts[0] = unitParts[1];
-					unitParts[1] = null;
+					unitConversion.from = unitConversion.to;
+					unitConversion.to = null;
 				}
-			} else if (unitParts[1] != null && unitParts[1].isEmpty()) {
+			} else if (unitConversion.to != null && unitConversion.to.isEmpty()) {
 				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
 				if (unitFrom == null) {
@@ -280,22 +282,22 @@ public class Evaluator {
 				}
 				
 				expressionPart = "1";
-				unitParts[1] = unitParts[0];
+				unitConversion.to = unitConversion.from;
 			} else {
-				unitFrom = unitConverter.getCompoundUnit(unitParts[0]);
+				unitFrom = unitConverter.getCompoundUnit(unitConversion.from);
 				
 				if (unitFrom == null) {
-					throw new InvalidExpressionException("No such unit: " + unitParts[0]);
+					throw new InvalidExpressionException("No such unit: " + unitConversion.from);
 				}
 			}
 			
-			if (unitParts[1] == null) {
+			if (unitConversion.to == null) {
 				unitTo = unitFrom.atBase();
 			} else {
-				unitTo = unitConverter.getCompoundUnit(unitParts[1]);
+				unitTo = unitConverter.getCompoundUnit(unitConversion.to);
 				
 				if (unitTo == null) {
-					throw new InvalidExpressionException("No such unit: " + unitParts[1]);
+					throw new InvalidExpressionException("No such unit: " + unitConversion.to);
 				}
 			}
 			
@@ -304,7 +306,8 @@ public class Evaluator {
 			unitFrom = unitConverter.getCompoundUnit(processedExpression);
 			
 			if (unitFrom != null) {
-				if (!isKnown(unitFrom)) {
+				// Disallow automatic conversion from 1.
+				if (!isKnown(unitFrom) && !unitFrom.isOne()) {
 					unitTo = unitFrom.atBase();
 					processedExpression = "1";
 				} else {
@@ -318,8 +321,20 @@ public class Evaluator {
 			
 			BigDecimal result = mathExpression.eval();
 			
+			String fullExpression = preProcessedExpression;
+			
 			if (unitFrom != null && unitTo != null) {
 				result = unitConverter.convert(unitFrom, unitTo, result, calculationMathContext).stripTrailingZeros();
+				
+				fullExpression = fullExpression + " " + unitFrom.toString();
+				
+				if (unitConversionKeyword != null) {
+					fullExpression = fullExpression + " " + unitConversionKeyword + " ";
+				} else {
+					fullExpression = fullExpression + " ";
+				}
+				
+				fullExpression = fullExpression + unitTo.toString();
 			}
 			
 			if (id == null && idSupplier != null) {
@@ -329,12 +344,12 @@ public class Evaluator {
 			result = result.round(resultMathContext);
 			
 			if (mathExpression.isBoolean()) {
-				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
+				return new BooleanEvaluatedExpression(id, fullExpression, result);
 			} else {
 				if (unitTo != null) {
-					return new NumberEvaluatedExpression(id, preProcessedExpression, result, unitTo);
+					return new NumberEvaluatedExpression(id, fullExpression, result, unitTo);
 				} else {
-					return new NumberEvaluatedExpression(id, preProcessedExpression, result, CompoundUnit.ONE);
+					return new NumberEvaluatedExpression(id, fullExpression, result, CompoundUnit.ONE);
 				}
 			}
 		} catch (Throwable th) {
@@ -471,37 +486,44 @@ public class Evaluator {
 		return "0";
 	}
 	
-	private String[] splitUnitConversion(String unitConversionString) {
+	private UnitConversion splitUnitConversion(String unitConversionString) {
+		String splitKeyword = null;
+		
 		int splitIndex = unitConversionString.indexOf(" as ");
+		splitKeyword = "as";
 		
 		if (splitIndex < 0) {
 			splitIndex = unitConversionString.indexOf(" in ");
+			splitKeyword = "in";
 		}
 		
 		if (splitIndex < 0) {
 			splitIndex = unitConversionString.indexOf(" to ");
+			splitKeyword = "to";
 		}
 		
 		if (splitIndex >= 0) {
-			return new String[] {
+			return new UnitConversion(
 					unitConversionString.substring(0, splitIndex).trim(),
-					unitConversionString.substring(splitIndex + 4).trim()
-			};
+					splitKeyword,
+					unitConversionString.substring(splitIndex + 4).trim());
+		} else {
+			splitKeyword = null;
 		}
 		
 		splitIndex = unitConversionString.lastIndexOf(" ");
 		
 		if (splitIndex >= 0) {
-			return new String[] {
+			return new UnitConversion(
 					unitConversionString.substring(0, splitIndex).trim(),
-					unitConversionString.substring(splitIndex + 1).trim()
-			};
+					splitKeyword,
+					unitConversionString.substring(splitIndex + 1).trim());
 		}
 		
-		return new String[] {
+		return new UnitConversion(
 				unitConversionString.trim(),
-				null
-		};
+				splitKeyword,
+				null);
 	}
 	
 	private String stripComments(String expression) {
@@ -537,5 +559,18 @@ public class Evaluator {
 		}
 		
 		return strippedExpression;
+	}
+	
+	private static final class UnitConversion {
+		public String from = null;
+		public String keyword = null;
+		public String to = null;
+		
+		public UnitConversion(String from, String keyword, String to) {
+			super();
+			this.from = from;
+			this.keyword = keyword;
+			this.to = to;
+		}
 	}
 }
