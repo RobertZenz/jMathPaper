@@ -306,8 +306,8 @@ public class Swing extends AbstractPapersUi {
 		UIDefaults defaults = UIManager.getLookAndFeelDefaults();
 		
 		try {
-			if (uiParameters.has("alternate-row-color")) {
-				defaults.put("Table.alternateRowColor", Color.decode(uiParameters.getString("alternate-row-color")));
+			if (uiParameters.has("alternateRowColor")) {
+				defaults.put("Table.alternateRowColor", Color.decode(uiParameters.getString("alternateRowColor")));
 			} else if (defaults.get("Table.alternateRowColor") == null) {
 				defaults.put("Table.alternateRowColor", new Color(240, 240, 240));
 			}
