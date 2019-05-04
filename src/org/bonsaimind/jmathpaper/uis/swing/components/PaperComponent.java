@@ -20,6 +20,7 @@
 package org.bonsaimind.jmathpaper.uis.swing.components;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JComponent;
@@ -30,6 +31,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 
 import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
@@ -42,12 +44,15 @@ import org.bonsaimind.jmathpaper.uis.swing.models.PaperColumnModel;
 import org.bonsaimind.jmathpaper.uis.swing.models.PaperModel;
 
 public class PaperComponent extends JComponent {
+	private static final double DEFAULT_DIVIDER_LOCATION = 0.75d;
 	private String bufferedInput = null;
 	private ColumnStretchingTable expressionsTable = null;
+	private boolean firstRepaint = true;
 	private JTextField inputTextField = null;
 	private JLabel messageLabel = null;
 	private JScrollPane notesScrollContainer = null;
 	private JTextArea notesTextArea = null;
+	private int originalDividerLocation = -1;
 	private int originalDividerSize = -1;
 	private Paper paper = null;
 	private PaperModel paperModel = null;
@@ -81,6 +86,7 @@ public class PaperComponent extends JComponent {
 		
 		messageLabel = new JLabel();
 		messageLabel.setHorizontalAlignment(JLabel.RIGHT);
+		messageLabel.setMinimumSize(new Dimension(0, 0));
 		messageLabel.setText(" ");
 		
 		inputTextField = new JTextField();
@@ -118,9 +124,11 @@ public class PaperComponent extends JComponent {
 		
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setContinuousLayout(true);
+		splitPane.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
 		splitPane.add(mainPanel, 0);
 		splitPane.add(notesScrollContainer, 1);
 		
+		originalDividerLocation = splitPane.getDividerLocation();
 		originalDividerSize = splitPane.getDividerSize();
 		
 		setLayout(new BorderLayout());
@@ -144,6 +152,23 @@ public class PaperComponent extends JComponent {
 	}
 	
 	@Override
+	public void repaint(long tm, int x, int y, int width, int height) {
+		super.repaint(tm, x, y, width, height);
+		
+		// Setting it in this function is the best workaround I found which
+		// still worked. Everything else would simply not yield the desired
+		// effect of having a 3/1 partition.
+		if (firstRepaint) {
+			if (notesScrollContainer.isVisible()) {
+				SwingUtilities.invokeLater(() -> {
+					splitPane.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
+				});
+			}
+			firstRepaint = false;
+		}
+	}
+	
+	@Override
 	public void requestFocus() {
 		inputTextField.requestFocus();
 	}
@@ -152,9 +177,15 @@ public class PaperComponent extends JComponent {
 		notesScrollContainer.setVisible(notesVisible);
 		
 		if (notesVisible) {
-			splitPane.setDividerSize(originalDividerSize);
-			splitPane.setDividerLocation(0.75d);
+			if (originalDividerLocation >= 0) {
+				splitPane.setDividerSize(originalDividerSize);
+				splitPane.setDividerLocation(originalDividerLocation);
+			} else {
+				splitPane.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
+			}
 		} else {
+			originalDividerLocation = splitPane.getDividerLocation();
+			originalDividerSize = splitPane.getDividerSize();
 			splitPane.setDividerSize(0);
 		}
 	}
