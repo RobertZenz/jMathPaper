@@ -20,6 +20,7 @@
 package org.bonsaimind.jmathpaper.core;
 
 import org.bonsaimind.jmathpaper.core.resources.ResourceLoader;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestEvaluator extends AbstractExpressionTest {
@@ -161,6 +162,13 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testNullAndEmpty() throws InvalidExpressionException {
+		assertResult("0", (String)null);
+		assertResult("0", "");
+		assertResult("0", "  \t\t ");
+	}
+	
+	@Test
 	public void testNumberBases() throws InvalidExpressionException {
 		assertResult("32", "32");
 		assertResult("12", "0b1100");
@@ -175,6 +183,19 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("1.000000001", "1.000000+0.000000001");
 		
 		assertResult("60", "1/(1/60)");
+	}
+	
+	@Test
+	public void testPreview() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		assertExpression(null, "0", "0", evaluator.preview(null));
+		assertExpression(null, "0", "0", evaluator.preview(""));
+		assertExpression(null, "0", "0", evaluator.preview("   \t \t   "));
+		assertExpression(null, "5", "2+3", evaluator.preview("2+3"));
+		
+		// It should not have changed the internal state.
+		Assert.assertTrue(evaluator.getEvaluatedExpressions().isEmpty());
 	}
 	
 	@Test
@@ -195,6 +216,12 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("2.54", "1in in cm", evaluator);
 		assertResult("2.54", "1in as cm", evaluator);
 		assertResult("2.54", "1in cm", evaluator);
+		
+		assertResult("2.54", "inch to centimeter", evaluator);
+		assertResult("2.54", "in to cm", evaluator);
+		assertResult("2.54", "in in cm", evaluator);
+		assertResult("2.54", "in as cm", evaluator);
+		assertResult("2.54", "in cm", evaluator);
 		
 		assertResult("1", "1 m to m", evaluator);
 		assertResult("1", "1 km to km", evaluator);
@@ -231,17 +258,36 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("0.000001", "1milli to k", evaluator);
 		assertResult("0.000001", "1milli to kilo", evaluator);
 		
-		// Automatic conversions
+		// Test if the automatic conversion will not pickup variables.
+		evaluator.evaluate("km=5");
+		assertResult("5", "km", evaluator);
+	}
+	
+	@Test
+	public void testUnitExpansion() throws InvalidExpressionException {
+		Evaluator evaluator = new Evaluator();
+		
+		// Load the defaults
+		ResourceLoader.processResource("units/iec.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/si.prefixes", evaluator.getUnitConverter()::loadPrefix);
+		ResourceLoader.processResource("units/default.units", evaluator.getUnitConverter()::loadUnit);
+		ResourceLoader.processResource("units/default.conversions", evaluator.getUnitConverter()::loadConversion);
+		ResourceLoader.processResource("other/default.aliases", evaluator::loadAlias);
+		ResourceLoader.processResource("other/default.context", evaluator::loadContextExpression);
+		
+		assertResult("1000", "km", evaluator);
+		assertResult("1000", "1km", evaluator);
+		assertResult("1000", "1 km", evaluator);
+		assertResult("2000", "2 km", evaluator);
+		
+		assertResult("21000", "2*6+9 km", evaluator);
+		
 		assertResult("1000", "1km", evaluator);
 		assertResult("1000", "1k", evaluator);
 		assertResult("1000", "1000m", evaluator);
 		assertResult("9000", "1 + 1 * 8 km", evaluator);
 		assertResult("1000", "km", evaluator);
 		assertResult("1000", "k", evaluator);
-		
-		// Test if the automatic conversion will not pickup variables.
-		evaluator.evaluate("km=5");
-		assertResult("5", "km", evaluator);
 	}
 	
 	@Test
