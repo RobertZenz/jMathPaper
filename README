@@ -352,6 +352,51 @@ the following values:
  * `swing`
  * `service`
 
+#### CLI
+
+The CLI accepts a number of UI parameters, they can be provided with
+the `--uiparam=NAME:VALUE` parameter.
+
+    Parameter           Description
+    --------------------------------------------------------------------
+    isNoNewline         Do not output a newline after printing
+                        the result.
+    
+    isPrintResultOnly   Print only the result, not the whole expression.
+
+#### Service
+
+The Service accepts a number of UI parameters, they can be provided with
+the `--uiparam=NAME:VALUE` parameter.
+
+    Parameter           Description
+    --------------------------------------------------------------------
+    isNoNewline         Do not output a newline after printing
+                        the result.
+    
+    isPrintResultOnly   Print only the result, not the whole expression.
+
+#### TUI
+
+The TUI does not support any parameters.
+
+#### TUI2
+
+The TUI2 does not support any parameters.
+
+#### Swing
+
+The Swing UI accepts a number of UI parameters, they can be provided with
+the `--uiparam=NAME:VALUE` parameter.
+
+    Parameter           Description
+    --------------------------------------------------------------------
+    laf                 The fully qualified classname of Look And Feel
+                        to use for the UI.
+    
+    alternateRowColor   The color to use for alternate rows in
+                        the table, expected is a hex-string.
+
 ### Commands
 
 There are also commands which can be used to control the application, they can
