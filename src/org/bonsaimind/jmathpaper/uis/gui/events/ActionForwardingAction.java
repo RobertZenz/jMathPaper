@@ -17,14 +17,23 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.help.model;
+package org.bonsaimind.jmathpaper.uis.gui.events;
 
-import javax.swing.tree.DefaultTreeModel;
+import java.awt.event.ActionEvent;
 
-import org.bonsaimind.jmathpaper.core.support.Topic;
+import javax.swing.AbstractAction;
 
-public class TopicTreeModel extends DefaultTreeModel {
-	public TopicTreeModel(Topic rootTopic) {
-		super(new TopicTreeNode(rootTopic, null));
+public class ActionForwardingAction extends AbstractAction {
+	protected Runnable action = null;
+	
+	public ActionForwardingAction(Runnable action) {
+		super();
+		
+		this.action = action;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		action.run();
 	}
 }

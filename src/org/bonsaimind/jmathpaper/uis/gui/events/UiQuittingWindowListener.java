@@ -17,36 +17,54 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.events;
+package org.bonsaimind.jmathpaper.uis.gui.events;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
-public class KeyPressedListener implements KeyListener {
-	protected Runnable action = null;
-	protected int key = -1;
+import org.bonsaimind.jmathpaper.core.ui.Ui;
+
+public class UiQuittingWindowListener implements WindowListener {
+	private Ui ui = null;
 	
-	public KeyPressedListener(int key, Runnable action) {
+	public UiQuittingWindowListener(Ui ui) {
 		super();
 		
-		this.key = key;
-		this.action = action;
+		this.ui = ui;
 	}
 	
 	@Override
-	public void keyPressed(KeyEvent event) {
-		if (event.getKeyCode() == key) {
-			action.run();
-		}
-	}
-	
-	@Override
-	public void keyReleased(KeyEvent event) {
+	public void windowActivated(WindowEvent event) {
 		// Nothing to do.
 	}
 	
 	@Override
-	public void keyTyped(KeyEvent event) {
+	public void windowClosed(WindowEvent event) {
+		// Nothing to do.
+	}
+	
+	@Override
+	public void windowClosing(WindowEvent event) {
+		ui.quit();
+	}
+	
+	@Override
+	public void windowDeactivated(WindowEvent event) {
+		// Nothing to do.
+	}
+	
+	@Override
+	public void windowDeiconified(WindowEvent event) {
+		// Nothing to do.
+	}
+	
+	@Override
+	public void windowIconified(WindowEvent event) {
+		// Nothing to do.
+	}
+	
+	@Override
+	public void windowOpened(WindowEvent event) {
 		// Nothing to do.
 	}
 }

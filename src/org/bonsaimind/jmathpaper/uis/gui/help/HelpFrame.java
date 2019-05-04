@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.help;
+package org.bonsaimind.jmathpaper.uis.gui.help;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -36,9 +36,9 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.bonsaimind.jmathpaper.core.support.Topic;
-import org.bonsaimind.jmathpaper.uis.swing.events.ActionForwardingAction;
-import org.bonsaimind.jmathpaper.uis.swing.help.model.TopicTreeModel;
-import org.bonsaimind.jmathpaper.uis.swing.help.model.TopicTreeNode;
+import org.bonsaimind.jmathpaper.uis.gui.events.ActionForwardingAction;
+import org.bonsaimind.jmathpaper.uis.gui.help.model.TopicTreeModel;
+import org.bonsaimind.jmathpaper.uis.gui.help.model.TopicTreeNode;
 
 public class HelpFrame extends JFrame {
 	private static final String CLOSE_ACTION = "CLOSE";

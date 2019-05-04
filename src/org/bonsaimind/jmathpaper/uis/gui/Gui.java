@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing;
+package org.bonsaimind.jmathpaper.uis.gui;
 
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
@@ -47,12 +47,12 @@ import org.bonsaimind.jmathpaper.Version;
 import org.bonsaimind.jmathpaper.core.support.Topic;
 import org.bonsaimind.jmathpaper.core.ui.AbstractPapersUi;
 import org.bonsaimind.jmathpaper.core.ui.UiParameters;
-import org.bonsaimind.jmathpaper.uis.swing.components.PaperComponent;
-import org.bonsaimind.jmathpaper.uis.swing.events.ActionForwardingListener;
-import org.bonsaimind.jmathpaper.uis.swing.events.UiQuittingWindowListener;
-import org.bonsaimind.jmathpaper.uis.swing.help.HelpFrame;
+import org.bonsaimind.jmathpaper.uis.gui.components.PaperComponent;
+import org.bonsaimind.jmathpaper.uis.gui.events.ActionForwardingListener;
+import org.bonsaimind.jmathpaper.uis.gui.events.UiQuittingWindowListener;
+import org.bonsaimind.jmathpaper.uis.gui.help.HelpFrame;
 
-public class Swing extends AbstractPapersUi {
+public class Gui extends AbstractPapersUi {
 	protected JFileChooser fileChooser = null;
 	protected JFrame frame = null;
 	protected HelpFrame helpFrame = null;
@@ -67,7 +67,7 @@ public class Swing extends AbstractPapersUi {
 	private JLabel statusLabel = null;
 	private JTabbedPane tabbedPane = null;
 	
-	public Swing() {
+	public Gui() {
 		super();
 	}
 	

@@ -338,18 +338,18 @@ jMathPaper supports three main modes of operations:
 
  1. CLI, only processing arguments given.
  2. TUI, a simple text interface.
- 3. Swing, a GUI based on Swing.
+ 3. GUI, a graphical interface based on Swing.
  4. Service, a UI to use jMathPaper as a service.
 
-By default with no arguments given the Swing UI is started, if an expression is
-given the CLI UI will be used instead.
+By default with no arguments given the GUI is started, if an expression is given
+the CLI UI will be used instead.
 
 One can also force one UI to use by specifying `-t` as argument and one of
 the following values:
 
  * `cli`
  * `tui`
- * `swing`
+ * `gui`
  * `service`
 
 #### CLI
@@ -384,7 +384,7 @@ The TUI does not support any parameters.
 
 The TUI2 does not support any parameters.
 
-#### Swing
+#### GUI
 
 The Swing UI accepts a number of UI parameters, they can be provided with
 the `--uiparam=NAME:VALUE` parameter.
@@ -643,3 +643,5 @@ treated as expression, everything below the first empty line is treated as note.
 
 Custom UIs can be implemented by implementing the `Ui` interface and can be
 launched afterwards by specifying `--ui=UI` parameter with the full class name.
+Note that there is the `AbstractpapersUi` which does already implement a great
+deal of the functionality required.

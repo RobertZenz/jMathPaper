@@ -17,22 +17,32 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.events;
+package org.bonsaimind.jmathpaper.uis.gui.events;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
-public class ActionForwardingListener implements ActionListener {
+public class NotifyingDocumentListener implements DocumentListener {
 	protected Runnable action = null;
 	
-	public ActionForwardingListener(Runnable action) {
+	public NotifyingDocumentListener(Runnable action) {
 		super();
 		
 		this.action = action;
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent event) {
+	public void changedUpdate(DocumentEvent event) {
+		action.run();
+	}
+	
+	@Override
+	public void insertUpdate(DocumentEvent event) {
+		action.run();
+	}
+	
+	@Override
+	public void removeUpdate(DocumentEvent event) {
 		action.run();
 	}
 }

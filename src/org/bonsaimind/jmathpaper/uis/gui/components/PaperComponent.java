@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.components;
+package org.bonsaimind.jmathpaper.uis.gui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,10 +38,10 @@ import org.bonsaimind.jmathpaper.core.InvalidExpressionException;
 import org.bonsaimind.jmathpaper.core.Paper;
 import org.bonsaimind.jmathpaper.core.ui.CommandExecutionException;
 import org.bonsaimind.jmathpaper.core.ui.Ui;
-import org.bonsaimind.jmathpaper.uis.swing.events.KeyPressedListener;
-import org.bonsaimind.jmathpaper.uis.swing.events.NotifyingDocumentListener;
-import org.bonsaimind.jmathpaper.uis.swing.models.PaperColumnModel;
-import org.bonsaimind.jmathpaper.uis.swing.models.PaperModel;
+import org.bonsaimind.jmathpaper.uis.gui.events.KeyPressedListener;
+import org.bonsaimind.jmathpaper.uis.gui.events.NotifyingDocumentListener;
+import org.bonsaimind.jmathpaper.uis.gui.models.PaperColumnModel;
+import org.bonsaimind.jmathpaper.uis.gui.models.PaperModel;
 
 public class PaperComponent extends JComponent {
 	private static final double DEFAULT_DIVIDER_LOCATION = 0.75d;

@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.components;
+package org.bonsaimind.jmathpaper.uis.gui.components;
 
 import java.awt.Component;
 import java.awt.event.HierarchyBoundsListener;

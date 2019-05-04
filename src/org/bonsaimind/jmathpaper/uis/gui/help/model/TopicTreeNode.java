@@ -17,7 +17,7 @@
  * Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.bonsaimind.jmathpaper.uis.swing.help.model;
+package org.bonsaimind.jmathpaper.uis.gui.help.model;
 
 import java.util.Enumeration;
 import java.util.Vector;

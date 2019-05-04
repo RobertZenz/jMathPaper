@@ -76,7 +76,7 @@ public final class Main {
 				// Try several UIs without checking for exception. It might very
 				// well be that this is a jar which does not contain all or any
 				// of these. So just try it and see if we can find one.
-				ui = UiLoader.getAvailableUi("swing", "tui2", "tui");
+				ui = UiLoader.getAvailableUi("gui", "tui2", "tui");
 			}
 		}
 		
