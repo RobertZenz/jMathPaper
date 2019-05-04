@@ -265,7 +265,7 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	}
 	
 	private final void assertLastResult(boolean expected) {
-		EvaluatedExpression lastEvaluatedExpression = paper.evaluatedExpressions.get(paper.evaluatedExpressions.size() - 1);
+		EvaluatedExpression lastEvaluatedExpression = paper.evaluator.getEvaluatedExpressions().get(paper.evaluator.getEvaluatedExpressions().size() - 1);
 		
 		if (lastEvaluatedExpression instanceof BooleanEvaluatedExpression) {
 			Assert.assertEquals(
@@ -275,7 +275,7 @@ public class TestAbstractPapersUi extends AbstractPapersUi {
 	}
 	
 	private final void assertLastResult(String expected) {
-		EvaluatedExpression lastEvaluatedExpression = paper.evaluatedExpressions.get(paper.evaluatedExpressions.size() - 1);
+		EvaluatedExpression lastEvaluatedExpression = paper.evaluator.getEvaluatedExpressions().get(paper.evaluator.getEvaluatedExpressions().size() - 1);
 		
 		Assert.assertEquals(
 				new BigDecimal(expected).stripTrailingZeros(),

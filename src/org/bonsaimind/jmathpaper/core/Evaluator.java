@@ -24,6 +24,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,8 +61,9 @@ public class Evaluator {
 	private Map<String, String> aliases = new HashMap<>();
 	private MathContext calculationMathContext = DEFAULT_CALCULATION_MATH_CONTEXT;
 	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
+	private List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	private int expressionCounter = 0;
-	private List<EvaluatedExpression> previousEvaluatedExpressions = new ArrayList<>();
+	private List<EvaluatedExpression> readonlyEvaluatedExpressions = null;
 	private MathContext resultMathContext = DEFAULT_RESULT_MATH_CONTEXT;
 	private UnitConverter unitConverter = new UnitConverter();
 	
@@ -98,6 +100,14 @@ public class Evaluator {
 	
 	public MathContext getCalculationMathContext() {
 		return calculationMathContext;
+	}
+	
+	public List<EvaluatedExpression> getEvaluatedExpressions() {
+		if (readonlyEvaluatedExpressions == null) {
+			readonlyEvaluatedExpressions = Collections.unmodifiableList(evaluatedExpressions);
+		}
+		
+		return evaluatedExpressions;
 	}
 	
 	public MathContext getResultMathContext() {
@@ -147,7 +157,7 @@ public class Evaluator {
 			applyEvaluatedExpression(mathExpression, contextExpression);
 		}
 		
-		for (EvaluatedExpression previousEvaluatedExpression : previousEvaluatedExpressions) {
+		for (EvaluatedExpression previousEvaluatedExpression : evaluatedExpressions) {
 			applyEvaluatedExpression(mathExpression, previousEvaluatedExpression);
 		}
 		
@@ -164,7 +174,7 @@ public class Evaluator {
 	
 	public void reset() {
 		expressionCounter = 0;
-		previousEvaluatedExpressions.clear();
+		evaluatedExpressions.clear();
 	}
 	
 	public void setCalculationMathContext(MathContext calculationMathContext) {
@@ -334,7 +344,7 @@ public class Evaluator {
 	
 	private EvaluatedExpression addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
 		if (evaluatedExpression != null) {
-			previousEvaluatedExpressions.add(evaluatedExpression);
+			evaluatedExpressions.add(evaluatedExpression);
 		}
 		
 		return evaluatedExpression;
@@ -428,7 +438,7 @@ public class Evaluator {
 	}
 	
 	private boolean isKnown(String name) {
-		for (EvaluatedExpression evaluatedExpression : previousEvaluatedExpressions) {
+		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
 			if (evaluatedExpression.getId().equals(name)) {
 				return true;
 			}
@@ -450,8 +460,8 @@ public class Evaluator {
 	}
 	
 	private String replaceLastReference(String value) {
-		for (int index = previousEvaluatedExpressions.size() - 1; index >= 0; index--) {
-			EvaluatedExpression evaluatedExpression = previousEvaluatedExpressions.get(index);
+		for (int index = evaluatedExpressions.size() - 1; index >= 0; index--) {
+			EvaluatedExpression evaluatedExpression = evaluatedExpressions.get(index);
 			
 			if (evaluatedExpression instanceof NumberEvaluatedExpression) {
 				return evaluatedExpression.getId();

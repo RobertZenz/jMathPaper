@@ -32,7 +32,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +40,6 @@ import org.bonsaimind.jmathpaper.core.evaluatedexpressions.NumberEvaluatedExpres
 public class Paper {
 	private static final int DEFAULT_WIDTH = 50;
 	protected boolean changed = true;
-	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
 	protected Evaluator evaluator = new Evaluator();
 	protected int expressionColumnSize = 0;
 	protected Path file = null;
@@ -50,7 +48,6 @@ public class Paper {
 	protected NumberFormat numberFormat = null;
 	protected String originalNumberFormat = null;
 	protected int resultColumnSize = 0;
-	private List<EvaluatedExpression> readonlyEvaluatedExpression = null;
 	
 	public Paper() {
 		super();
@@ -59,7 +56,6 @@ public class Paper {
 	}
 	
 	public void clear() {
-		evaluatedExpressions.clear();
 		evaluator.reset();
 		
 		changed = true;
@@ -67,8 +63,6 @@ public class Paper {
 	
 	public EvaluatedExpression evaluate(String expression) throws InvalidExpressionException {
 		EvaluatedExpression evaluatedExpression = evaluator.evaluate(expression);
-		
-		evaluatedExpressions.add(evaluatedExpression);
 		
 		measureExpression(evaluatedExpression);
 		
@@ -112,11 +106,7 @@ public class Paper {
 	}
 	
 	public List<EvaluatedExpression> getEvaluatedExpressions() {
-		if (readonlyEvaluatedExpression == null) {
-			readonlyEvaluatedExpression = Collections.unmodifiableList(evaluatedExpressions);
-		}
-		
-		return readonlyEvaluatedExpression;
+		return evaluator.getEvaluatedExpressions();
 	}
 	
 	public Evaluator getEvaluator() {
@@ -219,7 +209,7 @@ public class Paper {
 	 *         reevaluate.
 	 */
 	public void reevaluate() throws InvalidExpressionException {
-		if (evaluatedExpressions.isEmpty()) {
+		if (evaluator.getEvaluatedExpressions().isEmpty()) {
 			return;
 		}
 		
@@ -229,14 +219,11 @@ public class Paper {
 		
 		List<EvaluatedExpression> newEvaluatedExpressions = new ArrayList<>();
 		
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+		for (EvaluatedExpression evaluatedExpression : evaluator.getEvaluatedExpressions()) {
 			newEvaluatedExpressions.add(newEvaluator.evaluate(evaluatedExpression.getExpression()));
 		}
 		
 		evaluator = newEvaluator;
-		
-		evaluatedExpressions.clear();
-		evaluatedExpressions.addAll(newEvaluatedExpressions);
 		
 		remeasureColumnSizes();
 	}
@@ -320,7 +307,7 @@ public class Paper {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+		for (EvaluatedExpression evaluatedExpression : evaluator.getEvaluatedExpressions()) {
 			builder.append(format(evaluatedExpression));
 			builder.append('\n');
 		}
@@ -371,7 +358,7 @@ public class Paper {
 		expressionColumnSize = 0;
 		resultColumnSize = 0;
 		
-		for (EvaluatedExpression evaluatedExpression : evaluatedExpressions) {
+		for (EvaluatedExpression evaluatedExpression : evaluator.getEvaluatedExpressions()) {
 			measureExpression(evaluatedExpression);
 		}
 		
