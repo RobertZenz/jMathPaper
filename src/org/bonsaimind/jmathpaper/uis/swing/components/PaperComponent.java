@@ -167,8 +167,10 @@ public class PaperComponent extends JComponent {
 	protected void setMessage(String message) {
 		if (message == null) {
 			messageLabel.setText(" ");
+			messageLabel.setToolTipText("");
 		} else {
 			messageLabel.setText(message + " ");
+			messageLabel.setToolTipText(message);
 		}
 	}
 	

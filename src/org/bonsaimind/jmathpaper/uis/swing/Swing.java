@@ -256,7 +256,7 @@ public class Swing extends AbstractPapersUi {
 	
 	@Override
 	protected void currentPaperHasBeenModified() {
-		statusLabel.setText(" ");
+		setStatusMessage(null);
 		
 		refreshCurrentPaper();
 	}
@@ -268,7 +268,7 @@ public class Swing extends AbstractPapersUi {
 	
 	@Override
 	protected void currentPaperHasBeenReset() {
-		statusLabel.setText(" ");
+		setStatusMessage(null);
 		
 		refreshCurrentPaper();
 	}
@@ -283,6 +283,8 @@ public class Swing extends AbstractPapersUi {
 		
 		nextPaperMenuItem.setEnabled(paper != null && papers.indexOf(paper) < papers.size() - 1);
 		previousPaperMenuItem.setEnabled(paper != null && papers.indexOf(paper) > 0);
+		
+		setStatusMessage(null);
 		
 		for (Component component : tabbedPane.getComponents()) {
 			if (((PaperComponent)component).getPaper() == paper) {
@@ -299,6 +301,16 @@ public class Swing extends AbstractPapersUi {
 			
 			tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
 			tabbedPane.setToolTipTextAt(tabbedPane.getSelectedIndex(), getShortPaperTitle(paper));
+		}
+	}
+	
+	protected void setStatusMessage(String message) {
+		if (message == null) {
+			statusLabel.setText(" ");
+			statusLabel.setToolTipText("");
+		} else {
+			statusLabel.setText(message + " ");
+			statusLabel.setToolTipText(message);
 		}
 	}
 	
@@ -371,7 +383,7 @@ public class Swing extends AbstractPapersUi {
 			try {
 				open(fileChooser.getSelectedFile().toPath());
 			} catch (Exception e) {
-				statusLabel.setText(e.getMessage() + " ");
+				setStatusMessage(e.getMessage());
 			}
 		}
 	}
@@ -382,7 +394,7 @@ public class Swing extends AbstractPapersUi {
 				paper.setFile(fileChooser.getSelectedFile().toPath());
 				save();
 			} catch (Exception e) {
-				statusLabel.setText(e.getMessage() + " ");
+				setStatusMessage(e.getMessage());
 			}
 		}
 	}
@@ -391,7 +403,7 @@ public class Swing extends AbstractPapersUi {
 		try {
 			save();
 		} catch (Exception e) {
-			statusLabel.setText(e.getMessage() + " ");
+			setStatusMessage(e.getMessage());
 		}
 	}
 	
