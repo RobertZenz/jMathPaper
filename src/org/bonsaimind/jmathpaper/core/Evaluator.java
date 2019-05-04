@@ -260,7 +260,7 @@ public class Evaluator {
 			if (unitParts[0] != null && unitParts[0].isEmpty()) {
 				unitFrom = unitConverter.getCompoundUnit(expressionPart.trim());
 				
-				if (unitFrom != null && !isKnown(unitFrom)) {
+				if (unitFrom != null && !isKnown(unitFrom) && !unitFrom.isOne()) {
 					expressionPart = "1";
 				} else {
 					unitFrom = unitConverter.getCompoundUnit(unitParts[1]);
