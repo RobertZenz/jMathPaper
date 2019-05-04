@@ -116,12 +116,20 @@ public abstract class AbstractExpressionTest {
 				((BooleanEvaluatedExpression)evaluatedExpression).getBooleanResult());
 	}
 	
+	protected void assertResult(boolean expected, String expression) throws InvalidExpressionException {
+		assertResult(expected, expression, new Evaluator());
+	}
+	
 	protected void assertResult(boolean expected, String expression, Evaluator evaluator) throws InvalidExpressionException {
 		assertResult(expected, evaluator.evaluate(expression));
 	}
 	
 	protected void assertResult(String expected, BigDecimal actualResult) throws InvalidExpressionException {
 		assertEquals(new BigDecimal(expected), actualResult);
+	}
+	
+	protected void assertResult(String expected, String expression) throws InvalidExpressionException {
+		assertResult(expected, expression, new Evaluator());
 	}
 	
 	protected void assertResult(String expected, String expression, Evaluator evaluator) throws InvalidExpressionException {

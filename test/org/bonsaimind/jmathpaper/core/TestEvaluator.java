@@ -45,23 +45,23 @@ public class TestEvaluator extends AbstractExpressionTest {
 	
 	@Test
 	public void testBasicExpression() throws InvalidExpressionException {
-		assertResult("2", "1+1", new Evaluator());
-		assertResult("680", "5*8*(8+9)", new Evaluator());
+		assertResult("2", "1+1");
+		assertResult("680", "5*8*(8+9)");
 	}
 	
 	@Test
 	public void testBooleans() throws InvalidExpressionException {
-		assertResult(true, "1==1", new Evaluator());
-		assertResult(false, "1==2", new Evaluator());
-		assertResult(false, "true && false", new Evaluator());
+		assertResult(true, "1==1");
+		assertResult(false, "1==2");
+		assertResult(false, "true && false");
 	}
 	
 	@Test
 	public void testComments() throws InvalidExpressionException {
-		assertResult("0", "// Completely empty statement", new Evaluator());
-		assertResult("0", "/* Another empty. */", new Evaluator());
-		assertResult("2", "1 /* Inlined */ + 1", new Evaluator());
-		assertResult("2", "1 + /* Nested // */ 1", new Evaluator());
+		assertResult("0", "// Completely empty statement");
+		assertResult("0", "/* Another empty. */");
+		assertResult("2", "1 /* Inlined */ + 1");
+		assertResult("2", "1 + /* Nested // */ 1");
 	}
 	
 	@Test
@@ -162,19 +162,19 @@ public class TestEvaluator extends AbstractExpressionTest {
 	
 	@Test
 	public void testNumberBases() throws InvalidExpressionException {
-		assertResult("32", "32", new Evaluator());
-		assertResult("12", "0b1100", new Evaluator());
-		assertResult("63", "0o77", new Evaluator());
-		assertResult("255", "0xff", new Evaluator());
+		assertResult("32", "32");
+		assertResult("12", "0b1100");
+		assertResult("63", "0o77");
+		assertResult("255", "0xff");
 	}
 	
 	@Test
 	public void testPrecision() throws InvalidExpressionException {
-		assertResult("123456790", "123456789+1", new Evaluator());
-		assertResult("123456789123456790", "123456789123456789+1", new Evaluator());
-		assertResult("1.000000001", "1.000000+0.000000001", new Evaluator());
+		assertResult("123456790", "123456789+1");
+		assertResult("123456789123456790", "123456789123456789+1");
+		assertResult("1.000000001", "1.000000+0.000000001");
 		
-		assertResult("60", "1/(1/60)", new Evaluator());
+		assertResult("60", "1/(1/60)");
 	}
 	
 	@Test
