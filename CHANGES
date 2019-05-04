@@ -2,6 +2,38 @@ Changes
 =======
 
 
+1.3
+---
+
+The release packages have changed with this release. There are no longer
+platform specific jars and a library jar is now being provided as well as all
+variants are now available as tar packages.
+
+The SWT GUI has been replaced with a Swing one, as GTK+3 is just unreliable.
+
+Additionally, an experimental TUI2 based on Lanterna is available.
+
+ * #30 Added commands for editing the note.
+ * #35 Repurposed the context parameter to mean the context of the paper.
+ * #36 Implemented a basic help system.
+ * #40 Implemented the copy command.
+ * #41 Fixed that "00" would not be recognized as function parameter.
+ * #42 Added commands for adding units, prefixes and conversions on the fly.
+ * #43 Added a service UI.
+ * #45 Relicensed under LGPLv3
+ * #48 Added support for compound units (f.e. km/h).
+ * #51 Fixed that the configuration files might be misplaced.
+ * #53 Added automatic conversion of units with prefixes to units without.
+ * #54 A prefix without unit is now being assumed as "1".
+ * #57 Added support for a paper template.
+ * #58 Fixed that results might be incorrectly rounded.
+ * #61 Replaced SWT with Swing.
+ * #62 Swing and TUI2 now support a preview of the currently typed expression.
+ * Added command for adding an alias on the fly.
+ * Added various additional default units, prefixes and conversions.
+ * Various other fixes.
+
+
 1.2.1
 -----
 
