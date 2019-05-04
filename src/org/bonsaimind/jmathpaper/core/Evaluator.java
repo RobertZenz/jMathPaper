@@ -321,20 +321,8 @@ public class Evaluator {
 			
 			BigDecimal result = mathExpression.eval();
 			
-			String fullExpression = preProcessedExpression;
-			
 			if (unitFrom != null && unitTo != null) {
 				result = unitConverter.convert(unitFrom, unitTo, result, calculationMathContext).stripTrailingZeros();
-				
-				fullExpression = fullExpression + " " + unitFrom.toString();
-				
-				if (unitConversionKeyword != null) {
-					fullExpression = fullExpression + " " + unitConversionKeyword + " ";
-				} else {
-					fullExpression = fullExpression + " ";
-				}
-				
-				fullExpression = fullExpression + unitTo.toString();
 			}
 			
 			if (id == null && idSupplier != null) {
@@ -344,12 +332,12 @@ public class Evaluator {
 			result = result.round(resultMathContext);
 			
 			if (mathExpression.isBoolean()) {
-				return new BooleanEvaluatedExpression(id, fullExpression, result);
+				return new BooleanEvaluatedExpression(id, preProcessedExpression, result);
 			} else {
 				if (unitTo != null) {
-					return new NumberEvaluatedExpression(id, fullExpression, result, unitTo);
+					return new NumberEvaluatedExpression(id, preProcessedExpression, result, unitTo);
 				} else {
-					return new NumberEvaluatedExpression(id, fullExpression, result, CompoundUnit.ONE);
+					return new NumberEvaluatedExpression(id, preProcessedExpression, result, CompoundUnit.ONE);
 				}
 			}
 		} catch (Throwable th) {
