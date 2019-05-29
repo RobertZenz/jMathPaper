@@ -71,7 +71,10 @@ public class Arguments {
 	
 	private List<Path> prefixesFilesPaths = null;
 	
-	@Option(names = { "-u", "--ui" }, arity = "1", description = "Define what user interface (UI) to start.")
+	@Option(names = { "-u", "--ui" }, arity = "1", description = ""
+			+ "Define what user interface (UI) to start."
+			+ " The given parameter can either be a fully qualified classname, or a class- and packagename relative to the \"org.bonsaimind.jmathpaper.uis\" package."
+			+ " By default you can use \"cli\", \"service\", \"tui\", \"tui2\" and \"gui\" to start the different UIs. For further descriptions please see the README.")
 	private String ui = null;
 	
 	private UiParameters uiParameters = null;
