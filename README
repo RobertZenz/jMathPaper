@@ -12,6 +12,12 @@ License
 
 jMathPaper is licensed under LGPLv3.
 
+Single source files might be licensed under a more permissive license, please
+see the individual license headers for details
+
+ * com.sibvisions.rad.ui.swing.ext-Package: Apache 2, copied from
+   [JVx](https://sourceforge.net/projects/jvx/) (with modifications).
+
 
 Dependencies
 ------------
