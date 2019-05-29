@@ -27,7 +27,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -43,6 +42,8 @@ import org.bonsaimind.jmathpaper.uis.gui.events.NotifyingDocumentListener;
 import org.bonsaimind.jmathpaper.uis.gui.models.PaperColumnModel;
 import org.bonsaimind.jmathpaper.uis.gui.models.PaperModel;
 
+import com.sibvisions.rad.ui.swing.ext.JVxSplitPane;
+
 public class PaperComponent extends JComponent {
 	private static final double DEFAULT_DIVIDER_LOCATION = 0.75d;
 	private String bufferedInput = null;
@@ -56,7 +57,7 @@ public class PaperComponent extends JComponent {
 	private int originalDividerSize = -1;
 	private Paper paper = null;
 	private PaperModel paperModel = null;
-	private JSplitPane splitPane = null;
+	private JVxSplitPane splitPane = null;
 	private JScrollPane tableScrollContainer = null;
 	private Ui ui = null;
 	
@@ -122,8 +123,8 @@ public class PaperComponent extends JComponent {
 		notesScrollContainer = new JScrollPane();
 		notesScrollContainer.setViewportView(notesTextArea);
 		
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPane.setContinuousLayout(true);
+		splitPane = new JVxSplitPane(JVxSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setDividerAlignment(JVxSplitPane.DIVIDER_BOTTOM_RIGHT);
 		splitPane.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
 		splitPane.add(mainPanel, 0);
 		splitPane.add(notesScrollContainer, 1);
@@ -187,6 +188,7 @@ public class PaperComponent extends JComponent {
 			originalDividerLocation = splitPane.getDividerLocation();
 			originalDividerSize = splitPane.getDividerSize();
 			splitPane.setDividerSize(0);
+			splitPane.setDividerLocation(1.0d);
 		}
 	}
 	
