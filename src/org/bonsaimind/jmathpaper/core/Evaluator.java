@@ -48,26 +48,26 @@ import org.bonsaimind.jmathpaper.core.units.UnitConverter;
 import com.udojava.evalex.Expression;
 
 public class Evaluator {
-	private static final Pattern BINARY_NUMBER = ResourceLoader.compileRegex("binary-number");
-	private static final String COMMENT_INLINE_END = "*/";
-	private static final String COMMENT_INLINE_START = "/*";
-	private static final String COMMENT_START = "//";
-	private static final MathContext DEFAULT_CALCULATION_MATH_CONTEXT = new MathContext(64, RoundingMode.HALF_UP);
-	private static final MathContext DEFAULT_RESULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
-	private static final Pattern EXPRESSION_UNIT_SEPARATOR = ResourceLoader.compileRegex("expression-unit-separator");
-	private static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
-	private static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
-	private static final Pattern ID = ResourceLoader.compileRegex("id");
-	private static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
-	private static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
-	private Map<String, String> aliases = new HashMap<>();
-	private MathContext calculationMathContext = DEFAULT_CALCULATION_MATH_CONTEXT;
-	private List<EvaluatedExpression> contextExpressions = new ArrayList<>();
-	private List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
+	protected static final Pattern BINARY_NUMBER = ResourceLoader.compileRegex("binary-number");
+	protected static final String COMMENT_INLINE_END = "*/";
+	protected static final String COMMENT_INLINE_START = "/*";
+	protected static final String COMMENT_START = "//";
+	protected static final MathContext DEFAULT_CALCULATION_MATH_CONTEXT = new MathContext(64, RoundingMode.HALF_UP);
+	protected static final MathContext DEFAULT_RESULT_MATH_CONTEXT = new MathContext(32, RoundingMode.HALF_UP);
+	protected static final Pattern EXPRESSION_UNIT_SEPARATOR = ResourceLoader.compileRegex("expression-unit-separator");
+	protected static final Pattern FUNCTION = ResourceLoader.compileRegex("function");
+	protected static final Pattern HEX_NUMBER = ResourceLoader.compileRegex("hex-number");
+	protected static final Pattern ID = ResourceLoader.compileRegex("id");
+	protected static final Pattern LAST_REFERENCE = ResourceLoader.compileRegex("last-reference");
+	protected static final Pattern OCTAL_NUMBER = ResourceLoader.compileRegex("octal-number");
+	protected Map<String, String> aliases = new HashMap<>();
+	protected MathContext calculationMathContext = DEFAULT_CALCULATION_MATH_CONTEXT;
+	protected List<EvaluatedExpression> contextExpressions = new ArrayList<>();
+	protected List<EvaluatedExpression> evaluatedExpressions = new ArrayList<>();
+	protected MathContext resultMathContext = DEFAULT_RESULT_MATH_CONTEXT;
+	protected UnitConverter unitConverter = new UnitConverter();
 	private int expressionCounter = 0;
 	private List<EvaluatedExpression> readonlyEvaluatedExpressions = null;
-	private MathContext resultMathContext = DEFAULT_RESULT_MATH_CONTEXT;
-	private UnitConverter unitConverter = new UnitConverter();
 	
 	public Evaluator() {
 		super();
@@ -354,6 +354,53 @@ public class Evaluator {
 		}
 	}
 	
+	/**
+	 * Strips any comments from the given expression.
+	 * 
+	 * @param expression The expression to process.
+	 * @return The expression with all comments stripped.
+	 */
+	protected String stripComments(String expression) {
+		if (expression == null || expression.isEmpty()) {
+			return expression;
+		}
+		
+		String strippedExpression = expression;
+		
+		// Strip the inline/fenced comments first.
+		int commentStartIndex = strippedExpression.indexOf(COMMENT_INLINE_START);
+		
+		// I'm aware that this is not the most efficient way to do it,
+		// but this is the easiest option and we are dealing with strings with
+		// an estimated length of less then 12 characters...so it's okay.
+		while (commentStartIndex >= 0) {
+			int commentEndIndex = strippedExpression.indexOf(
+					COMMENT_INLINE_END,
+					commentStartIndex + COMMENT_INLINE_START.length());
+			
+			if (commentEndIndex >= 0) {
+				String start = strippedExpression.substring(0, commentStartIndex);
+				String end = strippedExpression.substring(commentEndIndex + COMMENT_INLINE_END.length());
+				
+				strippedExpression = start + end;
+			} else {
+				// Seems like the expression is malformed, better chicken out.
+				return strippedExpression.substring(0, commentStartIndex);
+			}
+			
+			commentStartIndex = strippedExpression.indexOf(COMMENT_INLINE_START);
+		}
+		
+		// Now strip the ones the go to the end of the line.
+		commentStartIndex = strippedExpression.indexOf(COMMENT_START);
+		
+		if (commentStartIndex >= 0) {
+			strippedExpression = strippedExpression.substring(0, commentStartIndex);
+		}
+		
+		return strippedExpression;
+	}
+	
 	private EvaluatedExpression addEvaluatedExpression(EvaluatedExpression evaluatedExpression) {
 		if (evaluatedExpression != null) {
 			evaluatedExpressions.add(evaluatedExpression);
@@ -527,40 +574,5 @@ public class Evaluator {
 		unitConversion.setSourceString(unitConversionString);
 		
 		return unitConversion;
-	}
-	
-	private String stripComments(String expression) {
-		String strippedExpression = expression;
-		
-		int commentStartIndex = strippedExpression.indexOf(COMMENT_INLINE_START);
-		
-		// I'm aware that this is not the most efficient way to do it,
-		// but this is the easiest option and we are dealing with strings with
-		// an estimated length of less then 12 characters...so it's okay.
-		while (commentStartIndex >= 0) {
-			int commentEndIndex = strippedExpression.indexOf(
-					COMMENT_INLINE_END,
-					commentStartIndex + COMMENT_INLINE_START.length());
-			
-			if (commentEndIndex >= 0) {
-				String start = strippedExpression.substring(0, commentStartIndex);
-				String end = strippedExpression.substring(commentEndIndex + COMMENT_INLINE_END.length());
-				
-				strippedExpression = start + end;
-			} else {
-				// Seems like the expression is malformed, better chicken out.
-				return strippedExpression;
-			}
-			
-			commentStartIndex = strippedExpression.indexOf(commentStartIndex);
-		}
-		
-		commentStartIndex = strippedExpression.indexOf(COMMENT_START);
-		
-		if (commentStartIndex >= 0) {
-			strippedExpression = strippedExpression.substring(0, commentStartIndex);
-		}
-		
-		return strippedExpression;
 	}
 }
