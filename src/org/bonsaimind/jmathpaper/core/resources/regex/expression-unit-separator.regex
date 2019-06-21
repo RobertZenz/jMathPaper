@@ -19,12 +19,25 @@
 # the unit.
 #
 # Matched samples:
-#   1+1*4 m to in
+#   1+1*4 m
 
 
 (
+	# Simple conversion without target.
+	#     3cm
+	#     3 cm
+	#     (5+4)cm
 	[0-9)] *[a-zA-Z]
-	|[0-9] +1
+	
+	# Simple conversion to 1.
+	#    452 1
+	#    abc 1
+	|[a-zA-Z0-9] +1
+	
+	# Variables to units
+	#    xyz cm
+	#    xyz1
+	#    xyz 1
 	|[a-zA-Z)] +[a-zA-Z]
 	|[a-zA-Z)] *1
 )
