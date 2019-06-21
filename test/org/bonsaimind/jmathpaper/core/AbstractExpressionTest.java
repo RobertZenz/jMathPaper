@@ -81,6 +81,16 @@ public abstract class AbstractExpressionTest {
 		assertExpression(expectedId, expectedResult, expression, evaluator.evaluate(expression));
 	}
 	
+	protected void assertFail(String expression, Evaluator evaluator) throws InvalidExpressionException {
+		try {
+			evaluator.evaluate(expression);
+			
+			Assert.fail("Expression \" + expression + \" is supposed to fail, but did not.");
+		} catch (InvalidExpressionException e) {
+			// Okay, continue.
+		}
+	}
+	
 	protected void assertFunction(
 			String expectedId,
 			String expectedBody,

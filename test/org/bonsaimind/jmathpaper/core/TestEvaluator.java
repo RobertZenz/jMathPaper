@@ -89,9 +89,11 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("61", "a1+7 * 8", evaluator);
 		assertResult("20", "a1 + a1 + a1 + a1", evaluator);
 		assertResult("20", "a1 + a1 + a1 + a1 1", evaluator);
-		assertResult("20", "a1 + a1 + a1 + a1 to 1", evaluator);
+		assertResult("20", "a1 + a1 + a1 + a1 1 to 1", evaluator);
 		assertResult("20000", "a1 + a1 + a1 + a1 km to m", evaluator);
 		assertResult("20000", "a1 + a1 + a1 + a1 km m", evaluator);
+		
+		assertFail("a1 + a1 + a1 + a1 to 1", evaluator);
 		
 		// No value
 		assertResult("43166.4685056", "l/hour/sqm l/minute/sqml", evaluator);
@@ -257,6 +259,11 @@ public class TestEvaluator extends AbstractExpressionTest {
 		assertResult("0.001", "1milli to 1", evaluator);
 		assertResult("0.000001", "1milli to k", evaluator);
 		assertResult("0.000001", "1milli to kilo", evaluator);
+		
+		// No from unit given, keyword should be treated as unit.
+		assertResult("12.7", "5 in cm", evaluator);
+		assertResult("2.54", "1 in cm", evaluator);
+		assertFail("5 to cm", evaluator);
 		
 		// Test if the automatic conversion will not pickup variables.
 		evaluator.evaluate("km=5");
