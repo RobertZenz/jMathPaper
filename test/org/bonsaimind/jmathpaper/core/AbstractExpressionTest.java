@@ -36,6 +36,16 @@ public abstract class AbstractExpressionTest {
 		}
 	}
 	
+	protected void assertException(Class<? extends Exception> expectedException, String expression, Evaluator evaluator) throws Exception {
+		try {
+			evaluator.evaluate(expression);
+		} catch (Exception e) {
+			if (!expectedException.isAssignableFrom(e.getClass())) {
+				throw e;
+			}
+		}
+	}
+	
 	protected void assertExpression(
 			String expectedId,
 			boolean expectedResult,

@@ -272,8 +272,14 @@ public class UnitConverter {
 		int exponentIndex = unitNameOrAlias.indexOf("^");
 		
 		if (exponentIndex >= 0) {
-			exponent = Integer.parseInt(unitNameOrAlias.substring(exponentIndex + 1));
-			unitNameOrAlias = unitNameOrAlias.substring(0, exponentIndex);
+			try {
+				exponent = Integer.parseInt(unitNameOrAlias.substring(exponentIndex + 1));
+				unitNameOrAlias = unitNameOrAlias.substring(0, exponentIndex);
+			} catch (NumberFormatException e) {
+				// The exponent is not well-formed, so we assume that this is
+				// not a unit.
+				return null;
+			}
 		} else if (unitNameOrAlias.toLowerCase().startsWith("square")) {
 			exponent = 2;
 			unitNameOrAlias = unitNameOrAlias.substring(6);

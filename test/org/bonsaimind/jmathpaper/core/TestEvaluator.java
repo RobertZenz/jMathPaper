@@ -164,6 +164,13 @@ public class TestEvaluator extends AbstractExpressionTest {
 	}
 	
 	@Test
+	public void testMalformedExpressions() throws Exception {
+		Evaluator evaluator = new Evaluator();
+		
+		assertException(InvalidExpressionException.class, "4^", evaluator);
+	}
+	
+	@Test
 	public void testNullAndEmpty() throws InvalidExpressionException {
 		assertResult("0", (String)null);
 		assertResult("0", "");
