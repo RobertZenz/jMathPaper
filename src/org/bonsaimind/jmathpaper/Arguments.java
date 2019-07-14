@@ -38,6 +38,12 @@ public class Arguments {
 	
 	private List<Path> aliasesFilesPaths = null;
 	
+	@Option(names = { "-c", "--config", "--configuration", "--config-dir",
+			"--configuration-directory" }, paramLabel = "CONFIGDIR", description = "Specify the directory for the configuration files.")
+	private String configurationDirectory = null;
+	
+	private Path configurationDirectoryPath = null;
+	
 	@Option(names = { "--context" }, paramLabel = "CONTEXTFILE", description = "Load context expressions from this file.")
 	private List<String> contextExpressionsFiles = null;
 	
@@ -96,6 +102,14 @@ public class Arguments {
 		}
 		
 		return aliasesFilesPaths;
+	}
+	
+	public Path getConfigurationDirectory() {
+		if (configurationDirectoryPath == null && configurationDirectory != null && !configurationDirectory.trim().isEmpty()) {
+			configurationDirectoryPath = Paths.get(configurationDirectory);
+		}
+		
+		return configurationDirectoryPath;
 	}
 	
 	public List<Path> getContextExpressionsFiles() {

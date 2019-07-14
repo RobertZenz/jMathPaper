@@ -125,8 +125,16 @@ public final class Configuration {
 	
 	/**
 	 * Initializes the configuration.
+	 * 
+	 * @param providedConfigurationDirectory The {@link Path} which should be
+	 *        used for storing the configuration files. {@code null} to use the
+	 *        defaults.
 	 */
-	public static final void init() {
+	public static final void init(Path providedConfigurationDirectory) {
+		if (providedConfigurationDirectory != null) {
+			cachedConfigDirectory = providedConfigurationDirectory.normalize().toAbsolutePath();
+		}
+		
 		migrateGlobalPaper();
 		migrateFromConfigToData();
 		createConfigDirectoryIfNeeded();

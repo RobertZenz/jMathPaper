@@ -59,7 +59,7 @@ public final class Main {
 			return;
 		}
 		
-		Configuration.init();
+		Configuration.init(arguments.getConfigurationDirectory());
 		
 		Ui ui = null;
 		
