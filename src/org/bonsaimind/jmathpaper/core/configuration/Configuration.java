@@ -58,15 +58,17 @@ public final class Configuration {
 		if (cachedConfigDirectory == null) {
 			String xdgDataHome = System.getenv("XDG_DATA_HOME");
 			
-			if (xdgDataHome == null || xdgDataHome.trim().length() == 0) {
+			if (xdgDataHome != null && !xdgDataHome.trim().isEmpty()) {
+				cachedConfigDirectory = Paths.get(xdgDataHome);
+			} else {
 				String userHome = System.getenv("HOME");
 				
-				if (userHome == null || userHome.trim().length() == 0) {
+				if (userHome != null && !userHome.trim().isEmpty()) {
+					cachedConfigDirectory = Paths.get(userHome, ".local", "share");
+				} else {
 					// Wait, what?
-					return Paths.get(".");
+					cachedConfigDirectory = Paths.get("");
 				}
-				
-				cachedConfigDirectory = Paths.get(userHome, ".local", "share");
 			}
 			
 			cachedConfigDirectory = cachedConfigDirectory.resolve(DIRECTORY_NAME);
