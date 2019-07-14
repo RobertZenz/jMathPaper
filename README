@@ -636,6 +636,20 @@ Now a process could write into `/tmp/mathpipe-input` and retrieve the result
 from `/tmp/mathpipe-output`.
 
 
+Configuration
+-------------
+
+jMathPaper creates a configuration directory in which it places all the user
+editable configuration files. The location of the configuration directory is
+determined as follows:
+
+ 1. The directory specified with the `-c`/`--config-dir` argument.
+ 2. The directory specified in the `$XGD_DATA_HOME` variable with
+    the sub-directory `jmathpaper`.
+ 3. The user-home directory with the sub-directories `.local/share/jmathpaper`.
+ 4. The current directory with the sub-directory `jmathpaper`.
+
+
 Technical information
 ---------------------
 
