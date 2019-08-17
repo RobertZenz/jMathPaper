@@ -1,8 +1,8 @@
 note
 ====
 
-The note command accepts additional parameters, namely the action and
-the associated parameters.
+The note command allows you to manipulate the notes. It accepts additional
+parameters, namely the action and the associated parameters.
 
     note action [index] line
 

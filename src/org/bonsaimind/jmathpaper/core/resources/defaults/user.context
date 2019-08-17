@@ -1,7 +1,7 @@
 # jMathPaper definitions file
 #
 # Here you can specify definitions and expressions which will be evaluated in
-# the context of a new paper. However, they will no be added to the paper.
+# the context of a new paper. However, they will not be added to the paper.
 # So when the paper is saved and loaded on a different machine, these will not
 # be available.
 #

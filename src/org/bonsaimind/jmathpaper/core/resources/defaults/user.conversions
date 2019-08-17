@@ -3,11 +3,11 @@
 # Here you can specify additional conversions which are automatically picked up
 # by jMathPaper every time a new paper is opened.
 #
-# Specifying a new conversions requires the target unit and the factor of
+# Specifying a new conversion requires the target unit and the factor of
 # the source unit.
 #
 # Here are some examples of conversion definitions, if you haven't guessed by
-# now, "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# now, "#" denotes a comment, so lines (and parts of lines) will be skipped when
 # encountered.
 #
 # <targetunit> <value><sourceunit>

@@ -54,7 +54,7 @@ Usage
 
 When you start jMathPaper you are greeted with a (currently empty) list of
 previous expressions and the input box to enter a new one. You can enter any
-expression you want to evaluate. Additionally, there is a larger input are to
+expression you want to evaluate. Additionally, there is a larger input area to
 the right which allows you to take notes.
 
 You can save and load papers from the menu, they are stored in a very simple
@@ -77,6 +77,8 @@ a previous result by using its ID, like this:
     #3                                    239-38 = 201
     #4                                     #2*25 = 625
 
+The special case of `00` will evaluate to the last result.
+
 We can also define variables which we can reference:
 
     #1                                       1+1 =   2
@@ -89,8 +91,8 @@ We can also define variables which we can reference:
 
 Now if we made a mistake, for example the width really is 7, we can simply press
 up and down to scroll through the history and execute the corrected expression
-again. The previously executed expressions do not change, so we need to evaluate
-them again:
+again. The previously evaluated expressions do not change, so we need to
+evaluate them again:
 
     #1                                       1+1 =   2
     #2                                       5*5 =  25
@@ -106,8 +108,7 @@ We can also use mathematical functions, like `sin`:
 
     #1                                   sin(70) = 0.9396926
 
-See the documentation of [EvalEx](https://github.com/uklimaschewski/EvalEx/blob/master/README.md)
-to see what functions are supported.
+See the documentation of the list of supported functions.
 
 ### Variables
 
@@ -135,16 +136,16 @@ The following functions are available by default:
     abs(value)                 The absolute value.
     acos(value)                The angle of the cosine (in degrees).
     acosh(value)               The angle of the hyperbolic cosine (in degrees).
-    acot(value)                The angle of the cotangens (in degrees).
+    acot(value)                The angle of the cotangents (in degrees).
     asin(value)                The angle of the sine (in degrees).
     asinh(value)               The angle of the hyperbolic sine (in degrees).
-    atan(value)                The angle of the tangens (in degrees).
-    atanh(value)               The angle of the hyperbolic tangens (in degrees).
+    atan(value)                The angle of the tangents (in degrees).
+    atanh(value)               The angle of the hyperbolic tangents (in degrees).
     ceiling(value)             Rounded up to the nearest integer.
     cos(value)                 The cosine.
     cosh(value)                The hyperbolic cosine.
-    cot(value)                 The cotangens.
-    coth(value)                The hyperbolic cotangens.
+    cot(value)                 The cotangents.
+    coth(value)                The hyperbolic cotangents.
     csc(value)                 The cosecant (in degrees).
     csch(value)                The hyperbolic cosecant (in degrees).
     deg(value)                 Degrees from radians.
@@ -165,8 +166,8 @@ The following functions are available by default:
     sin(value)                 The sine.
     sinh(value)                The hyperbolic sine.
     sqrt(value)                The square root.
-    tan(value)                 The tangens.
-    tanh(value)                The hyperbolic tangens.
+    tan(value)                 The tangents.
+    tanh(value)                The hyperbolic tangents.
 
 Functions can also be defined on the fly:
 
@@ -186,7 +187,7 @@ We can also enter numbers in hex, octal or binary:
 
 ### Comments
 
-If there is need to comment lines or parts of equations C style comments can be
+If there is need to comment lines or parts of equations, C style comments can be
 used:
 
     #10       // We can also comment whole lines. =   0
@@ -195,8 +196,8 @@ used:
 
 ### Booleans
 
-Support for booleans is built right in, internally true and false are treated
-as zero and one.
+Support for booleans is built right in, internally `true` and `false` are
+treated as zero and one.
 
     comparison                   comparison= 1==1 = true
     boolean      boolean= (true || false) && true = true
@@ -215,7 +216,7 @@ The following operations are supported:
     &&           and                                  and
     ||           or                                   or
 
-These aliases should be treated as reserved words, but are only replace when
+These aliases should be treated as reserved words, but are only replaced when
 surrounded by spaces, example:
 
     aliases                  aliases= true and false = false
@@ -287,7 +288,7 @@ Comments can be specified with a leading `#` character.
 
 #### Custom prefixes files
 
-Additional prefixes can be specified in a file and passd to jMathPaper with the
+Additional prefixes can be specified in a file and passed to jMathPaper with the
 `--prefixes=PREFIXESFILE` parameter or in the user configuration file located in
 the jMathPaper configuration directory (most likely
 `~/.local/share/jmathpaper/`).
@@ -510,8 +511,8 @@ a comma separated list of ID's or indexes or a range specified with two dots.
 
 #### note
 
-The note command accepts additional parameters, namely the action and
-the associated parameters.
+The note command allows you to manipulate the notes. It accepts additional
+parameters, namely the action and the associated parameters.
 
     note action [index] line
 
@@ -613,7 +614,7 @@ With the Service UI, jMathPaper can be used as a "service" to answer requests.
 The Service UI will read expressions from stdin and will output the expression
 or result to stdout. This allows to start jMathPaper once and keep it running
 while being used from external applications, mitigating the cost of starting of
-starting a JVM everytime an expression should be evaluated.
+starting a JVM every time an expression should be evaluated.
 
 Here is an example script which starts jMathPaper as service:
 
@@ -663,5 +664,5 @@ treated as expression, everything below the first empty line is treated as note.
 
 Custom UIs can be implemented by implementing the `Ui` interface and can be
 launched afterwards by specifying `--ui=UI` parameter with the full class name.
-Note that there is the `AbstractpapersUi` which does already implement a great
+Note that there is the `AbstractPapersUi` which does already implement a great
 deal of the functionality required.

@@ -8,16 +8,16 @@ The following functions are available by default:
     abs(value)                 The absolute value.
     acos(value)                The angle of the cosine (in degrees).
     acosh(value)               The angle of the hyperbolic cosine (in degrees).
-    acot(value)                The angle of the cotangens (in degrees).
+    acot(value)                The angle of the cotangents (in degrees).
     asin(value)                The angle of the sine (in degrees).
     asinh(value)               The angle of the hyperbolic sine (in degrees).
-    atan(value)                The angle of the tangens (in degrees).
-    atanh(value)               The angle of the hyperbolic tangens (in degrees).
+    atan(value)                The angle of the tangents (in degrees).
+    atanh(value)               The angle of the hyperbolic tangents (in degrees).
     ceiling(value)             Rounded up to the nearest integer.
     cos(value)                 The cosine.
     cosh(value)                The hyperbolic cosine.
-    cot(value)                 The cotangens.
-    coth(value)                The hyperbolic cotangens.
+    cot(value)                 The cotangents.
+    coth(value)                The hyperbolic cotangents.
     csc(value)                 The cosecant (in degrees).
     csch(value)                The hyperbolic cosecant (in degrees).
     deg(value)                 Degrees from radians.
@@ -38,8 +38,8 @@ The following functions are available by default:
     sin(value)                 The sine.
     sinh(value)                The hyperbolic sine.
     sqrt(value)                The square root.
-    tan(value)                 The tangens.
-    tanh(value)                The hyperbolic tangens.
+    tan(value)                 The tangents.
+    tanh(value)                The hyperbolic tangents.
 
 Functions can also be defined on the fly:
 

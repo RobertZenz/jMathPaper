@@ -1,7 +1,7 @@
 Comments
 ========
 
-If there is need to comment lines or parts of equations C style comments can be
+If there is need to comment lines or parts of equations, C style comments can be
 used:
 
     #10       // We can also comment whole lines. =   0

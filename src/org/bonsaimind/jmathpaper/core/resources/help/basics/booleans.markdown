@@ -1,8 +1,8 @@
 Booleans
 ========
 
-Support for booleans is built right in, internally true and false are treated
-as zero and one.
+Support for booleans is built right in, internally `true` and `false` are
+treated as zero and one.
 
     comparison                   comparison= 1==1 = true
     boolean      boolean= (true || false) && true = true
@@ -21,7 +21,7 @@ The following operations are supported:
     &&           and                                  and
     ||           or                                   or
 
-These aliases should be treated as reserved words, but are only replace when
+These aliases should be treated as reserved words, but are only replaced when
 surrounded by spaces, example:
 
     aliases                  aliases= true and false = false

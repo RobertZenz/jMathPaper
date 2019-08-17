@@ -7,7 +7,7 @@
 # the exponent.
 #
 # Here are some examples of prefix definitions, if you haven't guessed by now,
-# "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# "#" denotes a comment, so lines (and parts of lines) will be skipped when
 # encountered.
 #
 # <name> <prefix> <base> <exponent>

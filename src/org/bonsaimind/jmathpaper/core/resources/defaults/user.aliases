@@ -7,7 +7,7 @@
 # only replaced inside an expression if it is surrounded by spaces.
 #
 # Here are some examples of alias definitions, if you haven't guessed by now,
-# "#" denotes a comment, so lines (and parts if lines) will be skipped when
+# "#" denotes a comment, so lines (and parts of lines) will be skipped when
 # encountered.
 #
 # <alias> <replacement>
