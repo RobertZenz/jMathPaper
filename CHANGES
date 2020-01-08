@@ -2,6 +2,23 @@ Changes
 =======
 
 
+1.3.1
+-----
+
+ * #65 Fixed that conversions might not be recognized.
+ * #66 Extended the --ui parameter help.
+ * #68 Fixed behavior of the Swing UI by using the JVxSplitPane.
+ * #70 Fixed that the GUI would stop responding when typing "6^".
+ * #74 Fixed possible errors in Configuration.
+ * #76 Fixed that variables/functions might be recognized as units.
+ * Added --configuration to allow to set the configuration directory.
+ * Updated EvalEx to 2.4
+
+Known issues:
+
+ * #77 Conversion between certain units (f.e. Celsius to Kelvin) is broken.
+
+
 1.3
 ---
 
