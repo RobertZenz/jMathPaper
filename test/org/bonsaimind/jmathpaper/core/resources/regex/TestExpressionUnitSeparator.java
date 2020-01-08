@@ -33,13 +33,18 @@ public class TestExpressionUnitSeparator extends AbstractRegexTest {
 		assertNoMatch("something");
 		assertNoMatch("321414+something");
 		assertNoMatch("(5*6)+9^power");
+		
+		// abc1 is a valid variable name.
+		assertNoMatch("abc1");
+		
+		// log10() should not be recognized as unit.
+		assertNoMatch("log10(5)");
 	}
 	
 	@Test
 	public void testOne() {
 		assertMatch(2, "1+1 1");
 		assertMatch(2, "abc 1");
-		assertMatch(2, "abc1");
 		assertMatch(12, "sqrt(5*abc+1)1");
 		assertMatch(12, "sqrt(5*abc+1) 1");
 		assertMatch(12, "sqrt(5*abc+1) 1/km");

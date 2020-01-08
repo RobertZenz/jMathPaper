@@ -33,11 +33,9 @@
 	#    452 1
 	#    abc 1
 	|[a-zA-Z0-9] +1
+	|\) ?1
 	
 	# Variables to units
 	#    xyz cm
-	#    xyz1
-	#    xyz 1
 	|[a-zA-Z)] +[a-zA-Z]
-	|[a-zA-Z)] *1
 )
